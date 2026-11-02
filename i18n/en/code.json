@@ -128,8 +128,8 @@
     "description": "了解部署方式"
   },
   "site.fec20a70a47d": {
-    "message": "Unified support for heterogeneous accelerators",
-    "description": "统一支持多种异构加速器"
+    "message": "Unified support for heterogeneous AI chips",
+    "description": "统一支持多种异构 AI 芯片"
   },
   "site.49fbbc8d5654": {
     "message": "ModelSphere runs across heterogeneous AI hardware through one platform. It natively supports general-purpose GPUs and uses EngineX to integrate Huawei Ascend, Iluvatar CoreX, Moore Threads, and Hygon accelerators, bringing mixed-hardware nodes under unified management.",
@@ -156,12 +156,12 @@
     "description": "性能优化持续演进"
   },
   "site.b0ecfac6f55e": {
-    "message": "ModelSphere continuously integrates new inference optimizations. Built-in AutoTune adapts configurations to your models, hardware, and production workloads to improve latency, throughput, and resource efficiency.",
-    "description": "持续集成最新的推理优化能力，通过内置AutoTune根据模型、硬件和真实业务负载自动调优，在延迟、吞吐和资源效率之间持续获得更优表现。"
+    "message": "ModelSphere continuously integrates new inference optimizations. Built-in Tuning Agent adapts configurations to your models, hardware, and production workloads to improve latency, throughput, and resource efficiency.",
+    "description": "持续集成最新的推理优化能力，通过内置 Tuning Agent 根据模型、硬件和真实业务负载自动调优，在延迟、吞吐和资源效率之间持续获得更优表现。"
   },
   "site.a0d8f6e52488": {
-    "message": "Explore AutoTune",
-    "description": "了解 AutoTune 工作流"
+    "message": "Explore Tuning Agent",
+    "description": "了解 Tuning Agent 工作流"
   },
   "site.9455d3f7bb51": {
     "message": "Configuration example from the design, not live monitoring data.",
@@ -304,8 +304,8 @@
     "description": "与"
   },
   "site.e2dd36bf7a68": {
-    "message": "the AutoTune feedback loop",
-    "description": "AutoTune 闭环"
+    "message": "the Tuning Agent feedback loop",
+    "description": "Tuning Agent 闭环"
   },
   "site.3074a6a3cf99": {
     "message": " together in a production-grade inference scheduling system that reliably handles large-scale traffic on heterogeneous hardware.",
@@ -500,8 +500,8 @@
     "description": "\n            作为社区联合发起方，负责提供工业级异构算力集群底座验证支持、海量信创芯片软硬件适配数据沉淀，以及企业级生产落地场景的持续拓展与规范制定。\n          "
   },
   "site.de57ac18e315": {
-    "message": "As a community co-founder, RiseUnion leads development of core inference middleware, AutoTune search algorithms, cloud-native Kubernetes inference operators, and intelligent routing gateways for high concurrency.",
-    "description": "\n            作为社区联合发起方，主导核心推理中间件研发、AutoTune 调优搜索算法、Kubernetes 云原生推理算子设计，以及面向极端并发的智能路由网关工程演进。\n          "
+    "message": "As a community co-founder, RiseUnion leads development of core inference middleware, Tuning Agent search algorithms, cloud-native Kubernetes inference operators, and intelligent routing gateways for high concurrency.",
+    "description": "\n            作为社区联合发起方，主导核心推理中间件研发、Tuning Agent 调优搜索算法、Kubernetes 云原生推理算子设计，以及面向极端并发的智能路由网关工程演进。\n          "
   },
   "site.85906b73debe": {
     "message": "Hardware ecosystem and enterprise partnership program",
@@ -1840,8 +1840,8 @@
     "description": "性能持续优化"
   },
   "site.04c52c423435": {
-    "message": "Tuning-Agent continuous optimization",
-    "description": "Tuning-Agent 性能持续优化"
+    "message": "Tuning Agent continuous optimization",
+    "description": "Tuning Agent 性能持续优化"
   },
   "site.e4e65d542ec8": {
     "message": "ModelSphere connects real production traffic, idle off-peak compute, hyperparameter grid search, and zero-downtime canary releases in an automated optimization loop, reducing manual trial-and-error benchmarking.",
@@ -2016,8 +2016,8 @@
     "description": " / 常用平稳\n                "
   },
   "site.4f54906de742": {
-    "message": "Gains depend on workload; AutoTune adapts chunk sizes for very long contexts",
-    "description": "\n                  客观体现“负载改变收益改变”，AutoTune 针对超长上下文自适应调整 Chunk 分块\n                "
+    "message": "Gains depend on workload; Tuning Agent adapts chunk sizes for very long contexts",
+    "description": "\n                  客观体现“负载改变收益改变”，Tuning Agent 针对超长上下文自适应调整 Chunk 分块\n                "
   },
   "site.f8ae6c58fa2d": {
     "message": "Agentic (c=8, concurrent multi-turn)",
@@ -2040,8 +2040,8 @@
     "description": "最高峰值"
   },
   "site.e459da12b0aa": {
-    "message": "AutoTune selects the optimal single-node TP4 topology and integrates modelopt_fp4 kernels",
-    "description": "\n                  AutoTune 搜索至最优 TP4 单节点拓扑，集成 modelopt_fp4 极致内核\n                "
+    "message": "Tuning Agent selects the optimal single-node TP4 topology and integrates modelopt_fp4 kernels",
+    "description": "\n                  Tuning Agent 搜索至最优 TP4 单节点拓扑，集成 modelopt_fp4 极致内核\n                "
   },
   "site.2209fac93619": {
     "message": "Get started",
@@ -2164,8 +2164,8 @@
     "description": "模域 ModelSphere 核心底座"
   },
   "site.dc956c11f710": {
-    "message": "Production routing, SLO autoscaling, seamless stream recovery, and engine orchestration.",
-    "description": "工业级路由调度、SLO 弹缩、零感知断流自愈与推理引擎编排。"
+    "message": "Cache-aware request routing, QoS-based autoscaling, automatic stream recovery, and continuous performance tuning with Tuning Agent.",
+    "description": "请求缓存感知路由、基于服务质量的自动扩缩容、服务断流自动续写、Tuning Agent 性能持续调优"
   },
   "site.ab33ee65f2ee": {
     "message": "Heterogeneous compute",
@@ -2188,8 +2188,8 @@
     "description": "全栈分层调度协同流"
   },
   "site.0a4af1dd5219": {
-    "message": "ModelSphere connects applications through routing, rate limiting, PD disaggregation, KV caching, autoscaling, stream recovery, and AutoTune to vLLM, SGLang, and heterogeneous compute.",
-    "description": "模域 ModelSphere 系统分层架构与算力调度拓扑：上层应用生态通过 ModelSphere 的路由、限流、PD 分离、KV 缓存、自动扩缩容、断流续写和 AutoTune，连接 vLLM、SGLang 等推理引擎与多元异构算力。"
+    "message": "ModelSphere connects applications through routing, rate limiting, PD disaggregation, KV caching, autoscaling, stream recovery, and Tuning Agent to vLLM, SGLang, and heterogeneous compute.",
+    "description": "模域 ModelSphere 系统分层架构与算力调度拓扑：上层应用生态通过 ModelSphere 的路由、限流、PD 分离、KV 缓存、自动扩缩容、断流续写和 Tuning Agent，连接 vLLM、SGLang 等推理引擎与多元异构算力。"
   },
   "site.340bc68d8384": {
     "message": "QoS request checks and rate limiting",
@@ -2308,8 +2308,8 @@
     "description": "确认配置后部署候选方案"
   },
   "site.58283660b4ac": {
-    "message": "AutoTune preview: five steps with operator confirmation before deployment",
-    "description": "AutoTune 预览版五步流程，配置经确认后受控部署"
+    "message": "Tuning Agent preview: five steps with operator confirmation before deployment",
+    "description": "Tuning Agent 预览版五步流程，配置经确认后受控部署"
   },
   "site.541df25f2a2b": {
     "message": "Continuous performance optimization",

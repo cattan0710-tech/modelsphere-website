@@ -45,7 +45,7 @@
     },
     {
       "id": "autotune",
-      "label": "LLM AutoTune"
+      "label": "LLM Tuning Agent"
     },
     {
       "id": "observability",

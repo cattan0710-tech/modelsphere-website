@@ -31,7 +31,8 @@ const ecosystem = [
     }),
     description: translate({
       id: 'site.dc956c11f710',
-      message: '工业级路由调度、SLO 弹缩、零感知断流自愈与推理引擎编排。',
+      message:
+        '请求缓存感知路由、基于服务质量的自动扩缩容、服务断流自动续写、Tuning Agent 性能持续调优',
     }),
   },
   {
@@ -94,10 +95,10 @@ export function ArchitectureDiagram() {
             alt={translate({
               id: 'site.0a4af1dd5219',
               message:
-                '模域 ModelSphere 系统分层架构与算力调度拓扑：上层应用生态通过 ModelSphere 的路由、限流、PD 分离、KV 缓存、自动扩缩容、断流续写和 AutoTune，连接 vLLM、SGLang 等推理引擎与多元异构算力。',
+                '模域 ModelSphere 系统分层架构与算力调度拓扑：上层应用生态通过 ModelSphere 的路由、限流、PD 分离、KV 缓存、自动扩缩容、断流续写和 Tuning Agent，连接 vLLM、SGLang 等推理引擎与多元异构算力。',
             })}
-            width={2675}
-            height={744}
+            width={i18n.currentLocale === 'en' ? 2675 : 2170}
+            height={i18n.currentLocale === 'en' ? 744 : 725}
           />
         </div>
       </div>
@@ -315,7 +316,7 @@ export function AutotuneDiagram() {
       className={styles.autotune}
       aria-label={translate({
         id: 'site.58283660b4ac',
-        message: 'AutoTune 预览版五步流程，配置经确认后受控部署',
+        message: 'Tuning Agent 预览版五步流程，配置经确认后受控部署',
       })}
       data-home-diagram="autotune"
     >
@@ -342,7 +343,7 @@ export function AutotuneDiagram() {
           <strong>
             {translate({ id: 'site.541df25f2a2b', message: '持续性能优化' })}
           </strong>
-          <span>AutoTune</span>
+          <span>Tuning Agent</span>
         </div>
       </div>
       <figcaption className={styles.autotuneCaption}>

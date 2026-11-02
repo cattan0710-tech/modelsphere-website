@@ -768,7 +768,7 @@ export function AutotuneEvolution() {
           <h2 className="font-headline-lg text-3xl xl:text-4xl font-extrabold text-slate-900 tracking-tight leading-tight">
             {translate({
               id: 'site.04c52c423435',
-              message: 'Tuning-Agent 性能持续优化',
+              message: 'Tuning Agent 性能持续优化',
             })}
           </h2>
           <p className="font-body-md text-sm text-slate-600 leading-relaxed whitespace-nowrap">
@@ -1011,7 +1011,7 @@ export function AutotuneEvolution() {
                     })}
                   </h4>
                   <span className="mt-1 px-1.5 py-0.5 rounded-full bg-white/90 border border-sky-200 text-sky-800 font-code-sm text-[8px] font-semibold shadow-sm">
-                    {'AUTOTUNE ENGINE'}
+                    {'TUNING AGENT'}
                   </span>
                 </div>
               </div>
@@ -1343,7 +1343,7 @@ export function Benchmarks() {
                   {translate({
                     id: 'site.4f54906de742',
                     message:
-                      '\n                  客观体现“负载改变收益改变”，AutoTune 针对超长上下文自适应调整 Chunk 分块\n                ',
+                      '\n                  客观体现“负载改变收益改变”，Tuning Agent 针对超长上下文自适应调整 Chunk 分块\n                ',
                   })}
                 </td>
               </tr>
@@ -1417,7 +1417,7 @@ export function Benchmarks() {
                   {translate({
                     id: 'site.e459da12b0aa',
                     message:
-                      '\n                  AutoTune 搜索至最优 TP4 单节点拓扑，集成 modelopt_fp4 极致内核\n                ',
+                      '\n                  Tuning Agent 搜索至最优 TP4 单节点拓扑，集成 modelopt_fp4 极致内核\n                ',
                   })}
                 </td>
               </tr>

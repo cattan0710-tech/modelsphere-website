@@ -635,7 +635,7 @@ export function CommunityContent() {
                     {translate({
                       id: 'site.de57ac18e315',
                       message:
-                        '\n            作为社区联合发起方，主导核心推理中间件研发、AutoTune 调优搜索算法、Kubernetes 云原生推理算子设计，以及面向极端并发的智能路由网关工程演进。\n          ',
+                        '\n            作为社区联合发起方，主导核心推理中间件研发、Tuning Agent 调优搜索算法、Kubernetes 云原生推理算子设计，以及面向极端并发的智能路由网关工程演进。\n          ',
                     })}
                   </p>
                 </div>

@@ -136,6 +136,7 @@ function CapabilityIcon({ name }: { name: CapabilityIconName }) {
   );
 }
 const capabilities: {
+  id: string;
   icon: CapabilityIconName;
   title: string;
   tag: string;
@@ -145,6 +146,7 @@ const capabilities: {
   linkLabel: string;
 }[] = [
   {
+    id: 'architecture',
     icon: 'settings',
     title: translate({
       id: 'site.bec8fb7e48fd',
@@ -161,12 +163,13 @@ const capabilities: {
     linkLabel: translate({ id: 'site.36dcd53c4e0a', message: '了解部署方式' }),
   },
   {
+    id: 'hardware',
     icon: 'bolt',
     title: translate({
       id: 'site.fec20a70a47d',
-      message: '统一支持多种异构加速器',
+      message: '统一支持多种异构 AI 芯片',
     }),
-    tag: 'Any Accelerator',
+    tag: 'Any AI Chip',
     tone: 'green',
     description: translate({
       id: 'site.49fbbc8d5654',
@@ -180,6 +183,7 @@ const capabilities: {
     }),
   },
   {
+    id: 'day-one',
     icon: 'rocket_launch',
     title: translate({
       id: 'site.7da06f878c58',
@@ -199,19 +203,20 @@ const capabilities: {
     }),
   },
   {
+    id: 'evolution',
     icon: 'science',
     title: translate({ id: 'site.4229cb7a627b', message: '性能优化持续演进' }),
-    tag: 'AutoTune Inside',
+    tag: 'Tuning Agent Inside',
     tone: 'amber',
     description: translate({
       id: 'site.b0ecfac6f55e',
       message:
-        '持续集成最新的推理优化能力，通过内置AutoTune根据模型、硬件和真实业务负载自动调优，在延迟、吞吐和资源效率之间持续获得更优表现。',
+        '持续集成最新的推理优化能力，通过内置 Tuning Agent 根据模型、硬件和真实业务负载自动调优，在延迟、吞吐和资源效率之间持续获得更优表现。',
     }),
     href: sources.autotune,
     linkLabel: translate({
       id: 'site.a0d8f6e52488',
-      message: '了解 AutoTune 工作流',
+      message: '了解 Tuning Agent 工作流',
     }),
   },
 ];
@@ -410,38 +415,15 @@ export default function Home() {
                 message: '首页能力速览',
               })}
             >
-              <span role="listitem" data-home-tag="architecture">
-                <span>
-                  {translate({
-                    id: 'site.411d684baaee',
-                    message: '先进推理服务架构',
-                  })}
+              {capabilities.map((capability) => (
+                <span
+                  role="listitem"
+                  data-home-tag={capability.id}
+                  key={capability.id}
+                >
+                  <span>{capability.title}</span>
                 </span>
-              </span>
-              <span role="listitem" data-home-tag="day-one">
-                <span>
-                  {translate({
-                    id: 'site.edd7e7d90181',
-                    message: '新模型首日高性能部署',
-                  })}
-                </span>
-              </span>
-              <span role="listitem" data-home-tag="hardware">
-                <span>
-                  {translate({
-                    id: 'site.7d8e6b772d8d',
-                    message: '广泛异构算力统一纳管',
-                  })}
-                </span>
-              </span>
-              <span role="listitem" data-home-tag="evolution">
-                <span>
-                  {translate({
-                    id: 'site.e420b9734f39',
-                    message: '性能持续自演进',
-                  })}
-                </span>
-              </span>
+              ))}
             </div>
             <div className={styles.heroCopy}>
               <h1 id="home-title" data-home-hero="title">
@@ -491,7 +473,7 @@ export default function Home() {
                 <a href="#autotune-evolution">
                   {translate({
                     id: 'site.e2dd36bf7a68',
-                    message: 'AutoTune 闭环',
+                    message: 'Tuning Agent 闭环',
                   })}
                 </a>
                 {translate({

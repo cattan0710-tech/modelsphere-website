@@ -153,14 +153,14 @@ export default function Navbar() {
           >
             <BrandLogo />
           </Link>
-          <span className="header-badge">
-            <span aria-hidden="true" />
-            {isDocs
-              ? isDocsPreview
+          {isDocs && (
+            <span className="header-badge">
+              <span aria-hidden="true" />
+              {isDocsPreview
                 ? translate({ id: 'site.8a61ea2fb255', message: '文档预览' })
-                : translate({ id: 'site.efc1558e60b2', message: '开发者文档' })
-              : translate({ id: 'site.704597bf3389', message: '开源推理平台' })}
-          </span>
+                : translate({ id: 'site.efc1558e60b2', message: '开发者文档' })}
+            </span>
+          )}
         </div>
         <nav
           className="desktop-nav"

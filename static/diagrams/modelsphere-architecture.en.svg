@@ -39,7 +39,7 @@
 <rect x="1126" y="215" width="423" height="65" rx="10" fill="#ebe1f7" stroke="#dfc9fa" stroke-width="2"/>
 <text x="1337.5" y="255" font-size="22" text-anchor="middle" font-weight="600">Automatic stream recovery</text>
 <rect x="1571" y="215" width="423" height="65" rx="10" fill="#ebe1f7" stroke="#dfc9fa" stroke-width="2"/>
-<text x="1782.5" y="255" font-size="22" text-anchor="middle" font-weight="600">Continuous AutoTune</text>
+<text x="1782.5" y="255" font-size="22" text-anchor="middle" font-weight="600">Continuous Tuning Agent</text>
 <path d="M236 305H1993" stroke="#e6edf5" stroke-width="2"/>
 <text x="283" y="358" font-size="21" text-anchor="middle" font-weight="600">Inference</text>
 <text x="283" y="383" font-size="21" text-anchor="middle" font-weight="600">engines</text>
@@ -59,7 +59,7 @@
 <rect x="1127" y="445" width="285" height="73" rx="12" fill="#424e60" stroke="#424e60" stroke-width="2"/>
 <text x="1269.5" y="488" font-size="23" text-anchor="middle" font-weight="600" fill="#fff">Hygon</text>
 <rect x="1436" y="445" width="285" height="73" rx="12" fill="#424e60" stroke="#424e60" stroke-width="2"/>
-<text x="1578.5" y="488" font-size="23" text-anchor="middle" font-weight="600" fill="#fff">NVIDIA GPU</text>
+<text x="1578.5" y="488" font-size="23" text-anchor="middle" font-weight="600" fill="#fff">NVIDIA</text>
 <rect x="1745" y="445" width="285" height="73" rx="12" fill="#fff" stroke="#424e60" stroke-width="2" stroke-dasharray="4 3"/>
 <text x="1887.5" y="488" font-size="23" text-anchor="middle" font-weight="600" fill="#202d3d">More accelerators…</text>
 <text x="200" y="550" font-size="18" text-anchor="start" font-weight="600" fill="#506078">* Support depends on model and hardware compatibility.</text>

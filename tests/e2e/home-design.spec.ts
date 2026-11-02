@@ -1,15 +1,15 @@
 import { expect, test } from '@playwright/test';
 
 const tags = [
-  '先进推理服务架构',
-  '新模型首日高性能部署',
-  '广泛异构算力统一纳管',
-  '性能持续自演进',
+  '开箱即用，面向生产',
+  '统一支持多种异构 AI 芯片',
+  '第一时间性能调优和部署',
+  '性能优化持续演进',
 ];
 const lead =
   '让大模型推理从“能跑”到“生产好用”，让每张 GPU 化身高效 Token 产线。';
 const description =
-  '基于 Kubernetes 构建，将模型部署、缓存感知路由、按 SLO 弹性伸缩、全维可观测性、挂起故障秒级自愈与 AutoTune 闭环组织成一套工业级推理调度系统，帮助开发者在复杂异构算力上稳定承载大规模生产流量。';
+  '基于 Kubernetes 构建，将模型部署、缓存感知路由、按 SLO 弹性伸缩、全维可观测性、挂起故障秒级自愈与 Tuning Agent 闭环组织成一套工业级推理调度系统，帮助开发者在复杂异构算力上稳定承载大规模生产流量。';
 
 test('home restores the selected Stitch screen copy, gradient and desktop proportions', async ({
   page,
@@ -21,6 +21,13 @@ test('home restores the selected Stitch screen copy, gradient and desktop propor
   await expect(
     page.getByRole('list', { name: '首页能力速览' }).getByRole('listitem'),
   ).toHaveText(tags);
+  await expect(page.locator('.header-badge')).toHaveCount(0);
+  await expect(
+    page.getByRole('list', { name: '首页能力速览' }).getByRole('listitem'),
+  ).toHaveText(await page.locator('#comparison h3').allTextContents());
+  await expect(page.locator('main')).not.toContainText(
+    /AutoTune|AUTOTUNE|Tuning-Agent/,
+  );
   await expect(page.locator('[data-home-hero="lead"]')).toHaveText(lead);
   await expect(page.locator('[data-home-hero="description"]')).toHaveText(
     description,
@@ -84,8 +91,8 @@ test('home restores the selected Stitch screen copy, gradient and desktop propor
   expect(measured.tagHeights).toEqual([26, 26, 26, 26]);
   expect(measured.dots).toEqual([
     'rgb(16, 185, 129)',
-    'rgb(2, 132, 199)',
     'rgb(6, 182, 212)',
+    'rgb(2, 132, 199)',
     'rgb(2, 132, 199)',
   ]);
   expect(measured.titleTop).toBeCloseTo(130, 0);

@@ -22,6 +22,10 @@ for (const width of [390, 1440]) {
       }),
     ).toBeVisible();
     const image = diagram.getByRole('img');
+    await expect(diagram).toContainText(
+      '请求缓存感知路由、基于服务质量的自动扩缩容、服务断流自动续写、Tuning Agent 性能持续调优',
+    );
+    await expect(image).toHaveAttribute('alt', /Tuning Agent/);
     await expect(image).toHaveAttribute(
       'src',
       '/diagrams/modelsphere-architecture.png',
@@ -31,8 +35,8 @@ for (const width of [390, 1440]) {
         image.evaluate(
           (img: HTMLImageElement) =>
             img.complete &&
-            img.naturalWidth === 2675 &&
-            img.naturalHeight === 744,
+            img.naturalWidth === 2170 &&
+            img.naturalHeight === 725,
         ),
       )
       .toBe(true);

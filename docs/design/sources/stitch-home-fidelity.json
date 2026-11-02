@@ -61,15 +61,15 @@
     "Do not publish unverified star counts, benchmark numbers or SLA guarantees from design examples.",
     "Keep existing D13/D14, paired entrance, reduced-motion, keyboard and history behavior."
   ],
-  "validation": "tests/e2e/home-design.spec.ts checks source hero copy, gradient, desktop geometry and tag motion; tests/e2e/home-architecture.spec.ts pins the original high-resolution image SHA-256, exact card copy and glyphs, desktop typography and layout, mobile containment and reduced-motion pulse behavior.",
+  "validation": "tests/e2e/home-design.spec.ts verifies the reviewed hero labels, consistency with capability titles, desktop geometry and tag motion; tests/e2e/home-architecture.spec.ts verifies the architecture asset dimensions, reviewed core description, mobile containment and navigation.",
   "architecture": {
     "sourceImageUrl": "https://lh3.googleusercontent.com/aida-public/AB6AXuAJ5CQZ6xSXis6Ev8oA7X-95uwf_aaQELQUPnmCWuwzE1lJbZugxpMwgDYwYsEI6w7IwlCvjDxqbGxtCbtV6ErGpjZPv1GGoN9zGJ6MaUd6q0sQz7h7_CDg34IhKy8OZa4OXu7OWPE2lZ5KmENMfjE6XNqTqwuNd6-7YtkXiStJsPKGxih5m2DRq4ehTaCORSLb9UaZl8fRopIc5k-Rq5kW_dKeiJ8rj1XtEpgwGZDsmbZmRn_SIg8WuPuzG66Vc2424g=s0",
     "localImage": "static/diagrams/modelsphere-architecture.png",
     "pixels": {
-      "width": 2675,
-      "height": 744
+      "width": 2170,
+      "height": 725
     },
-    "sha256": "3e1454e8cb4911dc2878c660236aa2626e89007dc7b81f6d90a1eb0a9b848cd0",
+    "sha256": "c4c0987a453efe9bd9d1ecb349bf0d65192d2c6fdd519f72e67ff58e102e5949",
     "icons": [
       "hub",
       "memory",
@@ -86,6 +86,20 @@
       "cardDescription": "12px/18px",
       "topologyPadding": 16,
       "imageFramePadding": "16px; 8px below 640px"
+    },
+    "feedbackRevision": {
+      "date": "2026-10-30",
+      "items": [
+        5,
+        6
+      ],
+      "tool": "imagegen (built-in)",
+      "prompt": "Use case: text-localization. Edit target: the supplied ModelSphere website architecture diagram. Make exactly two localized text corrections, preserving all other diagram content, positions, colors, fonts, icons, borders and the complete wide composition. First: in the rightmost purple capability box of the second row, replace 'AutoTune 持续性能调优' with the exact text 'Tuning Agent 持续性能调优'. Fit the longer label clearly within the same box, keeping the purple dot. Second: in the NVIDIA hardware box in the bottom row, change the top line 'NVIDIA' to the exact Chinese text '英伟达', and change its second line 'GPU' to the exact uppercase text 'NVIDIA'. Keep the chip icon and the dark hardware box. Preserve all other Chinese and English text exactly and keep the six applications, eight purple capabilities, two inference engines and six hardware boxes, all connecting dashed lines, left-hand tier labels and bottom footnote unchanged. Do not add any annotations, red arrows, highlights or labels. Maintain the original approximately 3.595:1 aspect ratio and high text clarity.",
+      "originalPixels": {
+        "width": 2675,
+        "height": 744
+      },
+      "originalSha256": "3e1454e8cb4911dc2878c660236aa2626e89007dc7b81f6d90a1eb0a9b848cd0"
     }
   },
   "capabilities": {
