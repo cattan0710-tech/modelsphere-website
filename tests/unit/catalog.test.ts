@@ -26,6 +26,7 @@ import {
   recipeTabHref,
 } from '../../src/features/catalog/routes';
 import {
+  facets,
   initialQuery,
   parseQuery,
   queryRecipes,
@@ -33,6 +34,11 @@ import {
   queryHref,
   compare,
 } from '../../src/features/catalog/query';
+import {
+  hardwareVendor,
+  variantVendors,
+  vendorLabel,
+} from '../../src/features/catalog/hardware';
 afterEach(() => vi.unstubAllGlobals());
 describe('public catalog contract and provenance', () => {
   it('keeps the verified source snapshot intact and accounts for mock records', () => {
@@ -169,6 +175,43 @@ describe('catalog improvement statistics', () => {
   });
 });
 describe('catalog queries', () => {
+  it('derives vendor facets from real recipes and normalizes hardware for shared vendor URLs', () => {
+    expect(facets(baseline).vendor).toEqual(['ascend', 'nvidia']);
+    expect(facets(baseline, 'ascend').hardware).toEqual(['Ascend-910B3']);
+    const q = parseQuery(
+      '?vendor=ascend&hardware=NVIDIA-H100-80GB-HBM3',
+      baseline,
+    );
+    expect(q.hardware).toEqual([]);
+    const recipes = queryRecipes(baseline, q);
+    expect(recipes.total).toBe(1);
+    expect(recipes.all[0].variant.requires.gpuProduct).toEqual([
+      'Ascend-910B3',
+    ]);
+    expect(queryModels(baseline, q).total).toBe(1);
+    expect(queryRecipes(baseline, { ...q, engine: 'sglang' }).total).toBe(0);
+    expect(
+      parseQuery(
+        queryHref({ ...q, hardware: ['Ascend-910B3'] }).split('?')[1],
+        baseline,
+      ),
+    ).toEqual({ ...q, hardware: ['Ascend-910B3'] });
+    expect(parseQuery('?vendor=unavailable', baseline).vendor).toBe('');
+  });
+  it('recognizes chip vendor aliases and retains new source vendors without inventing supported hardware', () => {
+    expect(hardwareVendor('NVIDIA-H100')).toBe('nvidia');
+    expect(hardwareVendor('Ascend-910B3')).toBe('ascend');
+    expect(hardwareVendor('BI-V100', 'iluvatarcorex')).toBe('iluvatar');
+    expect(vendorLabel('iluvatar')).toBe('天数智芯');
+    const variant = structuredClone(recipesOf(baseline)[0].variant);
+    variant.requires = { gpuProduct: ['Future-X1'], vendor: 'future-vendor' };
+    expect(variantVendors(variant)).toEqual(['future-vendor']);
+    expect(vendorLabel('future-vendor')).toBe('future-vendor');
+    variant.requires = { gpuProduct: ['Unknown-X1'] };
+    expect(variantVendors(variant)).toEqual(['other']);
+    variant.requires = { gpuProduct: [], gpus: 0 };
+    expect(variantVendors(variant)).toEqual([]);
+  });
   it('combines OR hardware selection with AND engine/family filters and stable URL round trips', () => {
     const query = {
       ...initialQuery,

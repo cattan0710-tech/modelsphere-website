@@ -27,6 +27,7 @@ import {
 } from './query';
 import { Icon, RecipeCard, SourceState, Stats } from './components';
 import { useCatalog } from './useCatalog';
+import { variantVendors, vendorLabel } from './hardware';
 import { legacyCatalogReportHref, reportHref } from './routes';
 import CatalogSelect from './CatalogSelect';
 import ModelCard, { ModelRecipeList, ModelTuning } from './ModelCard';
@@ -46,11 +47,18 @@ export default function CatalogPage() {
     () => (browser ? parseQuery(location.search, c) : initialQuery),
     [browser, location.search, c],
   );
-  const f = useMemo(() => facets(c), [c]),
+  const f = useMemo(() => facets(c, q.vendor), [c, q.vendor]),
     recipeResult = useMemo(() => queryRecipes(c, q), [c, q]),
     modelResult = useMemo(() => queryModels(c, q), [c, q]);
   const result = q.view === 'models' ? modelResult : recipeResult;
   const all = useMemo(() => recipesOf(c), [c]);
+  const vendorRecipes = useMemo(
+    () =>
+      all.filter(
+        (r) => !q.vendor || variantVendors(r.variant).includes(q.vendor),
+      ),
+    [all, q.vendor],
+  );
   const returnTo = localHref(location.pathname) + location.search;
   const legacyReport = browser
     ? legacyCatalogReportHref(location.search)
@@ -404,61 +412,116 @@ export default function CatalogPage() {
                     </div>
                   </div>
                 </div>
-                <div className={styles.hardware}>
-                  <button
-                    type="button"
-                    aria-pressed={!q.hardware.length}
-                    onClick={() => update({ hardware: [] })}
-                  >
-                    {translate({
-                      id: 'site.a8b9eb42893a',
-                      message: '全部硬件 ',
+                <div className={styles.hardwareFilters}>
+                  <div
+                    className={styles.hardware}
+                    role="group"
+                    aria-label={translate({
+                      id: 'catalog.vendorFilter',
+                      message: '硬件厂商',
                     })}
-                    <small>{all.length}</small>
-                  </button>
-                  {f.hardware.map((x) => (
-                    <label
-                      key={x}
-                      className={q.hardware.includes(x) ? styles.checked : ''}
+                  >
+                    <span className={styles.filterLabel}>
+                      {translate({ id: 'catalog.vendor', message: '厂商' })}
+                    </span>
+                    <button
+                      type="button"
+                      aria-pressed={!q.vendor}
+                      onClick={() => update({ vendor: '', hardware: [] })}
                     >
-                      <input
-                        type="checkbox"
-                        checked={q.hardware.includes(x)}
-                        onChange={() =>
-                          update({
-                            hardware: q.hardware.includes(x)
-                              ? q.hardware.filter((v) => v !== x)
-                              : [...q.hardware, x],
-                          })
-                        }
-                      />
-                      <span>
-                        {x
-                          .replace(/^NVIDIA-/, '')
-                          .replace(/-80GB-HBM3|-SXM6-AC|-SXM4-80GB/g, '')}
-                      </span>
-                      <small>
-                        {
-                          all.filter((r) =>
-                            r.variant.requires.gpuProduct.includes(x),
-                          ).length
-                        }
-                      </small>
-                    </label>
-                  ))}
-                  <button
-                    type="button"
-                    className={styles.reset}
-                    onClick={() => {
-                      setDraft('');
-                      update({ ...initialQuery, dataVersion: q.dataVersion });
-                    }}
-                  >
-                    {translate({
-                      id: 'site.13a431e59b65',
-                      message: '重置筛选',
+                      {translate({
+                        id: 'catalog.allVendors',
+                        message: '全部厂商',
+                      })}
+                      <small>{all.length}</small>
+                    </button>
+                    {f.vendor.map((vendor) => (
+                      <button
+                        key={vendor}
+                        type="button"
+                        aria-pressed={q.vendor === vendor}
+                        onClick={() => update({ vendor, hardware: [] })}
+                      >
+                        {translateCopy(vendorLabel(vendor))}
+                        <small>
+                          {
+                            all.filter((r) =>
+                              variantVendors(r.variant).includes(vendor),
+                            ).length
+                          }
+                        </small>
+                      </button>
+                    ))}
+                  </div>
+                  <div
+                    className={styles.hardware}
+                    role="group"
+                    aria-label={translate({
+                      id: 'catalog.hardwareFilter',
+                      message: '硬件型号',
                     })}
-                  </button>
+                  >
+                    <span className={styles.filterLabel}>
+                      {translate({
+                        id: 'catalog.hardwareModel',
+                        message: '型号',
+                      })}
+                    </span>
+                    <button
+                      type="button"
+                      aria-pressed={!q.hardware.length}
+                      onClick={() => update({ hardware: [] })}
+                    >
+                      {translate({
+                        id: 'site.a8b9eb42893a',
+                        message: '全部硬件 ',
+                      })}
+                      <small>{vendorRecipes.length}</small>
+                    </button>
+                    {f.hardware.map((x) => (
+                      <label
+                        key={x}
+                        className={q.hardware.includes(x) ? styles.checked : ''}
+                      >
+                        <input
+                          type="checkbox"
+                          checked={q.hardware.includes(x)}
+                          onChange={() =>
+                            update({
+                              hardware: q.hardware.includes(x)
+                                ? q.hardware.filter((v) => v !== x)
+                                : [...q.hardware, x],
+                            })
+                          }
+                        />
+                        <span>
+                          {x
+                            .replace(/^NVIDIA-/, '')
+                            .replace(/-80GB-HBM3|-SXM6-AC|-SXM4-80GB/g, '')}
+                        </span>
+                        <small>
+                          {
+                            vendorRecipes.filter((r) =>
+                              r.variant.requires.gpuProduct.includes(x),
+                            ).length
+                          }
+                        </small>
+                      </label>
+                    ))}
+                    <button
+                      type="button"
+                      className={styles.reset}
+                      onClick={() => {
+                        setDraft('');
+                        update({ ...initialQuery, dataVersion: q.dataVersion });
+                      }}
+                    >
+                      {translate({
+                        id: 'site.13a431e59b65',
+                        message: '重置筛选',
+                      })}
+                    </button>
+                  </div>
                 </div>
                 <details className={styles.more}>
                   <summary>

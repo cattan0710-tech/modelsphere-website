@@ -91,14 +91,6 @@ export default function RecipeOverview({
       </code>,
     ],
   ];
-  const scale = Math.max(
-    1,
-    ...recipe.tuning.flatMap((tuning) =>
-      tuning.workloads.length
-        ? tuning.workloads.map((workload) => workload.uplift)
-        : [tuning.uplift ?? 0],
-    ),
-  );
   return (
     <header
       className={`${styles.detailBox} ${styles.recipeOverview}`}
@@ -225,11 +217,7 @@ export default function RecipeOverview({
                         <small>{workload.name} tokens</small>
                       )}
                     </span>
-                    <GainMeter
-                      value={workload.uplift}
-                      max={scale}
-                      layout="inline"
-                    />
+                    <GainMeter value={workload.uplift} layout="inline" />
                   </li>
                 ))}
               </ul>

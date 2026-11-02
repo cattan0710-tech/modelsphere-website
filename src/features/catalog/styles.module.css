@@ -1764,8 +1764,19 @@
 .catalog .viewButtons button[aria-pressed='true'] {
   box-shadow: 0 1px 3px rgb(15 23 42 / 12%);
 }
+.catalog .hardwareFilters {
+  grid-column: 1 / -1;
+  display: grid;
+  gap: 10px;
+}
+.catalog .filterLabel {
+  min-width: 4em;
+  flex-shrink: 0;
+  white-space: nowrap;
+  color: var(--catalog-muted);
+  font: 11px/1.5 var(--font-body);
+}
 .catalog .hardware {
-  grid-column: 1;
   gap: 6px;
 }
 .catalog .hardware label,
@@ -2080,7 +2091,7 @@
     grid-row: auto;
     justify-content: flex-start;
   }
-  .catalog .hardware {
+  .catalog .hardwareFilters {
     grid-row: 3;
   }
   .catalog .filters {

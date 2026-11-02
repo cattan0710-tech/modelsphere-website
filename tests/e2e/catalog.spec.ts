@@ -106,6 +106,50 @@ test('source-backed list, dynamic filters, shareable queries, model/table views 
   await expect(page.getByRole('table').locator('tbody tr')).toHaveCount(1);
   expect(errors).toEqual([]);
 });
+test('vendor and chip filters narrow recipes, survive reload and history, and reset together', async ({
+  page,
+}) => {
+  await page.goto('/models');
+  const vendors = page.getByRole('group', { name: '硬件厂商' });
+  const chips = page.getByRole('group', { name: '硬件型号' });
+  await chips.getByRole('checkbox', { name: /H100/ }).check();
+  await vendors.getByRole('button', { name: /^华为昇腾/ }).click();
+  await expect(page).toHaveURL(/vendor=ascend/);
+  expect(new URL(page.url()).searchParams.has('hardware')).toBe(false);
+  await expect(chips.getByRole('checkbox')).toHaveCount(1);
+  await expect(page.locator('[data-recipe-id]')).toHaveCount(1);
+  await chips.getByRole('checkbox', { name: /Ascend-910B3/ }).check();
+  await page.reload();
+  await expect(
+    vendors.getByRole('button', { name: /^华为昇腾/ }),
+  ).toHaveAttribute('aria-pressed', 'true');
+  await expect(chips.getByRole('checkbox')).toBeChecked();
+  await choose(page, '内容视图', '模型视角');
+  await expect(page.locator('[data-model-id]')).toHaveCount(1);
+  await vendors.getByRole('button', { name: /^英伟达 NVIDIA/ }).click();
+  await expect(chips.getByRole('checkbox', { name: /H100/ })).toBeVisible();
+  await expect(chips.getByRole('checkbox', { name: /Ascend/ })).toHaveCount(0);
+  await page.goBack();
+  await expect(chips.getByRole('checkbox', { name: /Ascend/ })).toBeChecked();
+  await chips.getByRole('button', { name: '重置筛选' }).click();
+  await expect(page).toHaveURL(/\/models$/);
+  await expect(
+    vendors.getByRole('button', { name: /^全部厂商/ }),
+  ).toHaveAttribute('aria-pressed', 'true');
+  await expect(chips.getByRole('checkbox')).toHaveCount(6);
+  await page.goto('/en/models?vendor=ascend');
+  await expect(
+    page
+      .getByRole('group', { name: 'Hardware vendors', exact: true })
+      .getByRole('button', { name: /^Huawei Ascend/ }),
+  ).toHaveAttribute('aria-pressed', 'true');
+  await expect(
+    page
+      .getByRole('group', { name: 'Hardware models', exact: true })
+      .getByRole('checkbox'),
+  ).toHaveCount(1);
+});
+
 for (const width of [320, 390, 768, 1280, 1440])
   for (const colorScheme of ['light', 'dark'] as const)
     test(`distinct model and recipe cards at ${width}px in ${colorScheme}`, async ({

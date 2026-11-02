@@ -8,12 +8,14 @@ import {
   type Catalog,
   type Recipe,
 } from './data';
+import { hardwareVendor, variantVendors } from './hardware';
 export interface Query {
   q: string;
   family: string;
   engine: string;
   tag: string;
   role: string;
+  vendor: string;
   hardware: string[];
   topology: string;
   view: string;
@@ -30,6 +32,7 @@ export const initialQuery: Query = {
   engine: '',
   tag: '',
   role: '',
+  vendor: '',
   hardware: [],
   topology: '',
   view: 'recipes',
@@ -39,7 +42,7 @@ export const initialQuery: Query = {
   dataVersion: '',
   hidedep: false,
 };
-export function facets(c: Catalog) {
+export function facets(c: Catalog, vendor = '') {
   const rs = recipesOf(c);
   return {
     family: Array.from(
@@ -47,8 +50,19 @@ export function facets(c: Catalog) {
     ).sort(),
     engine: Array.from(new Set(rs.map((r) => r.variant.engine))).sort(),
     tag: Array.from(new Set(c.models.flatMap((m) => m.tags))).sort(),
+    vendor: Array.from(
+      new Set(rs.flatMap((r) => variantVendors(r.variant))),
+    ).sort(),
     hardware: Array.from(
-      new Set(rs.flatMap((r) => r.variant.requires.gpuProduct)),
+      new Set(
+        rs.flatMap((r) =>
+          r.variant.requires.gpuProduct.filter(
+            (product) =>
+              !vendor ||
+              hardwareVendor(product, r.variant.requires.vendor) === vendor,
+          ),
+        ),
+      ),
     ).sort(),
   };
 }
@@ -58,6 +72,8 @@ export function parseQuery(search: string, c: Catalog): Query {
   const allowed = (key: string, values: string[], fallback = '') =>
     values.includes(p.get(key) ?? '') ? p.get(key)! : fallback;
   const rawPage = p.get('page') ?? '1';
+  const vendor = allowed('vendor', f.vendor);
+  const products = facets(c, vendor).hardware;
   return {
     q: Array.from(
       new Intl.Segmenter('zh-CN', { granularity: 'grapheme' }).segment(
@@ -71,8 +87,9 @@ export function parseQuery(search: string, c: Catalog): Query {
     engine: allowed('engine', f.engine),
     tag: allowed('tag', f.tag),
     role: allowed('role', ['optimized', 'baseline', 'default', 'recipe']),
+    vendor,
     hardware: Array.from(
-      new Set(p.getAll('hardware').filter((x) => f.hardware.includes(x))),
+      new Set(p.getAll('hardware').filter((x) => products.includes(x))),
     ),
     topology: allowed('topology', ['single-node', 'lws', 'pd']),
     view: allowed('view', ['models', 'recipes'], 'recipes'),
@@ -92,7 +109,7 @@ export function parseQuery(search: string, c: Catalog): Query {
 }
 export function queryHref(q: Query) {
   const p = new URLSearchParams();
-  for (const k of ['q', 'family', 'engine', 'tag', 'role'] as const)
+  for (const k of ['q', 'family', 'engine', 'tag', 'role', 'vendor'] as const)
     if (q[k]) p.set(k, q[k]);
   q.hardware.forEach((x) => p.append('hardware', x));
   for (const k of [
@@ -138,8 +155,13 @@ export function queryRecipes(c: Catalog, q: Query) {
         (!q.role ||
           (q.role === 'default' ? isDefault(r) : role(r) === q.role)) &&
         (!q.topology || topology(v) === q.topology) &&
+        (!q.vendor || variantVendors(v).includes(q.vendor)) &&
         (!q.hardware.length ||
-          q.hardware.some((x) => v.requires.gpuProduct.includes(x))) &&
+          q.hardware.some(
+            (x) =>
+              v.requires.gpuProduct.includes(x) &&
+              (!q.vendor || hardwareVendor(x, v.requires.vendor) === q.vendor),
+          )) &&
         (!q.hidedep || !(m.deprecated || v.deprecated))
       );
     })
@@ -155,6 +177,7 @@ export function queryModels(c: Catalog, q: Query) {
         model.variants.length ||
         q.engine ||
         q.role ||
+        q.vendor ||
         q.hardware.length ||
         q.topology
       )

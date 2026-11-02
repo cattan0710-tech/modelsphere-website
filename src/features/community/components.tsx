@@ -193,6 +193,8 @@ export function CommunityHeader() {
 }
 export function CommunityContent() {
   const groupQr = useBaseUrl('/community/wechat-group-qr.png');
+  const phancyLogo = useBaseUrl('/brand/phancy-logo.png');
+  const riseUnionLogo = useBaseUrl('/brand/riseunion-logo.svg');
   const root = useRef<HTMLElement>(null);
   useHomeMotion(root, '#community-hero');
   return (
@@ -572,11 +574,20 @@ export function CommunityContent() {
                       {'verified'}
                     </span>
                   </div>
-                  <div className="flex items-center gap-3.5 mb-4">
-                    <div className="w-12 h-12 rounded-xl bg-slate-900 flex items-center justify-center text-white font-headline-sm font-bold text-xl shadow-sm">
-                      {'\n              P\n            '}
+                  <div className="community-partner-identity">
+                    <div className="community-partner-logo">
+                      <img
+                        src={phancyLogo}
+                        alt={translate({
+                          id: 'community.phancyLogo',
+                          message: '范式智能 PHANCY Logo',
+                        })}
+                        width="579"
+                        height="228"
+                        loading="lazy"
+                      />
                     </div>
-                    <div>
+                    <div className="community-partner-name">
                       <h3 className="font-headline-sm text-xl font-bold text-slate-900">
                         {translate({
                           id: 'site.12e49b14f011',
@@ -615,11 +626,20 @@ export function CommunityContent() {
                       {'verified'}
                     </span>
                   </div>
-                  <div className="flex items-center gap-3.5 mb-4">
-                    <div className="w-12 h-12 rounded-xl bg-indigo-700 flex items-center justify-center text-white font-headline-sm font-bold text-xl shadow-sm">
-                      {'\n              R\n            '}
+                  <div className="community-partner-identity">
+                    <div className="community-partner-logo">
+                      <img
+                        src={riseUnionLogo}
+                        alt={translate({
+                          id: 'community.riseunionLogo',
+                          message: '睿思智联 RiseUnion Logo',
+                        })}
+                        width="737"
+                        height="128"
+                        loading="lazy"
+                      />
                     </div>
-                    <div>
+                    <div className="community-partner-name">
                       <h3 className="font-headline-sm text-xl font-bold text-slate-900">
                         {translate({
                           id: 'site.3986f9785b06',

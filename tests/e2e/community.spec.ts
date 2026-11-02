@@ -103,6 +103,21 @@ test('community preserves approved copy, empty activities and the five-section o
   await expect(cards.nth(3).getByRole('heading')).toHaveText('remotego');
   await expect(cards.nth(4).getByRole('heading')).toHaveText('LiuFeng');
   await expect(page.locator('main a[href="#"]')).toHaveCount(0);
+  for (const [name, file] of [
+    ['范式智能 PHANCY Logo', 'phancy-logo.png'],
+    ['睿思智联 RiseUnion Logo', 'riseunion-logo.svg'],
+  ]) {
+    const logo = page
+      .locator('#community-partners')
+      .getByRole('img', { name, exact: true });
+    await expect(logo).toHaveAttribute('src', `/brand/${file}`);
+    await logo.scrollIntoViewIfNeeded();
+    await expect
+      .poll(() =>
+        logo.evaluate((image) => (image as HTMLImageElement).naturalWidth),
+      )
+      .toBeGreaterThan(0);
+  }
   const channels = page.locator('#community-channels');
   await expect(channels.getByRole('heading', { level: 3 })).toHaveText([
     '微信技术交流群',

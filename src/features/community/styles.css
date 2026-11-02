@@ -1,3 +1,37 @@
+.community-partner-identity {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+.community-partner-logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 124px;
+  height: 64px;
+  padding: 12px;
+  flex-shrink: 0;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  background: #fff;
+}
+.community-partner-logo img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+.community-partner-name {
+  min-width: 0;
+}
+@media (max-width: 1023px) {
+  .community-partner-identity {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+}
+
 @font-face {
   font-family: 'ModelSphere Community Geist';
   font-style: normal;

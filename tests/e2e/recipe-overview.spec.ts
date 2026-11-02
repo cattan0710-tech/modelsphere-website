@@ -150,7 +150,7 @@ for (const width of [320, 1440])
               getComputedStyle(element).getPropertyValue('--gain-progress'),
             ),
         ),
-      ).toBeCloseTo((30.6 / 195.3) * 100);
+      ).toBeCloseTo(30.6);
       expect(
         await page.evaluate(
           () => document.documentElement.scrollWidth <= innerWidth + 1,

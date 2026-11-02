@@ -2447,5 +2447,51 @@
   "catalog.modelCountLabel": {
     "message": "models",
     "description": "模型（目录数量单位）"
+  },
+  "catalog.vendorFilter": {
+    "message": "Hardware vendors",
+    "description": "硬件厂商"
+  },
+  "catalog.vendor": {
+    "message": "Vendor",
+    "description": "厂商"
+  },
+  "catalog.allVendors": {
+    "message": "All vendors",
+    "description": "全部厂商"
+  },
+  "catalog.hardwareFilter": {
+    "message": "Hardware models",
+    "description": "硬件型号"
+  },
+  "catalog.hardwareModel": {
+    "message": "Model",
+    "description": "型号"
+  },
+  "英伟达 NVIDIA": {
+    "message": "NVIDIA"
+  },
+  "华为昇腾": {
+    "message": "Huawei Ascend"
+  },
+  "天数智芯": {
+    "message": "Iluvatar CoreX"
+  },
+  "海光": {
+    "message": "Hygon"
+  },
+  "摩尔线程": {
+    "message": "Moore Threads"
+  },
+  "其他厂商": {
+    "message": "Other vendors"
+  },
+  "community.phancyLogo": {
+    "message": "PHANCY logo",
+    "description": "范式智能 PHANCY Logo"
+  },
+  "community.riseunionLogo": {
+    "message": "RiseUnion logo",
+    "description": "睿思智联 RiseUnion Logo"
   }
 }

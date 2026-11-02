@@ -23,6 +23,15 @@ test('community preserves source layout and local navigation under the Pages pre
     '/modelsphere-website/community/wechat-group-qr.png',
   );
   await expect(page.locator('#community-channels')).not.toContainText('公众号');
+  for (const [name, file] of [
+    ['范式智能 PHANCY Logo', 'phancy-logo.png'],
+    ['睿思智联 RiseUnion Logo', 'riseunion-logo.svg'],
+  ]) {
+    await expect(page.getByRole('img', { name, exact: true })).toHaveAttribute(
+      'src',
+      `/modelsphere-website/brand/${file}`,
+    );
+  }
   await expect(page.locator('body')).not.toContainText(
     /14\.8k|2\.1k|GitHub Stars|Forks|NODE_CLUSTER: READY|TELEMETRY: P99 22ms/,
   );
