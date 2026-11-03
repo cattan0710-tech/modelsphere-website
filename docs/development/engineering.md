@@ -11,7 +11,7 @@
 
 官网采用 Docusaurus + React + TypeScript。门户页面与 Model Catalog 使用自定义 React 组件；博客通过 Markdown/Git 编辑发布；开发者文档从独立 Markdown 仓库同步指定 commit，进入同一站点的 `/docs` 栏目。
 
-门户、博客、文档统一构建为静态文件，首期从公开仓库通过 GitHub Actions 发布到 GitHub Pages 项目地址。Nginx 镜像用于本地和 CI 验收，Kubernetes 保留为后续迁移选项。Catalog 首期按用户决定由浏览器直接读取公开 Model Catalog，来源地址集中配置，数据更新不要求重新发布网站。首期没有内容后台、数据库、对象存储上传流程或自建发布任务队列。
+门户、博客、文档统一构建为静态文件，从公开仓库通过 GitHub Actions 发布到 GitHub Pages 自定义域名 `https://modelsphere.tech/`。Nginx 镜像用于本地和 CI 验收，Kubernetes 保留为后续迁移选项。Catalog 首期按用户决定由浏览器直接读取公开 Model Catalog，来源地址集中配置，数据更新不要求重新发布网站。首期没有内容后台、数据库、对象存储上传流程或自建发布任务队列。
 
 本文件只保留当前规则。博客实现及内容维护见[博客功能说明](blog-implementation.md)，Catalog 公开数据接入和信息边界见[目录实施清单](catalog-implementation.md)。文档栏目已建立应用、构建脚本、本地 Nginx 验证与 CI 配置；文档范围以[文档栏目实施方案](docs-implementation.md)为准。下列全站目录、命令和部署参数仍包含后续契约，不表示真实内容同步、远程 CI 或生产环境已经完成。
 
@@ -94,7 +94,7 @@ docs/                          工程、设计规范及运行手册
 
 门户使用自定义 React 页面，按当前 Stitch 项目对应的页面契约、双主题 tokens、组件职责、键盘操作和减少动效规范实现。文档与门户共用站点导航和品牌配置，文档正文保留标准阅读布局，不添加营销入场动画。
 
-全站同域部署，`baseUrl` 由 `SITE_BASE_URL` 提供，默认 `/`，首期 Pages 为 `/modelsphere-website/`；`trailingSlash: false`，中文无语言前缀。域名由 `SITE_ORIGIN` 提供，不能包含路径；非根页面不带尾斜杠。站内资源与路由必须保留项目目录，应用内部查询和返回地址保持应用相对路径。Nginx 按实际构建文件布局查找文件，未知路径返回真实 HTTP 404，不配置全站回退到首页。验证 `.html` 或目录索引实际输出，不凭开发服务器推定生产路由行为。
+全站同域部署，`baseUrl` 由 `SITE_BASE_URL` 提供，正式 Pages 自定义域名使用 `/`；`trailingSlash: false`，中文无语言前缀。域名由 `SITE_ORIGIN` 提供，正式值为 `https://modelsphere.tech`，不能包含路径；非根页面不带尾斜杠。站内资源与路由必须遵循构建时的部署前缀，应用内部查询和返回地址保持应用相对路径。Nginx 按实际构建文件布局查找文件，未知路径返回真实 HTTP 404，不配置全站回退到首页。验证 `.html` 或目录索引实际输出，不凭开发服务器推定生产路由行为。
 
 博客详情 `/blog/{slug}`、文档 `/docs/{docSlug}` 预生成；Catalog 使用固定的 `/models`、`/models/detail`、`/models/recipe` 页面，模型和配方身份放在查询参数中，详见第 5 节。
 
@@ -179,7 +179,7 @@ Docusaurus blog 插件负责文章详情与正文；通过 `blogListComponent` �
 
 ## 6 Git 编辑、预览与统一发布
 
-使用 `.github/workflows/ci.yml`：质量检查通过后并行验证根路径与 Pages 路径，两种路径各覆盖 preview/mock、release/none。PR 只检查；`main` 全部检查通过后发布正式产物。权限由 Git 仓库和部署环境控制，不自建账号系统或发布 Web API。
+使用 `.github/workflows/ci.yml`：质量检查通过后并行验证本地 origin 与正式 HTTPS origin 的根路径构建，各覆盖 preview/mock、release/content。PR 只检查；`main` 全部检查通过后发布正式产物。权限由 Git 仓库和部署环境控制，不自建账号系统或发布 Web API。
 
 1. 作者在分支修改 Markdown、图片、页面配置，或更新文档源 commit 锁定文件；未完成修改留在分支，不直接改发布分支。
 2. PR 执行内容、代码、链接、构建和浏览器检查，归档预览产物与报告；当前不提供 PR 预览地址。作者可自行核对，不额外要求第二人审批；仍遵循实际分支保护。
@@ -222,18 +222,18 @@ interface SiteReleaseManifest {
 
 | 工作负载 | 首期职责 |
 | --- | --- |
-| GitHub Pages | 提供已验证的 Docusaurus `build/`；项目路径、HTTPS 与 HTTP 404 |
+| GitHub Pages | 提供已验证的 Docusaurus `build/`；自定义域名根路径、HTTPS 与 HTTP 404 |
 | 验收 Nginx | 非 root，提供同一产物，支持根路径与项目路径 |
 | 后续 Ingress | 迁移 Kubernetes 后配置域名、TLS 与入口 |
 | CI 构建与预览 | 安装锁定依赖、固定内容同步、校验、构建和候选部署；凭据不进入镜像 |
 | Catalog 数据托管 | 独立版本化文件或只读接口；来源、同步方式和维护方实施前核验 |
 
-首期发布地址为 `https://modelsphere.github.io/modelsphere-website/`，公开仓库使用 Pages 的 GitHub Actions 来源；`github-pages` 环境限制为 `main`。发布任务具有 `pages: write`、`id-token: write`，其余任务仅有内容读取权限。上传通过浏览器验收的 release/none 产物，串行部署前检查 main SHA，发布后核对 `version.json`、路由、资源与 HTTP 404。支持手动运行 main 重试；回滚通过 revert PR 重新发布。Nginx Docker 仍用于验收，Kubernetes 的域名、镜像仓库和命名空间待后续迁移配置；无需 Node.js 生产服务。
+正式发布地址为 `https://modelsphere.tech/`，公开仓库使用 Pages 的 GitHub Actions 来源；`github-pages` 环境限制为 `main`。发布任务具有 `pages: write`、`id-token: write`，其余任务仅有内容读取权限。上传通过浏览器验收的 release/content 产物，串行部署前检查 main SHA 与 Pages 自定义域名，发布后核对 `version.json`、路由、资源与 HTTP 404。组织验证域名、仓库绑定域名和 DNSPod 解析需配合配置；GitHub 自动签发证书，证书就绪后开启 Enforce HTTPS，Actions 产物无需 CNAME 文件。支持手动运行 main 重试；回滚通过 revert PR 重新发布，涉及部署路径时同步恢复 Pages 与 DNS 配置。Nginx Docker 仍用于验收，Kubernetes 的镜像仓库和命名空间待后续迁移配置；无需 Node.js 生产服务。
 
 | 配置 | 规则 |
 | --- | --- |
-| `SITE_ORIGIN` | 站点 origin，不含路径；首期 `https://modelsphere.github.io` |
-| `SITE_BASE_URL` | 默认 `/`；首期 `/modelsphere-website/`，只允许以 `/` 开始和结束的安全目录 |
+| `SITE_ORIGIN` | 站点 origin，不含路径；正式 `https://modelsphere.tech` |
+| `SITE_BASE_URL` | 正式 `/`；其他部署只允许以 `/` 开始和结束的安全目录 |
 | `CATALOG_PUBLIC_BASE_URL`、`CATALOG_CONTRACT_VERSION` | 可公开的自托管只读地址与契约版本；同源优先，跨域须核验 CORS |
 | 文档源锁定文件 | 具体仓库、完整 commit、内容路径；拉取凭据通过 CI Secret 注入 |
 | Catalog 基线锁定文件 | 版本、来源和 hash；已配置的基线拉取失败必须报错，不悄悄换版本 |
@@ -283,6 +283,6 @@ interface SiteReleaseManifest {
 
 ## 10 待接入参数
 
-Node/pnpm/框架精确版本及 `SITE_BUILD_TARGET`、`DOCS_SOURCE_MODE`、`SITE_ORIGIN` 校验已落地；当前支持 none/mock，repository 模式显式报未实现。GitHub Actions 已包含单测、根路径与 Pages 子路径浏览器验收；具体提交的远程结论以对应 Actions 运行记录为准。Header 本地搜索插件已接入；文档内容仓库与 commit、Catalog 真实数据协议/自托管地址/维护方、正式域名、镜像仓库及集群命名空间仍待接入；`CATALOG_PUBLIC_BASE_URL`、`CATALOG_CONTRACT_VERSION` 仍是后续配置契约。这些状态不改变一个网站构建、Git 内容发布和独立 Catalog 数据的决策。
+Node/pnpm/框架精确版本及 `SITE_BUILD_TARGET`、`DOCS_SOURCE_MODE`、`SITE_ORIGIN` 校验已落地；当前支持 none/mock/content，repository 模式显式报未实现。GitHub Actions 已包含单测、本地 origin 与正式域名根路径浏览器验收；具体提交的远程结论以对应 Actions 运行记录为准。Header 本地搜索插件已接入，正式域名配置为 `modelsphere.tech`；独立文档内容仓库与 commit、Catalog 自托管地址与维护方、镜像仓库及集群命名空间仍待接入；`CATALOG_PUBLIC_BASE_URL`、`CATALOG_CONTRACT_VERSION` 仍是后续配置契约。这些状态不改变一个网站构建、Git 内容发布和独立 Catalog 数据的决策。
 
 后续《验收与 CI 规范》细化真实检查命令、性能测量环境和生产部署步骤；本次规范修改不代表应用已经实现或部署。

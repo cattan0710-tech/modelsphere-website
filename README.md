@@ -12,7 +12,7 @@
 
 ## 当前阶段
 
-已确认采用 **Docusaurus + React + TypeScript 统一全站**，博客首期使用 **Markdown/Git 发布**。门户、博客和开发者文档构建为一个静态站点；Model Catalog 使用自定义 React 界面读取独立数据源。当前已建立 Docusaurus 应用、依赖锁文件和 CI 配置，实现首页、博客列表与阅读页、文档栏目及太阳／月亮主题切换。站内 Catalog 现已接入公开源；博客与文档在本仓库正式目录维护，独立文档仓库同步尚未接入。首期选择公开仓库与 GitHub Pages 项目地址；是否已上线以 Actions 发布结果和线上版本为准。
+已确认采用 **Docusaurus + React + TypeScript 统一全站**，博客首期使用 **Markdown/Git 发布**。门户、博客和开发者文档构建为一个静态站点；Model Catalog 使用自定义 React 界面读取独立数据源。当前已建立 Docusaurus 应用、依赖锁文件和 CI 配置，实现首页、博客列表与阅读页、文档栏目及太阳／月亮主题切换。站内 Catalog 现已接入公开源；博客与文档在本仓库正式目录维护，独立文档仓库同步尚未接入。正式发布使用公开仓库与 GitHub Pages 自定义域名 `modelsphere.tech`；是否已上线以 Actions 发布结果和线上版本为准。
 
 首页按最新首页稿实现六个区块：`hero`、`comparison`、`fault-tolerance`、`qos-scaling`、`autotune-evolution`、`get-started`。完整架构与机制图、说明文字和真实链接均在初始 HTML 中静态输出；首页标题按 D13 整体翻起渐显，引导语与简介从左滑入渐显，架构拓扑正文按 D14 从上向下揭示。屏外能力卡与各机制直接子块分别在自身起点进入 85% 触发线时入场；并排时左右聚合，堆叠时逐卡上移渐显。首屏按钮、技术标签、拓扑标题及其上方三张卡静态可用；架构数据与布局保持稳定，减少动效、无脚本及历史恢复显示最终态。机制说明链接到已核对的项目资料及固定提交，示意曲线明确标注为机制示意。现有资料不足以满足测评报告和完整测试条件要求，因此省略 `benchmarks`，不展示设计稿样例成绩。模型入口进入站内 `/models`，目录读取公开 Catalog 数据；正式 `/docs` 读取 `content/docs/`，当前发布 Console 使用文档。
 
@@ -91,21 +91,33 @@ Catalog 需覆盖现有 [Model Catalog](https://modelsphere.github.io/model-cata
 
 ## GitHub Pages 发布
 
-首期地址：[ModelSphere 官网](https://modelsphere.github.io/modelsphere-website/)。仓库设为公开后，源码与提交历史均公开。仓库 Settings → Pages 的 Source 使用 **GitHub Actions**，`github-pages` 环境只允许 `main` 分支发布。
+正式地址：[ModelSphere 官网](https://modelsphere.tech/)。仓库设为公开后，源码与提交历史均公开。仓库 Settings → Pages 的 Source 使用 **GitHub Actions**，Custom domain 设置为 `modelsphere.tech`，证书就绪后开启 **Enforce HTTPS**；`github-pages` 环境只允许 `main` 分支发布。Actions 发布不依赖 `CNAME` 文件，域名绑定由 Pages 设置管理。
 
-`.github/workflows/ci.yml` 对分支和 PR 执行格式、Lint、类型、内容检查及单测，随后分别验证根路径与 `/modelsphere-website/` 路径的 preview/mock、release/content 构建。候选通过 Nginx 浏览器检查后，只有 `main` 才上传已验证的正式产物并部署；发布阶段不重新构建。正式文档读取 `content/docs/`，博客读取 `content/blog/` 和 `content/pages/blog.json`，保留已允许公开的示例；站点继续保留验证期的 noindex。
+`.github/workflows/ci.yml` 对分支和 PR 执行格式、Lint、类型、内容检查及单测，随后分别使用本地 origin 和正式 HTTPS origin 验证根路径的 preview/mock、release/content 构建。候选通过 Nginx 浏览器检查后，只有 `main` 才上传已验证的正式产物并部署；发布阶段不重新构建，并在发布前核对 Pages 绑定的域名。正式文档读取 `content/docs/`，博客读取 `content/blog/` 和 `content/pages/blog.json`，保留已允许公开的示例；站点继续保留验证期的 noindex。
 
-发布参数固定为 `SITE_ORIGIN=https://modelsphere.github.io`、`SITE_BASE_URL=/modelsphere-website/`。`SITE_ORIGIN` 只含协议和域名；子目录单独配置，必须以 `/` 开始和结束。不设置 `SITE_BASE_URL` 时继续支持根路径部署。
+发布参数固定为 `SITE_ORIGIN=https://modelsphere.tech`、`SITE_BASE_URL=/`。`SITE_ORIGIN` 只含协议和域名；测试配置仍支持通过 `SITE_BASE_URL` 指定以 `/` 开始和结束的子目录。
 
 ```sh
-SITE_ORIGIN=https://modelsphere.github.io SITE_BASE_URL=/modelsphere-website/ pnpm build
-SITE_BASE_URL=/modelsphere-website/ pnpm serve
-E2E_BASE_URL=http://localhost:4173 TEST_DOCS_MODE=content pnpm test:pages
+SITE_ORIGIN=https://modelsphere.tech SITE_BASE_URL=/ pnpm build
+SITE_BASE_URL=/ pnpm serve
+SITE_ORIGIN=https://modelsphere.tech SITE_BASE_URL=/ E2E_BASE_URL=http://localhost:4173 TEST_DOCS_MODE=content pnpm test:pages
 ```
+
+域名切换前先在 ModelSphere 组织 Settings → Pages 验证域名，并在 DNSPod 保留 GitHub 提供的 `_github-pages-challenge-modelsphere` TXT 记录。仓库保存 Custom domain 后，再添加以下 DNS 记录，初始 TTL 可设为 600 秒：
+
+| 主机 | 类型 | 记录值 |
+| --- | --- | --- |
+| `@` | A | `185.199.108.153` |
+| `@` | A | `185.199.109.153` |
+| `@` | A | `185.199.110.153` |
+| `@` | A | `185.199.111.153` |
+| `www` | CNAME | `modelsphere.github.io` |
+
+解析生效后由 GitHub 自动签发 HTTPS 证书；如有 CAA 限制，需允许 `letsencrypt.org`。切换需将 Pages 设置、DNS 和根路径产物发布安排在同一窗口，验收 HTTPS 主域名、HTTP 跳转、`www` 跳转、旧项目地址跳转及中英文路由；不要将 DNS 更新视为上线成功。证书配置见 [GitHub Pages HTTPS 文档](https://docs.github.com/en/pages/getting-started-with-github-pages/securing-your-github-pages-site-with-https)。
 
 每次合并后流水线重新验证合并提交，部署串行执行且检查候选仍是当前 `main`。发布后核对 `version.json` 的完整提交 SHA、代表路由、静态资源与真实 HTTP 404。线上代码版本与 Catalog 实时数据版本分别记录。
 
-可在 Actions 的 **Website checks** 使用 **Run workflow**，选择 `main` 重试发布。回滚通过 PR 撤销问题提交，待检查通过后合并并重新发布；发布前失败不会替换现有站点，发布后验收失败需要修复或回滚，尚无自动回滚。更换自定义域名或迁移 Kubernetes 时再调整发布配置。
+可在 Actions 的 **Website checks** 使用 **Run workflow**，选择 `main` 重试发布。回滚通过 PR 撤销问题提交，待检查通过后合并并重新发布；发布前失败不会替换现有站点，发布后验收失败需要修复或回滚，尚无自动回滚。域名迁移提交的回滚还需同步恢复 Pages 域名与对应 DNS，不能只回退构建路径。后续更换域名或迁移 Kubernetes 时再调整发布配置。
 
 ## 本地运行文档
 
@@ -171,7 +183,7 @@ D13 首页文字效果保持：标题整体从下方翻起并渐显，桌面 48p
 
 ## 中英文与翻译维护
 
-- 中文为默认语言；英文位于 `/en/`（Pages 部署为 `/modelsphere-website/en/`）。Header 提供地球图标及自定义语言下拉菜单，支持键盘选择、当前语言标记和移动端；无脚本时保留 EN / 中文链接。切换保留对应页面；启用脚本后同时保留查询参数和片段。语言由 URL 决定，站内导航保持当前语言。
+- 中文为默认语言；英文位于 `/en/`。Header 提供地球图标及自定义语言下拉菜单，支持键盘选择、当前语言标记和移动端；无脚本时保留 EN / 中文链接。切换保留对应页面；启用脚本后同时保留查询参数和片段。语言由 URL 决定，站内导航保持当前语言。
 - React 文案使用 `@docusaurus/Translate`，英文资源为 `i18n/en/code.json`；来自纯数据辅助函数的展示文案在 `i18n/en/content.json` 维护，不改变模型标识、版本、筛选值或 YAML。
 - 文档翻译在 `i18n/en/docs/`，博客翻译在 `i18n/en/blog/<文章 id>.md`；博客翻译的 frontmatter 包含 `title`、`summary`。英文正文保留原文的示例说明和证据边界。文档英文译文与中文源文共用同一正文结构，标题和摘要写在译文 frontmatter；中文源文变更后应同步更新译文。固定 Mock 示例的英文译文单独放在 `tests/fixtures/docs-en/`，mock 构建不读取正式文档译文。
 - `scripts/prepare-translations.ts` 只从已筛选的 `.generated/docs`、`.generated/blog` 和摘要索引生成英文输入，保留来源的 id、slug 与发布时间。源文撤下或被过滤时，其译文不会发布。新增正文尚无译文时沿用原文，不生成虚假翻译；发布前应补齐译文。

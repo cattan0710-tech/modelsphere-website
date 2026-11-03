@@ -103,8 +103,8 @@ jobs:
       matrix:
         mode: [preview, release]
     env:
-      SITE_ORIGIN: https://modelsphere.github.io
-      SITE_BASE_URL: /modelsphere-website/
+      SITE_ORIGIN: https://modelsphere.tech
+      SITE_BASE_URL: /
       BLOG_SOURCE_MODE: content
     steps:
       - uses: actions/checkout@v4
@@ -135,7 +135,7 @@ jobs:
       - run: docker build --build-arg SITE_BASE_URL="$SITE_BASE_URL" -f infra/docker/Dockerfile -t modelsphere-pages-test .
       - run: docker run -d --name pages-test -p 127.0.0.1:4173:8080 modelsphere-pages-test
       - name: Wait for Pages candidate
-        run: curl --retry 20 --retry-all-errors --retry-delay 1 --fail http://localhost:4173/modelsphere-website/
+        run: curl --retry 20 --retry-all-errors --retry-delay 1 --fail "http://localhost:4173${SITE_BASE_URL}"
       - name: Browser acceptance under Pages path
         run: pnpm test:pages
         env:
@@ -184,6 +184,16 @@ jobs:
             exit 1
           fi
       - uses: actions/configure-pages@v6.0.0
+      - name: Verify Pages custom domain
+        env:
+          GH_TOKEN: ${{ github.token }}
+          EXPECTED_PAGES_DOMAIN: modelsphere.tech
+        run: |
+          PAGES_DOMAIN=$(gh api "repos/$GITHUB_REPOSITORY/pages" --jq '.cname')
+          if [ "$PAGES_DOMAIN" != "$EXPECTED_PAGES_DOMAIN" ]; then
+            echo "Configure the Pages custom domain as $EXPECTED_PAGES_DOMAIN before publishing."
+            exit 1
+          fi
       - name: Publish verified artifact
         id: deployment
         uses: actions/deploy-pages@v5.0.1

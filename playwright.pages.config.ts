@@ -1,5 +1,8 @@
 import { defineConfig } from '@playwright/test';
 import config from './playwright.config';
+import { validateBaseUrl } from './src/lib/site-path';
+
+const baseUrl = validateBaseUrl(process.env.SITE_BASE_URL ?? '/');
 
 export default defineConfig({
   ...config,
@@ -8,13 +11,13 @@ export default defineConfig({
     ? undefined
     : {
         ...config.webServer,
-        command: 'SITE_BASE_URL=/modelsphere-website/ pnpm serve',
+        command: `SITE_BASE_URL=${baseUrl} pnpm serve`,
         port: 4173,
       },
   use: {
     ...config.use,
     baseURL: new URL(
-      '/modelsphere-website/',
+      baseUrl,
       process.env.E2E_BASE_URL ?? 'http://localhost:4173',
     ).href,
   },

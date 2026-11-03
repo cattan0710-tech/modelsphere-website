@@ -3,7 +3,8 @@ import { readFileSync } from 'node:fs';
 import baseline from '../../content/catalog/baseline.json';
 const report = readFileSync('tests/fixtures/catalog/mimo-report.html', 'utf8');
 
-const prefix = '/modelsphere-website/';
+const prefix = process.env.SITE_BASE_URL ?? '/';
+const origin = process.env.SITE_ORIGIN ?? 'https://modelsphere.tech';
 const mock = process.env.TEST_DOCS_MODE !== 'none';
 const model = baseline.models.find((m) => m.name === 'mimo-v2.5')!;
 const recipe = model.variants.find(
@@ -53,7 +54,7 @@ test.beforeEach(async ({ page }) => {
   );
 });
 
-test('home loads its assets and all internal links under the project path', async ({
+test('home loads its assets and all internal links under the deployment path', async ({
   page,
   request,
   baseURL,
@@ -61,7 +62,12 @@ test('home loads its assets and all internal links under the project path', asyn
   const errors: string[] = [];
   page.on('pageerror', (e) => errors.push(e.message));
   page.on('response', (r) => {
-    if (r.url().includes('/modelsphere-website/') && r.status() >= 400)
+    const address = new URL(r.url());
+    if (
+      address.origin === new URL(baseURL!).origin &&
+      address.pathname.startsWith(prefix) &&
+      r.status() >= 400
+    )
       errors.push(`${r.status()} ${r.url()}`);
   });
   await page.goto('./');
@@ -74,10 +80,10 @@ test('home loads its assets and all internal links under the project path', asyn
   expect(
     await page
       .locator('a[href^="/"]')
-      .evaluateAll((links) =>
-        links.every((link) =>
-          link.getAttribute('href')!.startsWith('/modelsphere-website/'),
-        ),
+      .evaluateAll(
+        (links, base) =>
+          links.every((link) => link.getAttribute('href')!.startsWith(base)),
+        prefix,
       ),
   ).toBe(true);
   expect(
@@ -112,7 +118,9 @@ test('catalog filters, recipe tabs, legacy redirects and return links preserve t
   const input = page.getByRole('textbox', { name: '搜索模型目录' });
   await input.fill('mimo-v2.5');
   await page.getByRole('button', { name: '搜索', exact: true }).click();
-  await expect(page).toHaveURL(/\/modelsphere-website\/models\?/);
+  await expect(page).toHaveURL(
+    (url) => url.pathname === `${prefix}models` && url.search.length > 0,
+  );
   const card = page.locator(`[data-recipe-id="${model.name}/${recipe.id}"]`);
   await card.getByRole('link', { name: '查看对照报告', exact: true }).click();
   await expect(
@@ -122,7 +130,9 @@ test('catalog filters, recipe tabs, legacy redirects and return links preserve t
     page.frameLocator('iframe[title="原始性能对照报告"]').locator('body'),
   ).toContainText('119.9%');
   await page.getByRole('tab', { name: '部署配置' }).click();
-  await expect(page).toHaveURL(/\/modelsphere-website\/models\/recipe\?/);
+  await expect(page).toHaveURL(
+    (url) => url.pathname === `${prefix}models/recipe` && url.search.length > 0,
+  );
   await expect(
     page.getByRole('tab', { name: '部署配置', selected: true }),
   ).toBeVisible();
@@ -142,7 +152,9 @@ test('catalog filters, recipe tabs, legacy redirects and return links preserve t
   });
   await page.goto(`models/report?${params}`);
   await expect(page).toHaveURL(
-    /\/modelsphere-website\/models\/recipe\?.*tab=performance/,
+    (url) =>
+      url.pathname === `${prefix}models/recipe` &&
+      url.searchParams.get('tab') === 'performance',
   );
   await expect(
     page.getByRole('tab', { name: '性能对照', selected: true }),
@@ -197,7 +209,7 @@ test('direct documents, blog routes, 404 responses and version metadata work und
 });
 
 if (mock) {
-  test('preview blog covers, filters, canonical links and search navigate within the project path', async ({
+  test('preview blog covers, filters, canonical links and search navigate within the deployment path', async ({
     page,
   }) => {
     const errors: string[] = [];
@@ -214,7 +226,7 @@ if (mock) {
     await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
     await expect(page.locator('link[rel="canonical"]').last()).toHaveAttribute(
       'href',
-      'https://modelsphere.github.io/modelsphere-website/blog/example-blog-platform',
+      `${origin}${prefix}blog/example-blog-platform`,
     );
     expect(
       await page
