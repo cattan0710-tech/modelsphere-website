@@ -17,12 +17,8 @@ test('blog navigation, empty release state and real 404 responses', async ({
   await expect(
     page
       .getByRole('contentinfo')
-      .getByRole('link', { name: '架构演进内幕', exact: true }),
-  ).toHaveAttribute('href', '/blog');
-  await expect(
-    page
-      .getByRole('contentinfo')
-      .getByRole('link', { name: '量化实战案例', exact: true }),
+      .getByRole('navigation', { name: '页脚导航' })
+      .getByRole('link', { name: '博客', exact: true }),
   ).toHaveAttribute('href', '/blog');
   if (release) {
     await expect(
@@ -362,6 +358,7 @@ test.describe('mock blog interaction and reading', () => {
     const context = await browser.newContext({
       ...devices['iPhone 13'],
       baseURL,
+      locale: 'zh-CN',
     });
     const page = await context.newPage();
     await page.goto('/blog');

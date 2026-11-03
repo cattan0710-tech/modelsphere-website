@@ -9,8 +9,6 @@ import useIsBrowser from '@docusaurus/useIsBrowser';
 import { useHistory, useLocation } from '@docusaurus/router';
 import {
   config,
-  detailHref,
-  launchFacts,
   loadHistory,
   loadYaml,
   modelHref,
@@ -164,13 +162,6 @@ function DetailContent({ kind }: { kind: 'model' | 'recipe' }) {
     configurationDigest,
     retry,
   ]);
-  const facts = useMemo(() => {
-    try {
-      return text ? launchFacts(text) : null;
-    } catch {
-      return null;
-    }
-  }, [text]);
   const invalid = !modelId || (kind === 'recipe' && !recipeId),
     missing = !invalid && (!model || (kind === 'recipe' && !recipe));
   function chooseVersion(v: string) {
@@ -218,13 +209,17 @@ function DetailContent({ kind }: { kind: 'model' | 'recipe' }) {
       }
       description={translate({
         id: 'site.bdddd3c76973',
-        message: '查阅模型配方、部署配置、版本历史与性能测评。',
+        message: '查阅模型配方、部署配置与性能测评。',
       })}
     >
       <Head>
         <meta name="robots" content="noindex,follow" />
       </Head>
-      <main id="main-content" className={`${styles.page} ${styles.detailPage}`}>
+      <main
+        id="main-content"
+        className={`${styles.page} ${styles.detailPage}`}
+        data-catalog-status={state.status}
+      >
         <div className={styles.container}>
           <div className={styles.topbar}>
             <nav
@@ -541,39 +536,6 @@ function DetailContent({ kind }: { kind: 'model' | 'recipe' }) {
                             <pre className={styles.code}>
                               <code>{text}</code>
                             </pre>
-                            {facts && (
-                              <details className={styles.more}>
-                                <summary>
-                                  {translate({
-                                    id: 'site.fcde9d2b09cf',
-                                    message: '启动参数',
-                                  })}
-                                </summary>
-                                <pre className={styles.code}>
-                                  <code>
-                                    {facts.args.length
-                                      ? facts.args.join('\n')
-                                      : translate({
-                                          id: 'site.3a13a6807552',
-                                          message: '未提供 extraArgs',
-                                        })}
-                                  </code>
-                                </pre>
-                                {facts.context != null && (
-                                  <p>
-                                    {translate({
-                                      id: 'site.326269a0aa1f',
-                                      message: '上下文配置：',
-                                    })}
-                                    {String(facts.context) ||
-                                      translate({
-                                        id: 'site.2f5f1d6fbfb0',
-                                        message: '未设置',
-                                      })}
-                                  </p>
-                                )}
-                              </details>
-                            )}
                           </>
                         )}
                       </section>
@@ -622,90 +584,10 @@ function DetailContent({ kind }: { kind: 'model' | 'recipe' }) {
                               {translate({
                                 id: 'site.d1e4dea594b6',
                                 message:
-                                  '该配方暂无可用对照报告，可继续查看部署配置与版本历史。',
+                                  '该配方暂无可用对照报告，可继续查看部署配置。',
                               })}
                             </p>
                           </div>
-                        )}
-                      </section>
-                      <section
-                        id="recipe-panel-history"
-                        role="tabpanel"
-                        aria-labelledby="recipe-tab-history"
-                        tabIndex={0}
-                        hidden={activeTab !== 'history'}
-                        className={`${styles.detailBox} ${styles.tabPanel}`}
-                      >
-                        <h2>
-                          {translate({
-                            id: 'site.bb58d709f19d',
-                            message: '版本历史',
-                          })}
-                        </h2>
-                        {historyError ? (
-                          <p role="status">
-                            {historyError}{' '}
-                            <button onClick={() => setRetry((n) => n + 1)}>
-                              {translate({
-                                id: 'site.b8784c8dd563',
-                                message: '重试',
-                              })}
-                            </button>
-                          </p>
-                        ) : !revisions ? (
-                          <p role="status">
-                            {translate({
-                              id: 'site.730152325ab2',
-                              message: '正在读取版本历史…',
-                            })}
-                          </p>
-                        ) : (
-                          <ol className={styles.history}>
-                            {revisions?.revisions.map((r) => (
-                              <li key={r.digest}>
-                                <strong>v{r.version}</strong>
-                                <span>
-                                  {r.releaseDate ??
-                                    translate({
-                                      id: 'site.020ef0cc6f35',
-                                      message: '日期未提供',
-                                    })}
-                                </span>
-                                <p>{r.subject}</p>
-                                <Link
-                                  to={detailHref(
-                                    recipe,
-                                    c.commit,
-                                    r.version,
-                                    returnTo,
-                                  )}
-                                >
-                                  {translate({
-                                    id: 'site.56b1715ede54',
-                                    message: '查看 v',
-                                  })}
-                                  {r.version}{' '}
-                                  {translate({
-                                    id: 'site.6a0cd8002a08',
-                                    message: ' 配置 →',
-                                  })}
-                                </Link>{' '}
-                                {r.commit && (
-                                  <a
-                                    href={`${config.repository}/blob/${r.commit}/${recipe.variant.path}`}
-                                    target="_blank"
-                                    rel="noreferrer"
-                                  >
-                                    {translate({
-                                      id: 'site.929ff74a3b68',
-                                      message: '固定提交 ',
-                                    })}
-                                    {r.commit.slice(0, 7)} ↗
-                                  </a>
-                                )}
-                              </li>
-                            ))}
-                          </ol>
                         )}
                       </section>
                       <div className={styles.actions}>

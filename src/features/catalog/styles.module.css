@@ -1714,8 +1714,8 @@
 .catalog .filters {
   grid-column: 1;
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  max-width: 800px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  max-width: 400px;
 }
 .catalog .toolbar [role='combobox'] {
   height: var(--catalog-control-height);

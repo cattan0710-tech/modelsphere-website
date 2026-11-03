@@ -2,7 +2,21 @@ import { expect, test } from '@playwright/test';
 import source from '../../docs/design/sources/stitch-home-sections-copy.json';
 import communitySource from '../../docs/design/sources/stitch-community.json';
 
-for (const [id, expected] of Object.entries(source.modules)) {
+// Approved changes reserve loop-arrow gaps and remove the CTA metadata row.
+const modules = {
+  ...source.modules,
+  'autotune-evolution': {
+    ...source.modules['autotune-evolution'],
+    height: 720,
+  },
+  'get-started': {
+    ...source.modules['get-started'],
+    text: 'Production Ready Infrastructure 准备好让你的大模型推理集群提速了吗？ 全套源码完全开源，加入顶尖 AI Infra 工程师共建的下一代推理基础设施。 立即部署 加入开发者交流群',
+    height: 392,
+  },
+};
+
+for (const [id, expected] of Object.entries(modules)) {
   test(`${id} restores every source label, icon and desktop proportion`, async ({
     page,
   }) => {
@@ -14,17 +28,42 @@ for (const [id, expected] of Object.entries(source.modules)) {
     if (id === 'home-footer') {
       const footer = page.locator('footer.community-footer');
       await expect(footer).toBeVisible();
-      for (const fragment of communitySource.footerCopy.filter(
-        (copy) =>
-          !['NODE_CLUSTER: READY', 'TELEMETRY: P99 22ms'].includes(copy),
-      ))
+      for (const fragment of [
+        ...communitySource.footerCopy.slice(0, 3),
+        communitySource.footerCopy.find((copy) => copy.startsWith('©'))!,
+      ])
         await expect(footer).toContainText(fragment);
       await expect(
-        footer.getByRole('link', { name: '架构演进内幕', exact: true }),
-      ).toHaveAttribute('href', '/blog');
-      await expect(
-        footer.getByRole('link', { name: '快速接入文档', exact: true }),
-      ).toHaveAttribute('href', '/docs');
+        footer.locator('a[href*="#community-calendar"]'),
+      ).toHaveCount(0);
+      const links = footer
+        .getByRole('navigation', { name: '页脚导航' })
+        .getByRole('link');
+      await expect(footer.locator('a')).toHaveCount(8);
+      await expect(links).toHaveText([
+        '首页',
+        '模型目录',
+        '博客',
+        '文档指南',
+        '快速开始',
+        '社区生态',
+        'GitHub',
+        '技术交流群',
+      ]);
+      expect(
+        await links.evaluateAll((items) =>
+          items.map((item) => item.getAttribute('href')),
+        ),
+      ).toEqual([
+        '/',
+        '/models',
+        '/blog',
+        '/docs',
+        process.env.TEST_DOCS_MODE === 'none' ? '/docs' : '/docs/quickstart',
+        '/community',
+        'https://github.com/modelsphere',
+        '/community#community-channels',
+      ]);
       const layout = await footer.evaluate((element) => {
         const inner = element.firstElementChild!.getBoundingClientRect();
         return {
@@ -41,27 +80,44 @@ for (const [id, expected] of Object.entries(source.modules)) {
     }
     const section = page.locator(`#${id}`);
     if (id === 'benchmarks') {
-      const current = await section.evaluate((element) => {
-        const content = element.firstElementChild!.getBoundingClientRect();
-        const scroller = element.querySelector('table')!.parentElement!;
-        return {
-          gutter: parseFloat(getComputedStyle(element).paddingLeft),
-          left: content.left,
-          right: innerWidth - content.right,
-          scrollWidth: scroller.scrollWidth,
-          clientWidth: scroller.clientWidth,
-        };
-      });
-      expect(current.gutter).toBe(48);
-      expect(current.left).toBe(current.gutter);
-      expect(current.right).toBe(current.gutter);
-      expect(current.scrollWidth).toBe(current.clientWidth);
-      // The source uses 32px gutters; match its content width while retaining
-      // the site's current 48px gutters and all original geometry assertions.
-      await page.setViewportSize({
-        width: source.viewport + 2 * (current.gutter - 32),
-        height: 1100,
-      });
+      await expect(section.getByRole('heading', { level: 2 })).toHaveText(
+        '开箱即用，性能调优模型 Day-0 部署',
+      );
+      await expect(section.getByRole('table')).toHaveCount(0);
+      const screenshot = section.getByRole('img');
+      await screenshot.scrollIntoViewIfNeeded();
+      await expect(screenshot).toBeVisible();
+      await expect(screenshot).toHaveAttribute(
+        'src',
+        '/screenshots/console-model-catalog.png',
+      );
+      await expect
+        .poll(() =>
+          screenshot.evaluate(
+            (image: HTMLImageElement) =>
+              image.complete &&
+              image.naturalWidth === 2568 &&
+              image.naturalHeight === 1528,
+          ),
+        )
+        .toBe(true);
+      await expect(section.locator('figcaption')).toHaveCount(0);
+      await expect(section.getByRole('link')).toHaveCount(0);
+      await expect(section).not.toContainText('Console 实际界面');
+      expect(
+        await page
+          .locator('main > section[id]')
+          .evaluateAll((sections) => sections.map((element) => element.id)),
+      ).toEqual([
+        'hero',
+        'comparison',
+        'benchmarks',
+        'fault-tolerance',
+        'qos-scaling',
+        'autotune-evolution',
+        'get-started',
+      ]);
+      return;
     }
     const measured = await section.evaluate((element) => {
       const walker = document.createTreeWalker(element, NodeFilter.SHOW_TEXT);
@@ -163,6 +219,17 @@ test('restored modules contain narrow layouts and preserve working section links
   for (const colorScheme of ['light', 'dark'] as const) {
     await page.emulateMedia({ colorScheme });
     await page.goto('/');
+    const surfaces = await page
+      .locator(
+        '#comparison,#benchmarks,#fault-tolerance,#qos-scaling,#autotune-evolution',
+      )
+      .evaluateAll((sections) =>
+        sections.map((section) => getComputedStyle(section).backgroundColor),
+      );
+    expect(surfaces[0]).toBe(surfaces[2]);
+    expect(surfaces[2]).toBe(surfaces[4]);
+    expect(surfaces[1]).toBe(surfaces[3]);
+    expect(surfaces[0]).not.toBe(surfaces[1]);
     await expect(page.locator('#get-started > div')).toHaveCSS(
       'background-image',
       colorScheme === 'light'
@@ -176,6 +243,20 @@ test('restored modules contain narrow layouts and preserve working section links
           () => document.documentElement.scrollWidth <= innerWidth + 1,
         ),
       ).toBe(true);
+      const preview = page.locator('.home-console-scroller');
+      const dimensions = await preview.evaluate((element) => ({
+        width: element.clientWidth,
+        scrollWidth: element.scrollWidth,
+      }));
+      expect(dimensions.scrollWidth > dimensions.width).toBe(width < 1024);
+      if (width < 1024) {
+        await preview.evaluate((element) => {
+          element.scrollLeft = element.scrollWidth;
+        });
+        expect(
+          await preview.evaluate((element) => element.scrollLeft),
+        ).toBeGreaterThan(0);
+      }
     }
   }
   await page.setViewportSize({ width: 390, height: 900 });
@@ -187,9 +268,7 @@ test('restored modules contain narrow layouts and preserve working section links
   await page.keyboard.press('Enter');
   await expect(page).toHaveURL(/#benchmarks$/);
   await expect(page.locator('#benchmarks')).toBeFocused();
-  await expect(
-    page.getByRole('table', { name: '设计稿性能实测对照示例' }),
-  ).toBeVisible();
+  await expect(page.locator('#benchmarks').getByRole('img')).toBeVisible();
   await expect(
     page.getByRole('link', { name: '立即部署', exact: true }),
   ).toHaveAttribute(

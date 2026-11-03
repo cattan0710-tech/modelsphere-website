@@ -26,6 +26,7 @@ import {
   recipeTabHref,
 } from '../../src/features/catalog/routes';
 import {
+  activeCatalog,
   facets,
   initialQuery,
   parseQuery,
@@ -175,6 +176,60 @@ describe('catalog improvement statistics', () => {
   });
 });
 describe('catalog queries', () => {
+  it('always excludes deprecated records from lists, summaries, facets and counts, including legacy opt-out URLs', () => {
+    const source = structuredClone(baseline);
+    const retiredModel = source.models.find(
+      (model) => model.name === 'glm5.3',
+    )!;
+    retiredModel.deprecated = true;
+    retiredModel.family = 'retired-family';
+    const mixedModel = source.models.find(
+      (model) => model.name === 'mimo-v2.5',
+    )!;
+    const retiredVariant = mixedModel.variants[0];
+    retiredVariant.deprecated = 'Replaced by a maintained recipe';
+    retiredVariant.engine = 'retired-engine';
+    retiredVariant.requires.gpuProduct = ['Retired-X1'];
+    mixedModel.variants[1].deprecated = false;
+    const original = JSON.stringify(source);
+    const active = activeCatalog(source);
+    const expectedCount = 72 - retiredModel.variants.length - 1;
+    expect(stats(active)).toMatchObject({ models: 27, recipes: expectedCount });
+    expect(facets(source).family).not.toContain('retired-family');
+    expect(facets(source).engine).not.toContain('retired-engine');
+    expect(facets(source).hardware).not.toContain('Retired-X1');
+    for (const search of ['', '?hidedep=0', '?hidedep=1']) {
+      const query = parseQuery(search, source);
+      const recipes = queryRecipes(source, query);
+      expect(recipes.total).toBe(expectedCount);
+      expect(
+        recipes.all.some((recipe) => recipe.model.name === retiredModel.name),
+      ).toBe(false);
+      expect(
+        recipes.all.some(
+          (recipe) => recipe.model.deprecated || recipe.variant.deprecated,
+        ),
+      ).toBe(false);
+      const summaries = queryModels(source, query).all;
+      expect(summaries).toHaveLength(27);
+      expect(
+        summaries
+          .find((summary) => summary.model.name === mixedModel.name)!
+          .recipes.map((recipe) => recipe.variant.id),
+      ).toEqual([mixedModel.variants[1].id]);
+      expect(queryHref(query)).toBe('/models');
+    }
+    expect(JSON.stringify(source)).toBe(original);
+  });
+  it('ignores removed technical-tag filters without changing the recipe results', () => {
+    const query = parseQuery('?tag=moe&engine=sglang', baseline);
+    const expected = { ...initialQuery, engine: 'sglang' };
+    expect(query).toEqual(expected);
+    expect(
+      queryRecipes(baseline, query).all.map((recipe) => recipe.key),
+    ).toEqual(queryRecipes(baseline, expected).all.map((recipe) => recipe.key));
+    expect(queryHref(query)).toBe('/models?engine=sglang');
+  });
   it('derives vendor facets from real recipes and normalizes hardware for shared vendor URLs', () => {
     expect(facets(baseline).vendor).toEqual(['ascend', 'nvidia']);
     expect(facets(baseline, 'ascend').hardware).toEqual(['Ascend-910B3']);
@@ -536,7 +591,7 @@ describe('unified recipe navigation', () => {
       dataVersion: baseline.commit,
       returnTo: '/models?q=mimo&layout=table&page=2',
     });
-    for (const tab of ['deployment', 'performance', 'history'] as const) {
+    for (const tab of ['deployment', 'performance'] as const) {
       const url = new URL(
         recipeTabHref(params.toString(), tab),
         'https://site.test',
@@ -546,9 +601,10 @@ describe('unified recipe navigation', () => {
         expect(url.searchParams.get(key)).toBe(value);
     }
     expect(recipeTab('unknown')).toBe('deployment');
+    expect(recipeTab('history')).toBe('deployment');
     expect(recipeTab(null)).toBe('deployment');
     const unsafe = new URL(
-      recipeTabHref('?returnTo=https://evil.test', 'history'),
+      recipeTabHref('?returnTo=https://evil.test', 'performance'),
       'https://site.test',
     );
     expect(unsafe.searchParams.get('returnTo')).toBe('/models');

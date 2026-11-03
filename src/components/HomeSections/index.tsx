@@ -8,7 +8,7 @@ import './styles.css';
 export function FaultTolerance() {
   return (
     <section
-      className="w-full py-12 px-margin bg-slate-50/70 border-b border-slate-200/70"
+      className="w-full py-12 px-margin bg-white border-b border-slate-200/70"
       id="fault-tolerance"
       data-home-design=""
       aria-label={translate({
@@ -331,7 +331,7 @@ export function FaultTolerance() {
 export function QosScaling() {
   return (
     <section
-      className="w-full py-12 px-margin bg-white border-b border-slate-200/70"
+      className="w-full py-12 px-margin bg-slate-50/70 border-b border-slate-200/70"
       id="qos-scaling"
       data-home-design=""
       aria-label={translate({
@@ -719,6 +719,233 @@ export function QosScaling() {
 }
 export function AutotuneEvolution() {
   const flowRef = React.useRef<HTMLDivElement>(null);
+  const arrowId = React.useId();
+
+  React.useEffect(() => {
+    const flow = flowRef.current;
+    if (!flow) return;
+    const cards = Array.from(
+      flow.querySelectorAll<HTMLElement>('[data-autotune-step]'),
+    );
+    const updateConnectors = () => {
+      const boxes = [1, 2, 3, 4, 5].map((step) => {
+        const card = cards.find(
+          (element) => element.dataset.autotuneStep === String(step),
+        )!;
+        const left = card.offsetLeft;
+        const top = card.offsetTop;
+        return {
+          left,
+          top,
+          right: left + card.offsetWidth,
+          bottom: top + card.offsetHeight,
+          x: left + card.offsetWidth / 2,
+          y: top + card.offsetHeight / 2,
+        };
+      });
+      const [one, , three, four, five] = boxes;
+      const circularPaths = () => {
+        const core = flow.querySelector<HTMLElement>('.home-autotune-core')!;
+        const center = {
+          x: core.offsetLeft + core.offsetWidth / 2,
+          y: core.offsetTop + core.offsetHeight / 2,
+        };
+        const bounds = boxes.map((box) => ({
+          left: box.left - 6,
+          right: box.right + 6,
+          top: box.top - 6,
+          bottom: box.bottom + 6,
+        }));
+        const minimumRadius = Math.max(
+          ...bounds.map((box) =>
+            Math.hypot(
+              Math.max(box.left - center.x, 0, center.x - box.right),
+              Math.max(box.top - center.y, 0, center.y - box.bottom),
+            ),
+          ),
+        );
+        const radius = Math.max(
+          minimumRadius + 2,
+          Math.min(
+            core.offsetWidth * 1.55,
+            Math.min(three.bottom, four.bottom) - center.y - 8,
+          ),
+        );
+        const intervals = bounds.map((box, index) => {
+          const reference = [
+            -Math.PI / 2,
+            0,
+            Math.PI / 2,
+            Math.PI / 2,
+            Math.PI,
+          ][index];
+          const angles: number[] = [];
+          const record = (x: number, y: number) => {
+            if (
+              x < box.left - 0.01 ||
+              x > box.right + 0.01 ||
+              y < box.top - 0.01 ||
+              y > box.bottom + 0.01
+            )
+              return;
+            let angle = Math.atan2(y - center.y, x - center.x);
+            while (angle < reference - Math.PI) angle += 2 * Math.PI;
+            while (angle > reference + Math.PI) angle -= 2 * Math.PI;
+            angles.push(angle);
+          };
+          for (const x of [box.left, box.right]) {
+            const dx = x - center.x;
+            if (Math.abs(dx) > radius) continue;
+            const dy = Math.sqrt(Math.max(0, radius ** 2 - dx ** 2));
+            record(x, center.y - dy);
+            record(x, center.y + dy);
+          }
+          for (const y of [box.top, box.bottom]) {
+            const dy = y - center.y;
+            if (Math.abs(dy) > radius) continue;
+            const dx = Math.sqrt(Math.max(0, radius ** 2 - dy ** 2));
+            record(center.x - dx, y);
+            record(center.x + dx, y);
+          }
+          return { start: Math.min(...angles), end: Math.max(...angles) };
+        });
+        const point = (angle: number) => ({
+          x: center.x + radius * Math.cos(angle),
+          y: center.y + radius * Math.sin(angle),
+        });
+        return intervals.map((interval, index) => {
+          const next = intervals[(index + 1) % intervals.length];
+          const end =
+            index === intervals.length - 1
+              ? next.start + 2 * Math.PI
+              : next.start;
+          let from = point(interval.end);
+          let to = point(end);
+          if (index !== 2) {
+            const source = boxes[index];
+            const target = boxes[(index + 1) % boxes.length];
+            from = {
+              x: Math.max(
+                source.left + 12,
+                Math.min(source.right - 12, from.x),
+              ),
+              y: index < 2 ? source.bottom + 6 : source.top - 6,
+            };
+            to = {
+              x: Math.max(target.left + 12, Math.min(target.right - 12, to.x)),
+              y: index < 2 ? target.top - 6 : target.bottom + 6,
+            };
+          }
+          const chord = Math.hypot(to.x - from.x, to.y - from.y);
+          const arcRadius = Math.max(16, chord * 0.8);
+          return `M ${from.x} ${from.y} A ${arcRadius} ${arcRadius} 0 0 1 ${to.x} ${to.y}`;
+        });
+      };
+      const paths = window.matchMedia('(min-width: 768px)').matches
+        ? circularPaths()
+        : [
+            ...boxes
+              .slice(0, 4)
+              .map(
+                (box, index) =>
+                  `M ${box.x} ${box.bottom + 5} A 14 14 0 0 1 ${boxes[index + 1].x} ${boxes[index + 1].top - 7}`,
+              ),
+            `M ${five.left - 4} ${five.y} H 10 Q 2 ${five.y} 2 ${five.y - 8} V ${one.y + 8} Q 2 ${one.y} 10 ${one.y} H ${one.left - 4}`,
+          ];
+      flow
+        .querySelectorAll<SVGPathElement>('[data-autotune-connector]')
+        .forEach((path, index) => {
+          path.setAttribute('d', paths[index]);
+          const start = path.getPointAtLength(0);
+          const length = path.getTotalLength();
+          const end = path.getPointAtLength(length);
+          const headLength = Math.min(10, length * 0.28);
+          const headWidth = Math.min(14, Math.max(7, headLength * 1.45));
+          // Sweep a uniform-width fill around the existing centerline.
+          const shaftWidth =
+            !window.matchMedia('(min-width: 768px)').matches && index === 4
+              ? 3.2
+              : headWidth * 0.43;
+          const shaftLength = length - headLength;
+          const edges: { x: number; y: number }[][] = [[], []];
+          const frame = (distance: number) => {
+            const point = path.getPointAtLength(distance);
+            const before = path.getPointAtLength(Math.max(0, distance - 0.5));
+            const after = path.getPointAtLength(
+              Math.min(length, distance + 0.5),
+            );
+            const dx = after.x - before.x;
+            const dy = after.y - before.y;
+            const magnitude = Math.hypot(dx, dy);
+            return { point, nx: -dy / magnitude, ny: dx / magnitude };
+          };
+          const samples = Math.max(16, Math.ceil(shaftLength));
+          for (let sample = 0; sample <= samples; sample += 1) {
+            const progress = sample / samples;
+            const { point, nx, ny } = frame(shaftLength * progress);
+            const halfWidth = shaftWidth / 2;
+            edges[0].push({
+              x: point.x + nx * halfWidth,
+              y: point.y + ny * halfWidth,
+            });
+            edges[1].push({
+              x: point.x - nx * halfWidth,
+              y: point.y - ny * halfWidth,
+            });
+          }
+          const headEdges: { x: number; y: number }[][] = [[], []];
+          const headSamples = Math.max(8, Math.ceil(headLength));
+          for (let sample = 0; sample <= headSamples; sample += 1) {
+            const progress = sample / headSamples;
+            const { point, nx, ny } = frame(
+              shaftLength + headLength * progress,
+            );
+            const halfWidth = (headWidth / 2) * (1 - progress);
+            headEdges[0].push({
+              x: point.x + nx * halfWidth,
+              y: point.y + ny * halfWidth,
+            });
+            headEdges[1].push({
+              x: point.x - nx * halfWidth,
+              y: point.y - ny * halfWidth,
+            });
+          }
+          const outline = [
+            ...edges[0],
+            ...headEdges[0],
+            ...headEdges[1].slice(0, -1).reverse(),
+            ...edges[1].reverse(),
+          ];
+          flow
+            .querySelector(
+              `[data-autotune-ribbon="${path.dataset.autotuneConnector}"]`,
+            )!
+            .setAttribute(
+              'd',
+              `${outline.map((point, pointIndex) => `${pointIndex === 0 ? 'M' : 'L'} ${point.x} ${point.y}`).join(' ')} Z`,
+            );
+          const gradient = flow.querySelector(
+            `[data-autotune-gradient="${path.dataset.autotuneConnector}"]`,
+          )!;
+          for (const [name, value] of Object.entries({
+            x1: start.x,
+            y1: start.y,
+            x2: end.x,
+            y2: end.y,
+          }))
+            gradient.setAttribute(name, String(value));
+        });
+    };
+    updateConnectors();
+    if (typeof ResizeObserver === 'undefined') {
+      window.addEventListener('resize', updateConnectors);
+      return () => window.removeEventListener('resize', updateConnectors);
+    }
+    const observer = new ResizeObserver(updateConnectors);
+    observer.observe(flow);
+    cards.forEach((card) => observer.observe(card));
+    return () => observer.disconnect();
+  }, []);
 
   React.useEffect(() => {
     const flow = flowRef.current;
@@ -739,7 +966,7 @@ export function AutotuneEvolution() {
 
   return (
     <section
-      className="w-full py-12 px-margin bg-slate-50/70 border-b border-slate-200/70"
+      className="w-full py-12 px-margin bg-white border-b border-slate-200/70"
       id="autotune-evolution"
       data-home-design=""
       aria-label={translate({
@@ -874,7 +1101,52 @@ export function AutotuneEvolution() {
             className="xl:col-span-7 flex flex-col justify-between gap-3 relative z-10 w-full home-autotune-flow"
             ref={flowRef}
           >
-            <div className="flex justify-center w-full">
+            <svg
+              className="home-autotune-connectors"
+              aria-hidden="true"
+              focusable="false"
+            >
+              <defs>
+                {['1-2', '2-3', '3-4', '4-5', '5-1'].map((connection) => (
+                  <linearGradient
+                    key={connection}
+                    id={`${arrowId}-${connection}`}
+                    data-autotune-gradient={connection}
+                    gradientUnits="userSpaceOnUse"
+                  >
+                    <stop
+                      offset="0%"
+                      stopColor="var(--autotune-link-start)"
+                      stopOpacity="0"
+                    />
+                    <stop
+                      offset="48%"
+                      stopColor="var(--autotune-link-middle)"
+                    />
+                    <stop offset="100%" stopColor="var(--autotune-link-end)" />
+                  </linearGradient>
+                ))}
+              </defs>
+              {['1-2', '2-3', '3-4', '4-5', '5-1'].map((connection, index) => (
+                <React.Fragment key={connection}>
+                  <path
+                    className="home-autotune-guide"
+                    data-autotune-connector={connection}
+                  />
+                  <path
+                    className="home-autotune-link"
+                    data-autotune-ribbon={connection}
+                    fill={`url(#${arrowId}-${connection})`}
+                    style={
+                      {
+                        '--autotune-link-delay': `${index * -0.65}s`,
+                      } as React.CSSProperties
+                    }
+                  />
+                </React.Fragment>
+              ))}
+            </svg>
+            <div className="flex justify-center w-full home-autotune-row">
               <div
                 className="w-full max-w-sm bg-white/95 backdrop-blur rounded-xl border border-sky-200 shadow-sm p-2.5 home-autotune-step"
                 data-autotune-step="1"
@@ -941,7 +1213,7 @@ export function AutotuneEvolution() {
                 </div>
               </div>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-12 gap-2.5 items-center">
+            <div className="grid grid-cols-1 md:grid-cols-12 gap-2.5 items-center home-autotune-row">
               <div
                 className="md:col-span-4 bg-white/95 backdrop-blur rounded-xl border border-emerald-200/90 shadow-sm p-2.5 home-autotune-step"
                 data-autotune-step="5"
@@ -993,7 +1265,7 @@ export function AutotuneEvolution() {
                   </div>
                 </div>
               </div>
-              <div className="md:col-span-4 flex flex-col items-center justify-center text-center py-1">
+              <div className="md:col-span-4 flex flex-col items-center justify-center text-center py-1 home-autotune-core-panel">
                 <div className="relative w-32 h-32 rounded-full bg-gradient-to-b from-sky-100/80 via-white to-sky-50 border border-white shadow-md flex flex-col items-center justify-center p-2 text-center select-none home-autotune-core">
                   <div className="absolute -inset-1 rounded-full border border-dashed border-sky-300 animate-pulse pointer-events-none opacity-60"></div>
                   <div className="w-7 h-7 rounded-full bg-gradient-to-tr from-sky-600 to-cyan-500 text-white flex items-center justify-center shadow-sm mb-1">
@@ -1067,7 +1339,7 @@ export function AutotuneEvolution() {
                 </div>
               </div>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5 home-autotune-row home-autotune-bottom-row">
               <div
                 className="bg-white/95 backdrop-blur rounded-xl border border-teal-200/90 shadow-sm p-2.5 home-autotune-step"
                 data-autotune-step="4"
@@ -1195,235 +1467,59 @@ export function AutotuneEvolution() {
   );
 }
 export function Benchmarks() {
+  const { siteHref } = useSitePath();
+  const title = translate({
+    id: 'site.7da06f878c58',
+    message: '开箱即用，性能调优模型 Day-0 部署',
+  });
   return (
     <section
-      className="w-full py-space-xl px-margin bg-white border-b border-slate-200/70"
+      className="w-full py-space-xl px-margin bg-slate-50/70 border-b border-slate-200/70"
       id="benchmarks"
       data-home-design=""
-      aria-label={translate({
-        id: 'site.8b7aba25d266',
-        message: '透明可复现的真实实测',
-      })}
-      aria-description={translate({
-        id: 'site.a52a481c1137',
-        message:
-          '按设计稿展示的机制、配置与性能示例，不代表运行时状态、实测证明或服务保证。',
-      })}
+      aria-label={title}
     >
       <div className="max-w-7xl mx-auto flex flex-col gap-space-lg">
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-space-sm">
-          <div className="flex flex-col gap-space-xs max-w-2xl">
-            <span className="font-label-caps text-label-caps text-emerald-600 uppercase tracking-widest font-semibold">
-              {'Empirical Telemetry'}
-            </span>
-            <h2 className="font-headline-lg text-headline-lg text-slate-900 font-bold tracking-tight">
-              {translate({
-                id: 'site.d796c2f55900',
-                message: '\n              透明可复现的真实实测',
-              })}
-            </h2>
-            <p className="font-body-md text-body-md text-slate-600">
-              {translate({
-                id: 'site.c7ad3335dc85',
-                message:
-                  '公开完整的基准输入输出分布、硬件拓扑与权衡代价，每一次调优收益皆可复核。\n            ',
-              })}
-            </p>
-          </div>
-          <div className="flex items-center gap-space-xs text-slate-500 font-code-sm text-code-sm">
-            <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
-            <span>{'Verified on MLPerf & LLMBench harness'}</span>
-          </div>
-        </div>
-        <div className="w-full overflow-x-auto rounded-xl bg-white border border-slate-200 shadow-sm">
-          <table
-            className="w-full text-left font-body-md text-body-md"
-            aria-label={translate({
-              id: 'site.de57ea95aff6',
-              message: '设计稿性能实测对照示例',
+        <div className="flex flex-col gap-space-xs">
+          <span className="font-label-caps text-label-caps text-emerald-600 uppercase tracking-widest font-semibold">
+            {'Day-0 Deployment'}
+          </span>
+          <h2 className="font-headline-lg text-headline-lg text-slate-900 font-bold tracking-tight">
+            {title}
+          </h2>
+          <p className="font-body-md text-body-md text-slate-600">
+            {translate({
+              id: 'home.deployment.description',
+              message:
+                '在模型广场中选择模型与部署变体，使用已调优配置一键部署。',
             })}
-            data-design-example=""
-          >
-            <thead className="bg-slate-50 border-b border-slate-200 font-label-caps text-label-caps text-slate-600 uppercase tracking-wider">
-              <tr>
-                <th className="py-space-md px-space-md">
-                  {translate({
-                    id: 'site.0fb4c5c150d7',
-                    message: '模型与架构',
-                  })}
-                </th>
-                <th className="py-space-md px-space-md">
-                  {translate({ id: 'site.3df1589c059d', message: '硬件环境' })}
-                </th>
-                <th className="py-space-md px-space-md">
-                  {translate({
-                    id: 'site.6f219ec00819',
-                    message: '负载场景 (Prompt+Output)',
-                  })}
-                </th>
-                <th className="py-space-md px-space-md">
-                  {translate({
-                    id: 'site.192d279d8ca7',
-                    message: '吞吐对比 (Default vs Tuned)',
-                  })}
-                </th>
-                <th className="py-space-md px-space-md">
-                  {translate({ id: 'site.84db1df6e46f', message: '性能飞跃' })}
-                </th>
-                <th className="py-space-md px-space-md">
-                  {translate({
-                    id: 'site.616abf2ae0ac',
-                    message: '调优技术与代价说明',
-                  })}
-                </th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-100 font-code-sm text-code-sm text-slate-700">
-              <tr className="hover:bg-slate-50/80 transition-colors">
-                <td className="py-space-md px-space-md font-bold text-slate-900">
-                  {'MiMo-V2.5'}
-                </td>
-                <td className="py-space-md px-space-md text-slate-500">
-                  {'8 × NVIDIA H100'}
-                </td>
-                <td className="py-space-md px-space-md text-slate-600">
-                  {translate({
-                    id: 'site.29891663b1f6',
-                    message: '50k + 1.5k (长上下文)',
-                  })}
-                </td>
-                <td className="py-space-md px-space-md">
-                  <span className="text-slate-400">{'13,900'}</span>
-                  {' → '}
-                  <span className="text-sky-600 font-bold">
-                    {'30,600 tok/s'}
-                  </span>
-                </td>
-                <td className="py-space-md px-space-md">
-                  <span className="px-2 py-1 rounded bg-emerald-100 text-emerald-800 font-bold border border-emerald-200">
-                    {'+119.9%'}
-                  </span>
-                </td>
-                <td className="py-space-md px-space-md text-body-sm text-slate-600">
-                  {translate({
-                    id: 'site.37e08ff4ea29',
-                    message:
-                      '\n                  并发 4→26; TTFT 4.81s→7.66s (符合 SLO ≤ 8s); GPQA 精度微降 3.03% (显式折中)\n                ',
-                  })}
-                </td>
-              </tr>
-              <tr className="bg-slate-50/50 hover:bg-slate-50 transition-colors">
-                <td className="py-space-md px-space-md font-bold text-slate-900">
-                  {'DeepSeek-V4.1-Flash'}
-                </td>
-                <td className="py-space-md px-space-md text-slate-500">
-                  {'8 × NVIDIA H100'}
-                </td>
-                <td className="py-space-md px-space-md text-slate-600">
-                  {'50k + 1.5k / 8k + 1k'}
-                </td>
-                <td className="py-space-md px-space-md">
-                  <span className="text-slate-500 font-medium">
-                    {translate({
-                      id: 'site.b5e1c7101db6',
-                      message: '长文大幅跃升',
-                    })}
-                  </span>
-                  {translate({
-                    id: 'site.d138647f7bbb',
-                    message: ' / 常用平稳\n                ',
-                  })}
-                </td>
-                <td className="py-space-md px-space-md">
-                  <span className="px-2 py-1 rounded bg-emerald-100 text-emerald-800 font-bold border border-emerald-200">
-                    {'+89.5% / +5.0%'}
-                  </span>
-                </td>
-                <td className="py-space-md px-space-md text-body-sm text-slate-600">
-                  {translate({
-                    id: 'site.4f54906de742',
-                    message:
-                      '\n                  客观体现“负载改变收益改变”，Tuning Agent 针对超长上下文自适应调整 Chunk 分块\n                ',
-                  })}
-                </td>
-              </tr>
-              <tr className="hover:bg-slate-50/80 transition-colors">
-                <td className="py-space-md px-space-md font-bold text-slate-900">
-                  {'Qwen3.6-35B-A3B'}
-                </td>
-                <td className="py-space-md px-space-md text-slate-500">
-                  {'2 × NVIDIA H800'}
-                </td>
-                <td className="py-space-md px-space-md text-slate-600">
-                  {translate({
-                    id: 'site.f8ae6c58fa2d',
-                    message: 'Agentic (c=8 并发多轮)',
-                  })}
-                </td>
-                <td className="py-space-md px-space-md">
-                  <span className="text-slate-400">{'6,200'}</span>
-                  {' → '}
-                  <span className="text-sky-600 font-bold">
-                    {'8,016 tok/s'}
-                  </span>
-                </td>
-                <td className="py-space-md px-space-md">
-                  <span className="px-2 py-1 rounded bg-emerald-100 text-emerald-800 font-bold border border-emerald-200">
-                    {'+29.3%'}
-                  </span>
-                </td>
-                <td className="py-space-md px-space-md text-body-sm text-slate-600">
-                  {translate({
-                    id: 'site.0e0c1daadf85',
-                    message:
-                      '\n                  SGLang + FlashAttention-3 + FP8 + Chunked Prefill 32768 + extra_buffer 深度融合\n                ',
-                  })}
-                </td>
-              </tr>
-              <tr className="bg-slate-50/50 hover:bg-slate-50 transition-colors">
-                <td className="py-space-md px-space-md font-bold text-slate-900">
-                  {'GLM-5.3 (NVFP4)'}
-                </td>
-                <td className="py-space-md px-space-md text-slate-500">
-                  {'4 × NVIDIA B300'}
-                </td>
-                <td className="py-space-md px-space-md text-slate-600">
-                  {translate({
-                    id: 'site.7208c864516c',
-                    message: '全量生产仿真混合集',
-                  })}
-                </td>
-                <td className="py-space-md px-space-md">
-                  <span className="text-slate-500">
-                    {translate({
-                      id: 'site.2c837b9b1232',
-                      message: '基线对比',
-                    })}
-                  </span>
-                  {' → '}
-                  <span className="text-sky-600 font-bold">
-                    {translate({
-                      id: 'site.f517c4451237',
-                      message: '最高峰值',
-                    })}
-                  </span>
-                </td>
-                <td className="py-space-md px-space-md">
-                  <span className="px-2 py-1 rounded bg-sky-100 text-sky-800 font-bold border border-sky-200">
-                    {'+195.3%'}
-                  </span>
-                </td>
-                <td className="py-space-md px-space-md text-body-sm text-slate-600">
-                  {translate({
-                    id: 'site.e459da12b0aa',
-                    message:
-                      '\n                  Tuning Agent 搜索至最优 TP4 单节点拓扑，集成 modelopt_fp4 极致内核\n                ',
-                  })}
-                </td>
-              </tr>
-            </tbody>
-          </table>
+          </p>
         </div>
+        <figure className="home-console-preview">
+          <div
+            className="home-console-scroller"
+            role="region"
+            aria-label={translate({
+              id: 'home.deployment.previewRegion',
+              message: '模型广场截图，可横向滚动查看',
+            })}
+            tabIndex={0}
+          >
+            <img
+              className="home-console-screenshot"
+              src={siteHref('/screenshots/console-model-catalog.png')}
+              alt={translate({
+                id: 'home.deployment.screenshotAlt',
+                message:
+                  'ModelSphere Console 模型广场：浏览模型和部署变体，DeepSeek 模型卡片展示调优 +50.7%、+58% 的性能提升标签。',
+              })}
+              width={2568}
+              height={1528}
+              loading="lazy"
+              decoding="async"
+            />
+          </div>
+        </figure>
       </div>
     </section>
   );
@@ -1469,7 +1565,7 @@ export function GetStarted() {
               })}
             </p>
           </div>
-          <div className="flex flex-wrap items-center justify-center gap-4 mb-8">
+          <div className="flex flex-wrap items-center justify-center gap-4">
             <a
               href={siteHref(
                 String(siteConfig.customFields?.docsQuickstartHref ?? '/docs'),
@@ -1507,19 +1603,6 @@ export function GetStarted() {
                 })}
               </span>
             </a>
-          </div>
-          <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-white/80 font-code-sm text-xs sm:text-sm">
-            <span className="inline-flex items-center gap-1.5">
-              {'✓ Apache-2.0 Open Source'}
-            </span>
-            <span className="opacity-60">{'•'}</span>
-            <span className="inline-flex items-center gap-1.5">
-              {'✓ Helm Chart 1-Click Ready'}
-            </span>
-            <span className="opacity-60">{'•'}</span>
-            <span className="inline-flex items-center gap-1.5">
-              {'✓ Zero Cloud Lock-in'}
-            </span>
           </div>
         </div>
       </div>

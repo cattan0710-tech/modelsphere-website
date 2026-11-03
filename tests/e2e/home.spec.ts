@@ -485,7 +485,7 @@ async function expectReadableHome(page: Page): Promise<void> {
   );
   for (const id of sectionIds)
     await expect(page.locator(`${home} section#${id}`)).toBeVisible();
-  await expect(page.locator(`${home} #benchmarks table`)).toHaveCount(1);
+  await expect(page.locator(`${home} #benchmarks img`)).toHaveCount(1);
   await expect(page.locator(reveal)).not.toHaveCount(0);
   expect(
     await page.locator(reveal).evaluateAll((elements) =>

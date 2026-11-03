@@ -146,6 +146,26 @@ const capabilities: {
   linkLabel: string;
 }[] = [
   {
+    id: 'day-one',
+    icon: 'rocket_launch',
+    title: translate({
+      id: 'site.7da06f878c58',
+      message: '开箱即用，性能调优模型 Day-0 部署',
+    }),
+    tag: 'Zero-Day Ready',
+    tone: 'green',
+    description: translate({
+      id: 'site.eb1398dad3b6',
+      message:
+        '紧跟快速演进的模型生态，通过我们的推理性能优化社区，第一时间完成新模型适配和调优，让最新大模型能够快速导入、配置并部署到生产环境。',
+    }),
+    href: sources.catalog,
+    linkLabel: translate({
+      id: 'site.5139a1fd0121',
+      message: '浏览模型与部署配方',
+    }),
+  },
+  {
     id: 'architecture',
     icon: 'settings',
     title: translate({
@@ -183,26 +203,6 @@ const capabilities: {
     }),
   },
   {
-    id: 'day-one',
-    icon: 'rocket_launch',
-    title: translate({
-      id: 'site.7da06f878c58',
-      message: '第一时间性能调优和部署',
-    }),
-    tag: 'Zero-Day Ready',
-    tone: 'green',
-    description: translate({
-      id: 'site.eb1398dad3b6',
-      message:
-        '紧跟快速演进的模型生态，通过我们的推理性能优化社区，第一时间完成新模型适配和调优，让最新大模型能够快速导入、配置并部署到生产环境。',
-    }),
-    href: sources.catalog,
-    linkLabel: translate({
-      id: 'site.5139a1fd0121',
-      message: '浏览模型与部署配方',
-    }),
-  },
-  {
     id: 'evolution',
     icon: 'science',
     title: translate({ id: 'site.4229cb7a627b', message: '性能优化持续演进' }),
@@ -220,8 +220,8 @@ const capabilities: {
     }),
   },
 ];
-function CapabilityDetail({ index }: { index: number }) {
-  if (index === 0)
+function CapabilityDetail({ id }: { id: string }) {
+  if (id === 'architecture')
     return (
       <div
         className={styles.deploymentDetail}
@@ -256,7 +256,7 @@ function CapabilityDetail({ index }: { index: number }) {
         </div>
       </div>
     );
-  if (index === 1)
+  if (id === 'hardware')
     return (
       <div className={styles.hardwareDetail}>
         {[
@@ -273,7 +273,7 @@ function CapabilityDetail({ index }: { index: number }) {
         <span className={styles.hardwareMore}>...</span>
       </div>
     );
-  if (index === 2)
+  if (id === 'day-one')
     return (
       <div
         className={styles.catalogDetail}
@@ -354,8 +354,12 @@ function CapabilityDetail({ index }: { index: number }) {
     </div>
   );
 }
-function CapabilityDescription({ index }: { index: number }) {
-  if (index !== 2) return <>{capabilities[index].description}</>;
+function CapabilityDescription({
+  capability,
+}: {
+  capability: (typeof capabilities)[number];
+}) {
+  if (capability.id !== 'day-one') return <>{capability.description}</>;
   return (
     <>
       {translate({
@@ -549,7 +553,7 @@ export default function Home() {
               data-home-reveal="comparison"
               data-home-pair=""
             >
-              {capabilities.map((card, index) => (
+              {capabilities.map((card) => (
                 <article
                   key={card.title}
                   className={styles.capabilityCard}
@@ -591,20 +595,20 @@ export default function Home() {
                     <span className={styles.badge}>{card.tag}</span>
                   </div>
                   <p>
-                    <CapabilityDescription index={index} />
+                    <CapabilityDescription capability={card} />
                   </p>
                   <div className={styles.capabilityDetail}>
-                    <CapabilityDetail index={index} />
+                    <CapabilityDetail id={card.id} />
                   </div>
                 </article>
               ))}
             </div>
           </div>
         </section>
+        <Benchmarks />
         <FaultTolerance />
         <QosScaling />
         <AutotuneEvolution />
-        <Benchmarks />
         <GetStarted />
       </main>
     </Layout>

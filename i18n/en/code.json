@@ -1,4 +1,32 @@
 {
+  "community.closeQr": {
+    "message": "Close QR code",
+    "description": "关闭二维码"
+  },
+  "community.joinQrDescription": {
+    "message": "Scan the QR code with WeChat to join the technical group.",
+    "description": "使用微信扫描二维码加入技术交流群。"
+  },
+  "community.footerNavigation": {
+    "message": "Footer navigation",
+    "description": "页脚导航"
+  },
+  "community.footerBrowse": {
+    "message": "Explore",
+    "description": "浏览网站"
+  },
+  "community.footerDocs": {
+    "message": "Get started",
+    "description": "文档与上手"
+  },
+  "community.footerParticipate": {
+    "message": "Community",
+    "description": "社区参与"
+  },
+  "community.footerGroup": {
+    "message": "Technical group",
+    "description": "技术交流群"
+  },
   "site.113cc63b2d9e": {
     "message": "Catalog sources and reliability",
     "description": "目录数据来源与可靠性"
@@ -140,8 +168,8 @@
     "description": "查看硬件与引擎说明"
   },
   "site.7da06f878c58": {
-    "message": "Tune and deploy new models immediately",
-    "description": "第一时间性能调优和部署"
+    "message": "Deploy performance-tuned models on Day 0, out of the box",
+    "description": "开箱即用，性能调优模型 Day-0 部署"
   },
   "site.eb1398dad3b6": {
     "message": "Keep pace with the model ecosystem. Our inference optimization community adapts and tunes new models so you can import, configure, and deploy them to production quickly.",
@@ -1328,8 +1356,8 @@
     "description": "模型与配方详情"
   },
   "site.bdddd3c76973": {
-    "message": "Explore recipes, deployment configurations, version history, and benchmarks.",
-    "description": "查阅模型配方、部署配置、版本历史与性能测评。"
+    "message": "Explore recipes, deployment configurations, and benchmarks.",
+    "description": "查阅模型配方、部署配置与性能测评。"
   },
   "site.e0af03d94875": {
     "message": "Model details",
@@ -1444,8 +1472,8 @@
     "description": "性能对照"
   },
   "site.d1e4dea594b6": {
-    "message": "No comparison report is available for this recipe. Explore the deployment configuration and version history.",
-    "description": "该配方暂无可用对照报告，可继续查看部署配置与版本历史。"
+    "message": "No comparison report is available for this recipe. Explore the deployment configuration.",
+    "description": "该配方暂无可用对照报告，可继续查看部署配置。"
   },
   "site.bb58d709f19d": {
     "message": "Version history",
@@ -1500,8 +1528,8 @@
     "description": "原始性能对照报告"
   },
   "site.d4db040011ae": {
-    "message": "Browse ModelSphere deployment recipes, hardware requirements, version history, and original performance reports.",
-    "description": "浏览 ModelSphere 模型部署配方、硬件要求、版本历史与源性能报告。"
+    "message": "Browse ModelSphere deployment recipes, hardware requirements, and original performance reports.",
+    "description": "浏览 ModelSphere 模型部署配方、硬件要求与源性能报告。"
   },
   "site.5246cfab3d47": {
     "message": "Model Catalog",
@@ -1642,10 +1670,6 @@
   "site.a0dc79c85d61": {
     "message": "Prefill / Decode disaggregation",
     "description": "Prefill / Decode 分离"
-  },
-  "site.4b3bdd5f1c7e": {
-    "message": "Hide deprecated records",
-    "description": "隐藏已弃用记录"
   },
   "site.5d82123dfc9f": {
     "message": "Build-time baseline catalog, version ",
@@ -1959,21 +1983,17 @@
     "message": "Search inference hyperparameters in parallel during off-peak hours",
     "description": "夜间低峰期并发搜索更优推理超参"
   },
-  "site.8b7aba25d266": {
-    "message": "Transparent, reproducible measurements",
-    "description": "透明可复现的真实实测"
+  "home.deployment.description": {
+    "message": "Choose a model and deployment variant in the model catalog, then deploy a tuned configuration with one click.",
+    "description": "在模型广场中选择模型与部署变体，使用已调优配置一键部署。"
   },
-  "site.d796c2f55900": {
-    "message": "Transparent, reproducible measurements",
-    "description": "\n              透明可复现的真实实测"
+  "home.deployment.previewRegion": {
+    "message": "Console model catalog screenshot, scroll horizontally to explore",
+    "description": "模型广场截图，可横向滚动查看"
   },
-  "site.c7ad3335dc85": {
-    "message": "Publish benchmark input and output distributions, hardware topology, and trade-offs so every tuning gain can be verified.",
-    "description": "公开完整的基准输入输出分布、硬件拓扑与权衡代价，每一次调优收益皆可复核。\n            "
-  },
-  "site.de57ea95aff6": {
-    "message": "Performance comparison design examples",
-    "description": "设计稿性能实测对照示例"
+  "home.deployment.screenshotAlt": {
+    "message": "ModelSphere Console model catalog: browse models and deployment variants, with DeepSeek cards showing tuning gains of +50.7% and +58%.",
+    "description": "ModelSphere Console 模型广场：浏览模型和部署变体，DeepSeek 模型卡片展示调优 +50.7%、+58% 的性能提升标签。"
   },
   "site.0fb4c5c150d7": {
     "message": "Model and architecture",
