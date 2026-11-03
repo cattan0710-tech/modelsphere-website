@@ -1,0 +1,302 @@
+.architecture {
+  min-width: 0;
+  margin: 0;
+  color: var(--color-text-primary);
+}
+
+.caption {
+  margin-bottom: 24px;
+  text-align: center;
+}
+.architecture .caption h2 {
+  margin: 0 0 10px;
+  font-size: clamp(20px, 2.3vw, 30px);
+  font-weight: 750;
+  line-height: 1.4;
+  letter-spacing: -0.025em;
+}
+.caption p,
+.platformHeader p {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.ecosystem,
+.engines {
+  display: grid;
+  grid-template-columns: 120px minmax(0, 1fr);
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  border: 1px solid
+    color-mix(
+      in srgb,
+      var(--color-home-capability-dot-indigo) 16%,
+      var(--color-border-default)
+    );
+  border-radius: 10px;
+  background: color-mix(
+    in srgb,
+    var(--color-brand-secondary) 3%,
+    var(--color-background-subtle)
+  );
+}
+.architecture .rowTitle {
+  margin: 0;
+  font-size: 17px;
+  font-weight: 650;
+  line-height: 1.5;
+}
+.applications,
+.accelerators,
+.engineList,
+.capabilities {
+  display: grid;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  gap: 12px;
+  list-style: none;
+}
+.applications {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+.accelerators {
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+}
+.engineList {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+.chip {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  min-width: 0;
+  min-height: 48px;
+  padding: 8px 10px;
+  border: 1px solid
+    color-mix(
+      in srgb,
+      var(--color-home-capability-dot-indigo) 12%,
+      var(--color-border-default)
+    );
+  border-radius: 8px;
+  background: var(--color-background-surface);
+  font-size: 14px;
+  font-weight: 550;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+.chip img {
+  display: block;
+  flex: 0 0 28px;
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+}
+.icon {
+  display: block;
+  flex: 0 0 21px;
+  width: 21px;
+  height: 21px;
+}
+
+.connector {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 12px minmax(0, 1fr);
+  align-items: center;
+  column-gap: 14px;
+  min-height: 46px;
+  padding-block: 3px;
+  color: var(--color-home-capability-dot-indigo);
+}
+.connector svg {
+  display: block;
+  grid-column: 2;
+  grid-row: 1;
+  width: 12px;
+  height: 40px;
+}
+.connector p {
+  grid-column: 3;
+  grid-row: 1;
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.5;
+}
+
+.platform {
+  min-width: 0;
+  padding: 22px;
+  border: 2px solid var(--color-home-capability-dot-indigo);
+  border-radius: 16px;
+  background: linear-gradient(
+    135deg,
+    color-mix(
+      in srgb,
+      var(--color-home-capability-dot-indigo) 6%,
+      var(--color-background-surface)
+    ),
+    var(--color-background-surface)
+  );
+  box-shadow: 0 8px 24px
+    color-mix(in srgb, var(--color-home-capability-dot-indigo) 6%, transparent);
+}
+.platformHeader {
+  margin-bottom: 22px;
+  text-align: center;
+}
+.platformTitle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 3px;
+}
+.platformTitle img {
+  flex: 0 0 52px;
+  width: 52px;
+  height: 52px;
+  object-fit: contain;
+}
+.architecture .platformTitle h3 {
+  margin: 0;
+  font-size: clamp(22px, 2.5vw, 32px);
+  font-weight: 750;
+  line-height: 1.25;
+  letter-spacing: -0.025em;
+}
+.capabilities {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+.capabilities li {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  min-width: 0;
+  min-height: 64px;
+  padding: 12px 10px;
+  border: 1px solid
+    color-mix(
+      in srgb,
+      var(--color-brand-secondary) 22%,
+      var(--color-border-default)
+    );
+  border-radius: 8px;
+  background: color-mix(
+    in srgb,
+    var(--color-brand-secondary) 11%,
+    var(--color-background-surface)
+  );
+  font-size: clamp(13px, 1.15vw, 17px);
+  font-weight: 600;
+  line-height: 1.5;
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+.capabilities li::before {
+  content: '';
+  flex: 0 0 6px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--color-brand-secondary);
+}
+.engines {
+  grid-template-columns: 160px minmax(0, 1fr);
+  padding: 10px 12px;
+}
+.engines .chip {
+  min-height: 42px;
+}
+
+@media (max-width: 1099px) {
+  .accelerators {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 899px) {
+  .ecosystem {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .capabilities {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .applications {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .architecture .rowTitle {
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 639px) {
+  .architecture .caption h2 {
+    font-size: 20px;
+  }
+  .caption p,
+  .platformHeader p {
+    font-size: 12px;
+  }
+  .platform {
+    padding: 16px 12px;
+    border-radius: 12px;
+  }
+  .platformHeader {
+    margin-bottom: 16px;
+  }
+  .platformTitle {
+    gap: 8px;
+  }
+  .platformTitle img {
+    flex-basis: 38px;
+    width: 38px;
+    height: 38px;
+  }
+  .applications,
+  .accelerators {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .applications > :last-child {
+    grid-column: 1 / -1;
+  }
+  .engines {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .capabilities,
+  .engineList {
+    gap: 8px;
+  }
+  .chip {
+    gap: 6px;
+    padding-inline: 8px;
+    font-size: 12px;
+  }
+  .capabilities li {
+    gap: 6px;
+    padding: 10px 8px;
+    font-size: 13px;
+  }
+  .connector {
+    column-gap: 10px;
+  }
+  .connector p {
+    font-size: 11px;
+  }
+}
+
+@media print {
+  .architecture {
+    break-inside: avoid;
+  }
+  .platform {
+    box-shadow: none;
+  }
+}

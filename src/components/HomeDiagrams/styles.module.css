@@ -1,4 +1,3 @@
-.architecture,
 .mechanism,
 .autotune {
   color: var(--color-text-primary);
@@ -6,187 +5,6 @@
   min-width: 0;
 }
 
-@font-face {
-  font-family: 'ModelSphere Architecture Symbols';
-  font-style: normal;
-  font-weight: 400;
-  font-display: block;
-  src: url('../../../static/fonts/material-symbols-architecture.ttf')
-    format('truetype');
-}
-
-.architecture {
-  padding: 24px 16px;
-  border: 1px solid var(--color-border-default);
-  border-radius: var(--radius-feature);
-  background: var(--color-background-surface);
-  box-shadow:
-    0 10px 15px -3px rgb(0 0 0 / 10%),
-    0 4px 6px -4px rgb(0 0 0 / 10%);
-}
-
-.ecosystem {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 16px;
-  margin-bottom: 24px;
-}
-
-.ecosystemTier {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  min-width: 0;
-  padding: 16px;
-  border: 1px solid
-    color-mix(in srgb, var(--color-border-default) 90%, transparent);
-  border-radius: 6px;
-  background: var(--color-background-subtle);
-  box-shadow: 0 1px 2px rgb(0 0 0 / 5%);
-  transition: border-color 150ms;
-}
-.ecosystemTier:hover {
-  border-color: var(--color-home-architecture-hover-border);
-}
-.ecosystemTier:nth-child(2) {
-  border-color: var(--color-home-tag-active-border);
-  background: color-mix(
-    in srgb,
-    var(--color-feedback-info-background) 60%,
-    transparent
-  );
-}
-
-.tierTitle {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  font-family: var(--font-heading);
-  font-size: 18px;
-  line-height: 26px;
-  letter-spacing: -0.01em;
-  color: var(--color-home-architecture-heading);
-}
-.tierTitle strong {
-  font-weight: 600;
-}
-.diagramIcon {
-  display: inline-block;
-  flex: 0 0 22px;
-  width: 22px;
-  height: 22px;
-  overflow: hidden;
-  color: var(--color-brand-primary);
-  font-family: 'ModelSphere Architecture Symbols';
-  font-size: 22px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: 1;
-  letter-spacing: normal;
-  text-transform: none;
-  white-space: nowrap;
-  word-wrap: normal;
-  font-feature-settings: 'liga';
-  font-variation-settings:
-    'FILL' 0,
-    'wght' 400,
-    'GRAD' 0;
-  -webkit-font-smoothing: antialiased;
-}
-.ecosystemTier:nth-child(2) .diagramIcon {
-  color: var(--color-home-success);
-}
-.ecosystemTier p {
-  margin: 0;
-  color: var(--color-text-secondary);
-  font-size: 12px;
-  line-height: 18px;
-  letter-spacing: 0.005em;
-}
-
-.topology {
-  padding: 16px;
-  background: var(--color-background-subtle);
-  border: 1px solid var(--color-border-default);
-  border-radius: 12px;
-  box-shadow: 0 1px 2px rgb(0 0 0 / 5%);
-}
-.topologyHeading {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 4px;
-  margin-bottom: 12px;
-  font-family: var(--font-heading);
-  font-size: 18px;
-  line-height: 26px;
-  letter-spacing: -0.01em;
-  color: var(--color-home-architecture-heading);
-}
-.topologyHeading > strong {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  font-weight: 600;
-}
-.topologyHeading .diagramIcon {
-  width: 20px;
-  height: 20px;
-  flex-basis: 20px;
-  font-size: 20px;
-}
-.topologyStatus {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  color: var(--color-text-muted);
-  font-family: var(--font-code);
-  font-size: 12px;
-  line-height: 16px;
-  letter-spacing: 0.01em;
-}
-.topologyStatus::before {
-  content: '';
-  width: 6px;
-  height: 6px;
-  flex-shrink: 0;
-  border-radius: 50%;
-  background: var(--color-home-tag-green);
-}
-@keyframes topologyPulse {
-  0%,
-  100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.5;
-  }
-}
-@media (prefers-reduced-motion: no-preference) {
-  .topologyStatus::before {
-    animation: topologyPulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-  }
-}
-.topologyBody {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-  padding: 16px;
-  background: var(--color-home-architecture-image-background);
-  border: 1px solid
-    color-mix(in srgb, var(--color-border-default) 80%, transparent);
-  border-radius: 6px;
-  box-shadow: inset 0 2px 4px rgb(0 0 0 / 5%);
-}
-.topologyBody img {
-  display: block;
-  width: 100%;
-  height: auto;
-  max-width: 100%;
-  border-radius: 6px;
-  object-fit: contain;
-}
 .autotuneSteps {
   margin: 0;
   padding: 0;
@@ -596,20 +414,7 @@
   line-height: 1.7;
 }
 
-@media (max-width: 639px) {
-  .topologyHeading {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-  .topologyBody {
-    padding: 8px;
-  }
-}
 @media (max-width: 767px) {
-  .ecosystem {
-    grid-template-columns: 1fr;
-  }
-
   .mechanism {
     padding: 12px;
   }
@@ -685,7 +490,6 @@
 }
 
 @media print {
-  .architecture,
   .mechanism,
   .autotuneStep {
     box-shadow: none;

@@ -2493,5 +2493,109 @@
   "community.riseunionLogo": {
     "message": "RiseUnion logo",
     "description": "睿思智联 RiseUnion Logo"
+  },
+  "home.architecture.knowledge": {
+    "message": "Enterprise knowledge base",
+    "description": "企业知识库"
+  },
+  "home.architecture.agents": {
+    "message": "Business agents",
+    "description": "业务智能体"
+  },
+  "home.architecture.deploy": {
+    "message": "Model deployment & tuning",
+    "description": "模型部署与调优"
+  },
+  "home.architecture.routing": {
+    "message": "Cache-aware request routing",
+    "description": "请求缓存感知路由"
+  },
+  "home.architecture.throttling": {
+    "message": "Dynamic rate limiting",
+    "description": "动态限流"
+  },
+  "home.architecture.pd": {
+    "message": "Prefill/Decode separation",
+    "description": "PD 分离部署"
+  },
+  "home.architecture.cache": {
+    "message": "Three-tier KV cache",
+    "description": "三级 KV 缓存"
+  },
+  "home.architecture.scaling": {
+    "message": "Quality-based autoscaling",
+    "description": "基于服务质量的自动扩缩容"
+  },
+  "home.architecture.continuation": {
+    "message": "Automatic stream resumption",
+    "description": "服务断流自动续写"
+  },
+  "home.architecture.tuning": {
+    "message": "Tuning Agent optimization",
+    "description": "Tuning Agent 持续调优"
+  },
+  "home.architecture.ascend": {
+    "message": "Huawei Ascend",
+    "description": "华为昇腾"
+  },
+  "home.architecture.iluvatar": {
+    "message": "Iluvatar",
+    "description": "天数智芯"
+  },
+  "home.architecture.moore": {
+    "message": "Moore Threads",
+    "description": "摩尔线程"
+  },
+  "home.architecture.hygon": {
+    "message": "Hygon",
+    "description": "海光"
+  },
+  "home.architecture.nvidia": {
+    "message": "NVIDIA",
+    "description": "英伟达 NVIDIA"
+  },
+  "home.architecture.moreChips": {
+    "message": "More AI chips",
+    "description": "更多 AI 芯片"
+  },
+  "home.architecture.engines": {
+    "message": "Integrated inference engines",
+    "description": "集成推理引擎"
+  },
+  "home.architecture.title": {
+    "message": "ModelSphere: connecting applications and AI accelerators",
+    "description": "ModelSphere：连接应用与异构算力的推理平台"
+  },
+  "home.architecture.subtitle": {
+    "message": "Connect applications to heterogeneous compute with unified inference orchestration and optimization",
+    "description": "上接应用生态，下接多元算力，统一推理调度与性能优化"
+  },
+  "home.architecture.applications": {
+    "message": "Applications",
+    "description": "应用生态"
+  },
+  "home.architecture.api": {
+    "message": "Standard API access",
+    "description": "标准 API 接入"
+  },
+  "home.architecture.core": {
+    "message": "Inference orchestration & optimization",
+    "description": "推理调度与性能优化核心"
+  },
+  "home.architecture.engineManagement": {
+    "message": "Unified deployment & service management",
+    "description": "统一部署与服务治理"
+  },
+  "home.architecture.moreEngines": {
+    "message": "More engines",
+    "description": "更多引擎"
+  },
+  "home.architecture.hardwareManagement": {
+    "message": "Hardware resource management & scheduling",
+    "description": "异构资源纳管与调度"
+  },
+  "home.architecture.hardware": {
+    "message": "AI accelerators",
+    "description": "异构算力"
   }
 }
