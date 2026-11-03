@@ -220,6 +220,7 @@ if (process.env.TEST_DOCS_MODE === 'content') {
     for (const javaScriptEnabled of [true, false]) {
       const context = await browser.newContext({
         javaScriptEnabled,
+        locale: 'zh-CN',
         viewport: { width: 390, height: 844 },
       });
       try {

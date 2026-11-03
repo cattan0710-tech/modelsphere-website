@@ -252,7 +252,8 @@ test('without JavaScript every community section and native link remains availab
   try {
     const page = await context.newPage();
     await page.goto('/community');
-    await expect(page.locator('main section')).toHaveCount(5);
+    await expect(page.locator('main section')).toHaveCount(4);
+    await expect(page.locator('#community-calendar')).toHaveCount(0);
     await expect(page.locator('[data-home-pending]')).toHaveCount(0);
     await expect(
       page.getByRole('link', { name: '@imneov', exact: true }),

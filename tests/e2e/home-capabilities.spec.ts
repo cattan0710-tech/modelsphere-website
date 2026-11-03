@@ -12,9 +12,9 @@ test('four capability cards restore the selected Stitch copy, icons, colors and 
   const cards = page.locator(cardsSelector);
   await expect(cards).toHaveCount(4);
   await expect(cards.locator('h3')).toHaveText([
+    '开箱即用，性能调优模型 Day-0 部署',
     '开箱即用，面向生产',
     '统一支持多种异构 AI 芯片',
-    '第一时间性能调优和部署',
     '性能优化持续演进',
   ]);
   for (const text of [
@@ -23,9 +23,9 @@ test('four capability cards restore the selected Stitch copy, icons, colors and 
     '基于服务质量的动态限流算法',
     'TTFT < 10s, OPTS > 20',
   ])
-    await expect(cards.nth(0).getByText(text, { exact: true })).toBeVisible();
-  for (const text of ['华为昇腾', '天数智芯', '摩尔线程', '海光 DCU', '...'])
     await expect(cards.nth(1).getByText(text, { exact: true })).toBeVisible();
+  for (const text of ['华为昇腾', '天数智芯', '摩尔线程', '海光 DCU', '...'])
+    await expect(cards.nth(2).getByText(text, { exact: true })).toBeVisible();
   for (const text of [
     '即日认证模型库',
     '100% 官方适配通过',
@@ -36,7 +36,7 @@ test('four capability cards restore the selected Stitch copy, icons, colors and 
     'MiniMax-M3',
     'GLM-5.3-Flash',
   ])
-    await expect(cards.nth(2).getByText(text, { exact: true })).toBeVisible();
+    await expect(cards.nth(0).getByText(text, { exact: true })).toBeVisible();
   for (const text of [
     '相对吞吐（优化后=100%）',
     '较基准提升约285%',
@@ -47,7 +47,7 @@ test('four capability cards restore the selected Stitch copy, icons, colors and 
   ])
     await expect(cards.nth(3).getByText(text, { exact: true })).toBeVisible();
   await expect(
-    cards.nth(2).getByRole('link', { name: '推理性能优化社区' }),
+    cards.nth(0).getByRole('link', { name: '推理性能优化社区' }),
   ).toHaveAttribute('href', '#benchmarks');
   const measured = await cards.evaluateAll((elements) =>
     elements.map((card) => {
@@ -68,14 +68,14 @@ test('four capability cards restore the selected Stitch copy, icons, colors and 
     }),
   );
   expect(measured.map((card) => card.glyph)).toEqual([
+    'rocket_launch',
     'settings',
     'bolt',
-    'rocket_launch',
     'science',
   ]);
   expect(measured.map((card) => card.iconColor)).toEqual([
-    'rgb(2, 132, 199)',
     'rgb(5, 150, 105)',
+    'rgb(2, 132, 199)',
     'rgb(5, 150, 105)',
     'rgb(217, 119, 6)',
   ]);

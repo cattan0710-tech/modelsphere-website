@@ -1,9 +1,9 @@
 import { expect, test } from '@playwright/test';
 
 const tags = [
+  '开箱即用，性能调优模型 Day-0 部署',
   '开箱即用，面向生产',
   '统一支持多种异构 AI 芯片',
-  '第一时间性能调优和部署',
   '性能优化持续演进',
 ];
 const lead =
@@ -90,9 +90,9 @@ test('home restores the selected Stitch screen copy, gradient and desktop propor
   expect(measured.tagTop).toBe(24);
   expect(measured.tagHeights).toEqual([26, 26, 26, 26]);
   expect(measured.dots).toEqual([
+    'rgb(2, 132, 199)',
     'rgb(16, 185, 129)',
     'rgb(6, 182, 212)',
-    'rgb(2, 132, 199)',
     'rgb(2, 132, 199)',
   ]);
   expect(measured.titleTop).toBeCloseTo(130, 0);
@@ -138,15 +138,15 @@ test('only the two source tag dots animate and reduced motion keeps both static'
       }),
     );
   const active = await signals();
-  expect(active[0].name).not.toBe('none');
-  expect(active[0].duration).toBe('2s');
-  expect(active[0].frames.some((frame) => Number(frame.opacity) === 0.5)).toBe(
+  expect(active[1].name).not.toBe('none');
+  expect(active[1].duration).toBe('2s');
+  expect(active[1].frames.some((frame) => Number(frame.opacity) === 0.5)).toBe(
     true,
   );
-  expect(active[1].name).toBe('none');
+  expect(active[0].name).toBe('none');
   expect(active[2].name).toBe('none');
   expect(active[3].name).not.toBe('none');
-  expect(active[3].name).not.toBe(active[0].name);
+  expect(active[3].name).not.toBe(active[1].name);
   expect(active[3].duration).toBe('1s');
   expect(
     active[3].frames.some(

@@ -58,27 +58,24 @@
   margin: 0;
   overflow-wrap: normal;
 }
-/* Keep the source table's column proportions independent of fallback fonts. */
-[data-home-design]#benchmarks table {
-  table-layout: fixed;
+[data-home-design] .home-console-preview {
+  min-width: 0;
+  overflow: hidden;
 }
-[data-home-design]#benchmarks th:nth-child(1) {
-  width: calc(100% * 148.53125 / 1214);
+[data-home-design] .home-console-scroller {
+  overflow-x: auto;
 }
-[data-home-design]#benchmarks th:nth-child(2) {
-  width: calc(100% * 121.5 / 1214);
+[data-home-design] .home-console-scroller:focus-visible {
+  outline: 2px solid var(--color-home-primary);
+  outline-offset: -3px;
 }
-[data-home-design]#benchmarks th:nth-child(3) {
-  width: calc(100% * 176.15625 / 1214);
-}
-[data-home-design]#benchmarks th:nth-child(4) {
-  width: calc(100% * 175.578125 / 1214);
-}
-[data-home-design]#benchmarks th:nth-child(5) {
-  width: calc(100% * 136.6875 / 1214);
-}
-[data-home-design]#benchmarks th:nth-child(6) {
-  width: calc(100% * 455.546875 / 1214);
+[data-home-design] .home-console-screenshot {
+  width: 100%;
+  min-width: 900px;
+  max-width: none;
+  height: auto;
+  /* Hide the capture's baked-in shadow without re-encoding the original PNG. */
+  clip-path: inset(0 0.5% 1.25% 0 round 12px);
 }
 [data-home-design] :is(tr, th, td) {
   border-width: 0;
@@ -1930,8 +1927,82 @@
   background: var(--color-home-autotune-background);
   pointer-events: none;
 }
+[data-home-design]#autotune-evolution .p-3\.5.items-start {
+  align-items: center;
+}
+[data-home-design]#autotune-evolution .p-3\.5.items-start > .mt-0\.5 {
+  margin-top: 0;
+}
 [data-home-design] .home-autotune-flow {
   --autotune-cycle: 20s;
+  gap: 32px;
+}
+[data-home-design] .home-autotune-bottom-row {
+  column-gap: 48px;
+}
+[data-home-design] .home-autotune-connectors {
+  --autotune-link-start: color-mix(
+    in srgb,
+    rgb(var(--color-home-source-0d9488-rgb)) 62%,
+    #cbd5e1
+  );
+  --autotune-link-middle: color-mix(
+    in srgb,
+    rgb(var(--color-home-source-0284c7-rgb)) 64%,
+    #cbd5e1
+  );
+  --autotune-link-end: color-mix(
+    in srgb,
+    rgb(var(--color-home-source-4f46e5-rgb)) 54%,
+    #cbd5e1
+  );
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+[data-home-design] .home-autotune-guide {
+  fill: none;
+  stroke: none;
+}
+[data-home-design] .home-autotune-link {
+  stroke: none;
+  opacity: 0.92;
+  filter: drop-shadow(
+    0 0 3px color-mix(in srgb, var(--autotune-link-middle) 24%, transparent)
+  );
+  animation: homeAutotuneLinkBreath 5.6s ease-in-out infinite;
+  animation-delay: var(--autotune-link-delay);
+  animation-play-state: paused;
+}
+@keyframes homeAutotuneLinkBreath {
+  0%,
+  100% {
+    opacity: 0.72;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+@media (max-width: 767px) {
+  [data-home-design] .home-autotune-flow {
+    display: grid;
+    gap: 28px;
+    padding-left: 24px;
+  }
+  [data-home-design] .home-autotune-row {
+    display: contents;
+  }
+  [data-home-design] .home-autotune-core-panel {
+    order: 0;
+  }
+  [data-home-design] .home-autotune-step {
+    order: var(--autotune-order);
+    min-width: 0;
+  }
 }
 [data-home-design] .home-autotune-step {
   position: relative;
@@ -1951,22 +2022,27 @@
   animation-play-state: paused;
 }
 [data-home-design] [data-autotune-step='1'] {
+  --autotune-order: 1;
   --autotune-color: var(--color-home-source-0284c7-rgb);
   --autotune-delay: 0s;
 }
 [data-home-design] [data-autotune-step='2'] {
+  --autotune-order: 2;
   --autotune-color: var(--color-home-source-f59e0b-rgb);
   --autotune-delay: 4s;
 }
 [data-home-design] [data-autotune-step='3'] {
+  --autotune-order: 3;
   --autotune-color: var(--color-home-source-4f46e5-rgb);
   --autotune-delay: 8s;
 }
 [data-home-design] [data-autotune-step='4'] {
+  --autotune-order: 4;
   --autotune-color: var(--color-home-source-0d9488-rgb);
   --autotune-delay: 12s;
 }
 [data-home-design] [data-autotune-step='5'] {
+  --autotune-order: 5;
   --autotune-color: var(--color-home-source-059669-rgb);
   --autotune-delay: 16s;
 }
@@ -1992,6 +2068,7 @@
     .home-autotune-step,
     .home-autotune-number,
     .home-autotune-title,
+    .home-autotune-link,
     .home-autotune-sync
   ),
 [data-home-design] [data-autotune-running='true'] .home-autotune-core::after {
@@ -2083,6 +2160,7 @@
   [data-home-design] .home-autotune-number,
   [data-home-design] .home-autotune-title,
   [data-home-design] .home-autotune-core::after,
+  [data-home-design] .home-autotune-link,
   [data-home-design] .home-autotune-sync {
     animation: none;
   }

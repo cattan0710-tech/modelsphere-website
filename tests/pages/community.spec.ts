@@ -1,5 +1,7 @@
 import { expect, test } from '@playwright/test';
 
+const prefix = '/modelsphere-website/';
+
 test('community preserves source layout and local navigation under the Pages prefix', async ({
   page,
 }) => {
@@ -49,9 +51,30 @@ test('community preserves source layout and local navigation under the Pages pre
   const localLinks = await page
     .locator('[data-community-design] a[href^="/"]')
     .evaluateAll((links) => links.map((link) => link.getAttribute('href')!));
-  expect(localLinks.length).toBeGreaterThan(10);
-  for (const href of localLinks)
-    expect(href).toMatch(/^\/modelsphere-website\//);
+  const footerNavigation = page.getByRole('navigation', { name: '页脚导航' });
+  await expect(footerNavigation.getByRole('link')).toHaveCount(8);
+  await expect(
+    footerNavigation.getByRole('link', { name: '技术交流群', exact: true }),
+  ).toHaveAttribute('href', `${prefix}community#community-channels`);
+  await expect(
+    footerNavigation.getByRole('link', { name: '快速开始', exact: true }),
+  ).toHaveAttribute(
+    'href',
+    process.env.TEST_DOCS_MODE === 'none'
+      ? `${prefix}docs`
+      : `${prefix}docs/quickstart`,
+  );
+  expect(localLinks).toEqual(
+    expect.arrayContaining([
+      prefix,
+      `${prefix}models`,
+      `${prefix}docs`,
+      `${prefix}blog`,
+      `${prefix}community`,
+      `${prefix}community/wechat-group-qr.png`,
+    ]),
+  );
+  for (const href of localLinks) expect(href.startsWith(prefix)).toBe(true);
   const loadedFonts = await page.evaluate(
     async () =>
       (
@@ -66,7 +89,7 @@ test('community preserves source layout and local navigation under the Pages pre
       document.fonts.check('700 44px "ModelSphere Community Space Grotesk"'),
     ),
   ).toBe(true);
-  await page.getByRole('link', { name: '社区维护者治理', exact: true }).click();
+  await page.goto('community#community-maintainers');
   await expect(page).toHaveURL(
     /\/modelsphere-website\/community#community-maintainers$/,
   );
@@ -74,9 +97,11 @@ test('community preserves source layout and local navigation under the Pages pre
     page.getByRole('heading', { name: '社区维护者', exact: true }),
   ).toBeInViewport();
   await page.reload();
-  await expect(page.locator('main section')).toHaveCount(5);
+  await expect(page.locator('main section')).toHaveCount(4);
+  await expect(page.locator('#community-calendar')).toHaveCount(0);
+  await expect(page.locator('a[href*="#community-calendar"]')).toHaveCount(0);
   await page
-    .getByRole('navigation', { name: 'Breadcrumb' })
+    .getByRole('navigation', { name: '页脚导航' })
     .getByRole('link', { name: '首页', exact: true })
     .click();
   await expect(page).toHaveURL(/\/modelsphere-website\/$/);

@@ -1,7 +1,23 @@
 import { describe, expect, it } from 'vitest';
-import { languageHref } from '../../src/lib/locale';
+import { defaultLocale, languageHref } from '../../src/lib/locale';
 
 describe('language navigation', () => {
+  it.each([
+    ['zh-CN', null, 'zh-CN'],
+    ['zh-TW', null, 'zh-CN'],
+    ['zh-Hant', null, 'zh-CN'],
+    ['ZH', null, 'zh-CN'],
+    ['en-US', null, 'en'],
+    ['fr-FR', null, 'en'],
+    ['ja-JP', null, 'en'],
+    ['en-US', 'zh-CN', 'zh-CN'],
+    ['zh-CN', 'en', 'en'],
+    ['zh-CN', 'invalid', 'zh-CN'],
+    ['en-US', 'invalid', 'en'],
+  ])('chooses %s with saved preference %s', (language, preference, locale) => {
+    expect(defaultLocale(language, preference)).toBe(locale);
+  });
+
   it.each([
     ['/', '/', 'zh-CN', '/en/'],
     ['/en/', '/en/', 'en', '/'],

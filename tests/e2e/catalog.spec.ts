@@ -56,14 +56,81 @@ test.beforeEach(async ({ page }) => {
     },
   );
 });
+for (const width of [390, 1440])
+  test(`catalog always hides deprecated records without a switch at ${width}px`, async ({
+    page,
+  }, info) => {
+    const source = structuredClone(parseCatalog(baseline));
+    const retiredModel = source.models.find(
+      (model) => model.name === 'glm5.3',
+    )!;
+    retiredModel.deprecated = true;
+    const mixedModel = source.models.find((model) => model.name === m.name)!;
+    mixedModel.variants.find((recipe) => recipe.id === variant.id)!.deprecated =
+      'Replaced';
+    await page.route('**/index-v2.json', (route) =>
+      route.fulfill({ json: source }),
+    );
+    await page.setViewportSize({ width, height: 1000 });
+    async function openCatalog(url: string) {
+      const loaded = page.waitForResponse((response) =>
+        response.url().endsWith('/index-v2.json'),
+      );
+      await page.goto(url);
+      expect((await loaded).status()).toBe(200);
+      await expect(page.locator('main')).toHaveAttribute(
+        'data-catalog-status',
+        'live',
+      );
+    }
+    await openCatalog(`/models?q=${m.name}&hidedep=0`);
+    await expect(page.locator('[data-recipe-id]')).toHaveCount(1);
+    await expect(
+      page.locator(`[data-recipe-id="${m.name}/${variant.id}"]`),
+    ).toHaveCount(0);
+    const statistics = page.getByRole('region', { name: '目录统计' });
+    await expect(statistics.locator('strong').nth(0)).toHaveText('27');
+    await expect(statistics.locator('strong').nth(1)).toHaveText(
+      String(72 - retiredModel.variants.length - 1),
+    );
+    await page.getByText('视图与更多筛选', { exact: true }).click();
+    await expect(
+      page.getByRole('checkbox', { name: '隐藏已弃用记录' }),
+    ).toHaveCount(0);
+    await expect(page.getByText('隐藏已弃用记录', { exact: true })).toHaveCount(
+      0,
+    );
+    await page.screenshot({
+      path: info.outputPath(`catalog-active-only-${width}.png`),
+      fullPage: true,
+    });
+    await choose(page, '排序方式', '按模型名称 A–Z');
+    expect(new URL(page.url()).searchParams.has('hidedep')).toBe(false);
+    await openCatalog(`/models?q=${m.name}&view=models&layout=table&hidedep=0`);
+    await expect(page.getByRole('table').locator('tbody tr')).toHaveCount(1);
+    await expect(page.getByRole('table')).not.toContainText(variant.id);
+    await openCatalog(`/models?q=${retiredModel.name}&hidedep=0`);
+    await expect(page.locator('[data-recipe-id]')).toHaveCount(0);
+  });
+
 test('source-backed list, dynamic filters, shareable queries, model/table views and history navigation', async ({
   page,
 }) => {
   const errors: string[] = [];
   page.on('pageerror', (e) => errors.push(e.message));
   await page.goto('/models');
-  await expect(page.getByText('公开目录 ·', { exact: false })).toBeVisible();
+  await expect(page.locator('main')).toHaveAttribute(
+    'data-catalog-status',
+    'live',
+  );
   await expect(page.locator('[data-recipe-id]')).toHaveCount(12);
+  await expect(page.getByText('公开目录 ·', { exact: false })).toHaveCount(0);
+  await expect(
+    page
+      .locator('main nav[aria-label="面包屑"]')
+      .locator('..')
+      .getByText('Model Catalog', { exact: true }),
+  ).toHaveCount(0);
   const statistics = page.getByRole('region', { name: '目录统计' });
   await expect(statistics.locator(':scope > div')).toHaveCount(5);
   const pairs = statistics.locator(':scope > div').nth(2);
@@ -100,7 +167,7 @@ test('source-backed list, dynamic filters, shareable queries, model/table views 
   await expect(page.locator('[data-recipe-id]')).toHaveCount(2);
   await page.getByRole('button', { name: '表格视图' }).click();
   await expect(page.getByRole('table')).toBeVisible();
-  await choose(page, '内容视图', '模型视角');
+  await page.goto('/models?q=mimo-v2.5&view=models&layout=table');
   await expect(page.getByRole('table').locator('tbody tr')).toHaveCount(1);
   await page.reload();
   await expect(page.getByRole('table').locator('tbody tr')).toHaveCount(1);
@@ -124,7 +191,9 @@ test('vendor and chip filters narrow recipes, survive reload and history, and re
     vendors.getByRole('button', { name: /^华为昇腾/ }),
   ).toHaveAttribute('aria-pressed', 'true');
   await expect(chips.getByRole('checkbox')).toBeChecked();
-  await choose(page, '内容视图', '模型视角');
+  const modelView = new URL(page.url());
+  modelView.searchParams.set('view', 'models');
+  await page.goto(modelView.href);
   await expect(page.locator('[data-model-id]')).toHaveCount(1);
   await vendors.getByRole('button', { name: /^英伟达 NVIDIA/ }).click();
   await expect(chips.getByRole('checkbox', { name: /H100/ })).toBeVisible();
@@ -271,21 +340,24 @@ for (const width of [320, 390, 768, 1280, 1440])
       expect((colors[1] + 0.05) / (colors[0] + 0.05)).toBeGreaterThanOrEqual(
         4.5,
       );
-      const view = page.getByRole('combobox', {
-        name: '内容视图',
-        exact: true,
-      });
-      await expect(view).toHaveText('模型视角');
+      await expect(
+        page.getByRole('combobox', { name: '内容视图', exact: true }),
+      ).toHaveCount(0);
+      await expect(
+        page.getByRole('combobox', { name: '全部技术标签', exact: true }),
+      ).toHaveCount(0);
       const family = page.getByRole('combobox', {
         name: '全部模型家族',
         exact: true,
       });
-      const [viewBox, familyBox] = await Promise.all([
-        view.boundingBox(),
+      const [familyBox, engineBox] = await Promise.all([
         family.boundingBox(),
+        page
+          .getByRole('combobox', { name: '全部推理引擎', exact: true })
+          .boundingBox(),
       ]);
-      expect(viewBox).not.toBeNull();
       expect(familyBox).not.toBeNull();
+      expect(engineBox).not.toBeNull();
       const hardwareHeight = (await page
         .getByRole('button', { name: /^全部硬件/ })
         .boundingBox())!.height;
@@ -302,26 +374,20 @@ for (const width of [320, 390, 768, 1280, 1440])
           (element) => element.parentElement!.getBoundingClientRect().height,
         );
       expect(viewToggleHeight).toBe(hardwareHeight);
-      for (const name of [
-        '内容视图',
-        '全部模型家族',
-        '全部推理引擎',
-        '全部技术标签',
-        '排序方式',
-      ]) {
+      for (const name of ['全部模型家族', '全部推理引擎', '排序方式']) {
         const box = await page
           .getByRole('combobox', { name, exact: true })
           .boundingBox();
         expect(box!.height).toBeCloseTo(hardwareHeight, 0);
       }
-      if (width < 768) expect(viewBox!.y).toBeLessThan(familyBox!.y);
+      if (width < 768) expect(familyBox!.y).toBeLessThan(engineBox!.y);
       else {
-        expect(viewBox!.x).toBeLessThan(familyBox!.x);
-        expect(viewBox!.y).toBeCloseTo(familyBox!.y, 0);
+        expect(familyBox!.x).toBeLessThan(engineBox!.x);
+        expect(familyBox!.y).toBeCloseTo(engineBox!.y, 0);
       }
       await expect(
         page.getByRole('search').getByRole('combobox').first(),
-      ).toHaveAccessibleName('内容视图');
+      ).toHaveAccessibleName('全部模型家族');
       await expect(card.getByRole('list')).toHaveCount(0);
       await expect(
         card.getByRole('link', {
@@ -461,16 +527,12 @@ for (const width of [390, 1440])
       await page.setViewportSize({ width, height: 900 });
       await page.emulateMedia({ colorScheme, reducedMotion: 'reduce' });
       await page.goto('/models?family=glm');
-      const perspective = page.getByRole('combobox', {
-        name: '内容视图',
-        exact: true,
-      });
-      await expect(perspective).toBeVisible();
-      await expect(perspective).toHaveText('配方视角');
-      await choose(page, '内容视图', '模型视角');
-      await expect(page).toHaveURL(/family=glm&view=models/);
-      await expect(page.locator('[data-model-id]').first()).toBeVisible();
-      await choose(page, '内容视图', '配方视角');
+      await expect(
+        page.getByRole('combobox', { name: '内容视图', exact: true }),
+      ).toHaveCount(0);
+      await expect(
+        page.getByRole('combobox', { name: '全部技术标签', exact: true }),
+      ).toHaveCount(0);
       await expect(page).toHaveURL(/\/models\?family=glm$/);
       await expect(page.locator('[data-recipe-id]').first()).toBeVisible();
       const trigger = page.getByRole('combobox', {
@@ -537,7 +599,10 @@ for (const width of [390, 1440])
   }, info) => {
     await page.setViewportSize({ width, height: 800 });
     await page.goto('/models');
-    await expect(page.getByText('公开目录 ·', { exact: false })).toBeVisible();
+    await expect(page.locator('main')).toHaveAttribute(
+      'data-catalog-status',
+      'live',
+    );
     const filters = page.getByRole('search');
     await filters.evaluate((element) =>
       window.scrollTo({
@@ -579,7 +644,6 @@ for (const width of [390, 1440])
       () => choose(page, '全部推理引擎', 'sglang'),
       /engine=sglang/,
     );
-    await staysPut(() => choose(page, '全部技术标签', 'moe'), /tag=moe/);
     await staysPut(
       () => page.getByRole('button', { name: '重置筛选' }).click(),
       /\/models$/,
@@ -614,7 +678,10 @@ for (const width of [390, 1440])
   }, info) => {
     await page.setViewportSize({ width, height: 800 });
     await page.goto('/models?hardware=NVIDIA-H100-80GB-HBM3&sort=name-asc');
-    await expect(page.getByText('公开目录 ·', { exact: false })).toBeVisible();
+    await expect(page.locator('main')).toHaveAttribute(
+      'data-catalog-status',
+      'live',
+    );
     await expect(page.locator('[data-recipe-id]')).toHaveCount(12);
     const filters = page.getByRole('search');
     const pager = page.getByRole('navigation', { name: '目录分页' });
@@ -698,7 +765,11 @@ for (const recipeRole of ['baseline', 'recipe'])
     page,
   }) => {
     await page.goto(`/models?role=${recipeRole}`);
-    await expect(page.getByText('公开目录 ·', { exact: false })).toBeVisible();
+    await expect(page.locator('[data-catalog-enhanced="true"]')).toBeVisible();
+    await expect(page.locator('main')).toHaveAttribute(
+      'data-catalog-status',
+      'live',
+    );
     const cards = page.locator('[data-recipe-id]');
     await expect(cards.first()).toBeVisible();
     await expect(
@@ -766,10 +837,8 @@ for (const layout of ['cards', 'table'])
       page.getByRole('tab', { name: '部署配置', selected: true }),
     ).toBeVisible();
     await expect(page.getByText('原始 YAML · SHA-256 校验通过')).toBeVisible();
-    await page.getByRole('tab', { name: '版本历史' }).click();
-    await expect(
-      page.getByRole('tabpanel', { name: '版本历史' }),
-    ).toContainText('Published source revision');
+    await expect(page.getByRole('tab')).toHaveCount(2);
+    await expect(page.getByRole('tab', { name: '版本历史' })).toHaveCount(0);
     await page.getByRole('tab', { name: '性能对照' }).click();
     await expect(page).toHaveURL(/tab=performance/);
     await expect(page.getByRole('search')).toHaveCount(0);
@@ -878,7 +947,10 @@ for (const width of [320, 1440])
       `/models/recipe?modelId=mimo-v2.5&recipeId=${variant.id}&dataVersion=${baseline.commit}`,
     );
     await expect(page.getByText('原始 YAML · SHA-256 校验通过')).toBeVisible();
-    await expect(page.getByText('公开目录 ·', { exact: false })).toBeVisible();
+    await expect(page.locator('main')).toHaveAttribute(
+      'data-catalog-status',
+      'live',
+    );
     const version = page.getByRole('combobox', { name: '配方版本' });
     await expect(version).toHaveText(`当前版本 ${variant.version}`);
     await version.focus();
@@ -890,7 +962,7 @@ for (const width of [320, 1440])
     expect(before.report).toBe(0);
     const deployment = page.getByRole('tab', { name: '部署配置' });
     const performance = page.getByRole('tab', { name: '性能对照' });
-    const history = page.getByRole('tab', { name: '版本历史' });
+    await expect(page.getByRole('tab')).toHaveCount(2);
     await deployment.focus();
     await page.keyboard.press('ArrowRight');
     await expect(performance).toBeFocused();
@@ -901,31 +973,32 @@ for (const width of [320, 1440])
     await expect(performance).toHaveAttribute('aria-selected', 'true');
     expect(counts.report).toBe(1);
     const top = await page.evaluate(() => window.scrollY);
-    await page.keyboard.press('End');
-    await expect(history).toBeFocused();
+    await page.keyboard.press('Home');
+    await expect(deployment).toBeFocused();
     await page.keyboard.press('Space');
-    await expect(history).toBeFocused();
-    await expect(
-      page.getByRole('tabpanel', { name: '版本历史' }),
-    ).toContainText('Published source revision');
-    await expect(page).toHaveURL(/tab=history/);
+    await expect(deployment).toBeFocused();
+    await expect(deployment).toHaveAttribute('aria-selected', 'true');
+    expect(new URL(page.url()).searchParams.has('tab')).toBe(false);
     expect(await page.evaluate(() => window.scrollY)).toBeCloseTo(top, 0);
     await page.goBack();
     await expect(performance).toHaveAttribute('aria-selected', 'true');
     await page.goForward();
-    await expect(history).toHaveAttribute('aria-selected', 'true');
+    await expect(deployment).toHaveAttribute('aria-selected', 'true');
     await page.reload();
-    await expect(history).toHaveAttribute('aria-selected', 'true');
+    await expect(deployment).toHaveAttribute('aria-selected', 'true');
     // Reload starts a new page lifecycle; verify tab reuse within that lifecycle.
-    await history.focus();
-    await page.keyboard.press('Home');
+    await deployment.focus();
+    await page.keyboard.press('ArrowLeft');
+    await expect(performance).toBeFocused();
+    await page.keyboard.press('End');
+    await expect(performance).toBeFocused();
+    await page.keyboard.press('ArrowRight');
     await expect(deployment).toBeFocused();
     await page.keyboard.press('Enter');
     await expect(page.getByText('原始 YAML · SHA-256 校验通过')).toBeVisible();
     const afterReload = { ...counts };
     await performance.click();
     await expect(reportBody(page)).toContainText('119.9%');
-    await history.click();
     await deployment.click();
     await performance.click();
     expect(counts).toEqual({ ...afterReload, report: afterReload.report + 1 });
@@ -1154,9 +1227,10 @@ test('history opens the exact configuration and keeps reports bound to their mea
   await page.goto(
     `/models/recipe?modelId=${m.name}&recipeId=${variant.id}&dataVersion=${baseline.commit}&tab=history&returnTo=${encodeURIComponent(returnTo)}`,
   );
-  await page
-    .getByRole('link', { name: `查看 v${oldVersion} 配置 →`, exact: true })
-    .click();
+  await expect(
+    page.getByRole('tab', { name: '部署配置', selected: true }),
+  ).toBeVisible();
+  await choose(page, '配方版本', `${oldVersion} · 日期未提供`);
   await expect(
     page.getByRole('tab', { name: '部署配置', selected: true }),
   ).toBeVisible();
@@ -1210,12 +1284,14 @@ test('configuration and history failures leave performance available and support
   await page.goto(
     `/models/recipe?modelId=${m.name}&recipeId=${variant.id}&version=99.0.0&tab=history`,
   );
-  const history = page.getByRole('tabpanel', { name: '版本历史' });
-  await expect(history).toContainText('版本历史暂时不可用');
+  const deployment = page.getByRole('tabpanel', { name: '部署配置' });
+  await expect(
+    page.getByRole('tab', { name: '部署配置', selected: true }),
+  ).toBeVisible();
+  await expect(deployment).toContainText('版本历史暂时不可用');
   historyFailed = false;
-  await history.getByRole('button', { name: '重试' }).click();
-  await expect(history).toContainText('Published source revision');
-  await page.getByRole('tab', { name: '部署配置' }).click();
+  await deployment.getByRole('button', { name: '重试' }).first().click();
+  await expect(deployment).not.toContainText('版本历史暂时不可用');
   await expect(page.getByRole('alert')).toContainText('不在所选目录');
   await page.getByRole('tab', { name: '性能对照' }).click();
   await expect(reportBody(page)).toContainText('119.9%');
@@ -1299,7 +1375,6 @@ for (const width of [320, 390, 768, 1440])
       for (const [tab, name] of [
         ['performance', '性能对照'],
         ['deployment', '部署配置'],
-        ['history', '版本历史'],
       ]) {
         await page.getByRole('tab', { name, exact: true }).click();
         await expect(
@@ -1320,10 +1395,6 @@ for (const width of [320, 390, 768, 1440])
           });
           await page.keyboard.press('Escape');
         }
-        if (tab === 'history')
-          await expect(
-            page.getByText('Published source revision'),
-          ).toBeVisible();
         expect(
           await page.evaluate(
             () => document.documentElement.scrollWidth <= innerWidth + 1,
@@ -1336,7 +1407,7 @@ for (const width of [320, 390, 768, 1440])
       }
     });
 
-test('recipe details validate YAML, expose history and report missing versions explicitly', async ({
+test('recipe details validate complete YAML without duplicate sections and report missing versions explicitly', async ({
   page,
   context,
 }) => {
@@ -1348,8 +1419,15 @@ test('recipe details validate YAML, expose history and report missing versions e
   await page.getByRole('button', { name: '复制完整配方', exact: true }).click();
   await expect(page.getByText('已复制', { exact: true })).toBeVisible();
   expect(await page.evaluate(() => navigator.clipboard.readText())).toBe(yaml);
-  await page.getByRole('tab', { name: '版本历史' }).click();
-  await expect(page.getByText('Published source revision')).toBeVisible();
+  await expect(page.getByRole('tab')).toHaveCount(2);
+  await expect(page.getByRole('tab', { name: '版本历史' })).toHaveCount(0);
+  await expect(page.locator('#recipe-panel-history')).toHaveCount(0);
+  await expect(
+    page.locator('summary').filter({ hasText: '启动参数' }),
+  ).toHaveCount(0);
+  await expect(
+    page.getByRole('tabpanel', { name: '部署配置' }).locator('pre'),
+  ).toHaveText(yaml);
   await page.goto(
     `/models/recipe?modelId=mimo-v2.5&recipeId=${variant.id}&version=99.0.0`,
   );
@@ -1551,13 +1629,19 @@ test('statistics follow live measurements and show missing gains without invente
     route.fulfill({ json: newer }),
   );
   await page.goto('/models');
-  await expect(page.getByText('公开目录 · ccccccc')).toBeVisible();
+  await expect(page.locator('main')).toHaveAttribute(
+    'data-catalog-status',
+    'live',
+  );
   const statistics = page.getByRole('region', { name: '目录统计' });
   await expect(statistics.locator('strong').nth(3)).toHaveText('-2.0%');
   await expect(statistics.locator('strong').nth(4)).toHaveText('-2.0%');
   delete newer.models.find((model) => model.tuning.length)!.tuning[0].uplift;
   await page.reload();
-  await expect(page.getByText('公开目录 · ccccccc')).toBeVisible();
+  await expect(page.locator('main')).toHaveAttribute(
+    'data-catalog-status',
+    'live',
+  );
   await expect(statistics.locator('strong').nth(3)).toHaveText('未提供');
   await expect(statistics.locator('strong').nth(4)).toHaveText('未提供');
   await expect(statistics.getByRole('link')).toHaveCount(0);

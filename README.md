@@ -8,13 +8,13 @@
 
 设计来源：[ModelSphere 推理基础设施官网](https://stitch.withgoogle.com/projects/3601238558355976464)。页面结构仅采用顶部“首页-更新”“模型目录”“博客洞见-更新”三张新版，底部旧稿仅参考 dark mode 色彩；[来源快照](docs/design/sources/stitch-foundations.json)记录当前采用范围与原始证据。Header 的独立来源覆盖和已实现文档双层 Footer 保留为既定特例。当前已实现首页、博客功能与文档栏目；博客保留明确标注的阅读示例，文档栏目已发布 Console 使用文档。
 
-首页按 hero、四张同时展开的能力卡、断流续写、SLO、Tuning-Agent、最多四条合格测评、渐变 CTA 排列。Catalog 默认显示配方卡片，按源报告记录的最佳负载增幅降序，保留测量版本与口径提示，不表示统一吞吐排名；信息边界见[可靠性清单](docs/development/catalog-implementation.md)。博客推荐文章优先，采用分类、技术标签、搜索与可选社区侧栏；详情由 Markdown 生成独立阅读页。浅深主题共享布局与 Space Grotesk / Geist / JetBrains Mono 字体，Header 的 Inter 为既定例外；开发者文档保留标准阅读格式。
+首页按 hero、四张同时展开的能力卡、Day-0 部署与模型广场截图、断流续写、SLO、Tuning-Agent、渐变 CTA 排列。Catalog 默认显示配方卡片，按源报告记录的最佳负载增幅降序，保留测量版本与口径提示，不表示统一吞吐排名；信息边界见[可靠性清单](docs/development/catalog-implementation.md)。博客推荐文章优先，采用分类、技术标签、搜索与可选社区侧栏；详情由 Markdown 生成独立阅读页。浅深主题共享布局与 Space Grotesk / Geist / JetBrains Mono 字体，Header 的 Inter 为既定例外；开发者文档保留标准阅读格式。
 
 ## 当前阶段
 
 已确认采用 **Docusaurus + React + TypeScript 统一全站**，博客首期使用 **Markdown/Git 发布**。门户、博客和开发者文档构建为一个静态站点；Model Catalog 使用自定义 React 界面读取独立数据源。当前已建立 Docusaurus 应用、依赖锁文件和 CI 配置，实现首页、博客列表与阅读页、文档栏目及太阳／月亮主题切换。站内 Catalog 现已接入公开源；博客与文档在本仓库正式目录维护，独立文档仓库同步尚未接入。首期选择公开仓库与 GitHub Pages 项目地址；是否已上线以 Actions 发布结果和线上版本为准。
 
-首页按最新首页稿实现六个区块：`hero`、`comparison`、`fault-tolerance`、`qos-scaling`、`autotune-evolution`、`get-started`。完整架构与机制图、说明文字和真实链接均在初始 HTML 中静态输出；首页标题按 D13 整体翻起渐显，引导语与简介从左滑入渐显，架构拓扑正文按 D14 从上向下揭示。屏外能力卡与各机制直接子块分别在自身起点进入 85% 触发线时入场；并排时左右聚合，堆叠时逐卡上移渐显。首屏按钮、技术标签、拓扑标题及其上方三张卡静态可用；架构数据与布局保持稳定，减少动效、无脚本及历史恢复显示最终态。机制说明链接到已核对的项目资料及固定提交，示意曲线明确标注为机制示意。现有资料不足以满足测评报告和完整测试条件要求，因此省略 `benchmarks`，不展示设计稿样例成绩。模型入口进入站内 `/models`，目录读取公开 Catalog 数据；正式 `/docs` 读取 `content/docs/`，当前发布 Console 使用文档。
+首页实现七个区块：`hero`、`comparison`、`benchmarks`、`fault-tolerance`、`qos-scaling`、`autotune-evolution`、`get-started`；`benchmarks` 保留锚点，作为核心特性首项展示 Day-0 部署与 Console 模型广场截图。完整架构与机制图、说明文字和真实链接均在初始 HTML 中静态输出；首页标题按 D13 整体翻起渐显，引导语与简介从左滑入渐显，架构拓扑正文按 D14 从上向下揭示。屏外能力卡与各机制直接子块分别在自身起点进入 85% 触发线时入场；并排时左右聚合，堆叠时逐卡上移渐显。首屏按钮、技术标签、拓扑标题及其上方三张卡静态可用；架构数据与布局保持稳定，减少动效、无脚本及历史恢复显示最终态。机制说明链接到已核对的项目资料及固定提交，示意曲线明确标注为机制示意。原设计稿实测表格已由用户提供的 Console 模型广场截图替换；截图完整展示模型、部署变体与调优收益标签，窄屏可横向滚动。模型入口进入站内 `/models`，目录读取公开 Catalog 数据；正式 `/docs` 读取 `content/docs/`，当前发布 Console 使用文档。
 
 技术与发布边界以[工程与代码生成规范](docs/development/engineering.md)为依据；[架构说明](docs/design/architecture.html)、页面、组件、内容及交互规范描述同一套当前设计。修改直接覆盖原文，不保留并行架构副本。
 
@@ -148,7 +148,7 @@ Header 已按 [Stitch 项目 14815301483114557678](https://stitch.withgoogle.com
 
 索引单测在 `tests/unit/search.test.ts`；弹窗、导航、中文输入法、错误重试及双主题响应式验收在 `tests/e2e/search.spec.ts`。本地预览继续使用 `pnpm dev:blog-mock` 或 `pnpm build:docs-preview`。
 
-门户 Footer 已按最新首页实现：品牌占两格，四组导航为“开源代码／社区与生态／开发者资源／法律与开源”，博客入口只放“社区与生态”；已核验的 GitHub、Model Catalog 和技术文档入口保留真实地址，未开放资源为静态待开放文字。文档保留已实现的上下两条紧凑横栏特例。浅色白底、深色 #0B0E15。Header 继续沿用单独指定的 14815301483114557678。全局示例提示条已移除，Mock 与正式构建仍由构建模式隔离。
+全站 Footer 使用社区版品牌介绍与版权文字，右侧按浏览网站、文档与上手、社区参与三组组织五个主栏目及快速开始、GitHub、技术交流群八个入口。桌面双列、平板与手机上下排列，支持浅深主题。Header 继续沿用单独指定的 14815301483114557678。全局示例提示条已移除，Mock 与正式构建仍由构建模式隔离。
 
 本轮修正入场前内容提前显示：用户实际预览为 319×804，旧版仅并排子块设置等待透明度，堆叠子块仍可见。现所有十个子块在触发前均为 opacity=0，后台保留未播等待状态；动画建立后才移除等待标记，堆叠入场也由 0 渐显。319×804 全模块及入场前后截图检查通过。格式、Lint、类型检查、29 单测及 preview/mock、release/none 构建与产物检查通过；正式版 48/48、预览版顺序完整运行 53/53 通过。并行运行时的两次超时保留在 `preview-initial/`、`preview-second-run/`；全部断言及时间限制不变。当前结果与截图位于 `reports/home-pre-entry-blank/validation.json`，上一轮 52/47 结果不覆盖本次缺陷。无 PR、无提交 SHA，仅本地验证，未推送／未验证远程 CI。
 
@@ -171,7 +171,7 @@ D13 首页文字效果保持：标题整体从下方翻起并渐显，桌面 48p
 
 ## 中英文与翻译维护
 
-- 中文为默认语言；英文位于 `/en/`（Pages 部署为 `/modelsphere-website/en/`）。Header 提供地球图标及自定义语言下拉菜单，支持键盘选择、当前语言标记和移动端；无脚本时保留 EN / 中文链接。切换保留对应页面；启用脚本后同时保留查询参数和片段。语言由 URL 决定，站内导航保持当前语言。
+- 中文路由无语言前缀，英文位于 `/en/`（Pages 部署为 `/modelsphere-website/en/`）。首次访问中文地址时按浏览器语言选择（中文使用中文，其他语言使用英文），之后记住语言选择；手动切换优先，直接访问 `/en/` 地址始终显示英文。偏好优先持久保存，持久存储受限时使用会话存储；两者均不可用时按 URL 显示，避免自动跳转撤销手动选择。Header 提供地球图标及自定义语言下拉菜单，支持键盘选择、当前语言标记和移动端；无脚本时保留 EN / 中文链接。切换保留对应页面；启用脚本后同时保留查询参数和片段，站内导航保持当前语言。
 - React 文案使用 `@docusaurus/Translate`，英文资源为 `i18n/en/code.json`；来自纯数据辅助函数的展示文案在 `i18n/en/content.json` 维护，不改变模型标识、版本、筛选值或 YAML。
 - 文档翻译在 `i18n/en/docs/`，博客翻译在 `i18n/en/blog/<文章 id>.md`；博客翻译的 frontmatter 包含 `title`、`summary`。英文正文保留原文的示例说明和证据边界。文档英文译文与中文源文共用同一正文结构，标题和摘要写在译文 frontmatter；中文源文变更后应同步更新译文。固定 Mock 示例的英文译文单独放在 `tests/fixtures/docs-en/`，mock 构建不读取正式文档译文。
 - `scripts/prepare-translations.ts` 只从已筛选的 `.generated/docs`、`.generated/blog` 和摘要索引生成英文输入，保留来源的 id、slug 与发布时间。源文撤下或被过滤时，其译文不会发布。新增正文尚无译文时沿用原文，不生成虚假翻译；发布前应补齐译文。

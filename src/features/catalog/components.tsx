@@ -117,6 +117,7 @@ export function SourceState({
   error: string;
   reload: () => void;
 }) {
+  if (status === 'live' && !error) return null;
   return (
     <div className={styles.sourceState}>
       <span className={styles.sourceBadge}>

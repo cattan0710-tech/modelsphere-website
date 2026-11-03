@@ -26,6 +26,91 @@ async function chooseLanguage(page: Page, language: 'English' | '简体中文') 
   await page.getByRole('option', { name: language, exact: true }).click();
 }
 
+test.describe('browser language defaults', () => {
+  test.use({ locale: 'en-US' });
+
+  test('detects English, preserves the URL and remembers manual Chinese', async ({
+    page,
+  }) => {
+    await page.goto(site('models?view=recipes&engine=vllm#catalog'));
+    await page.waitForURL(
+      new RegExp(`${site('en/models')}\\?view=recipes&engine=vllm#catalog$`),
+    );
+    await expect(page.locator('html')).toHaveAttribute('lang', 'en');
+    await chooseLanguage(page, '简体中文');
+    await expect(page.locator('html')).toHaveAttribute('lang', 'zh-CN');
+    await page.reload();
+    await expect(
+      page.getByRole('combobox', { name: '切换语言', exact: true }),
+    ).toBeEnabled();
+    await expect(page.locator('html')).toHaveAttribute('lang', 'zh-CN');
+    await page.goto(site('docs'));
+    await expect(page.locator('html')).toHaveAttribute('lang', 'zh-CN');
+    // Following an explicit English link does not overwrite the manual choice.
+    await page.goto(site('en/docs'));
+    await expect(page.locator('html')).toHaveAttribute('lang', 'en');
+    await page.goto(site('docs'));
+    await expect(
+      page.getByRole('combobox', { name: '切换语言', exact: true }),
+    ).toBeEnabled();
+    await expect(page.locator('html')).toHaveAttribute('lang', 'zh-CN');
+  });
+
+  test('uses session storage when persistent storage is blocked', async ({
+    page,
+  }) => {
+    await page.addInitScript(() => {
+      Object.defineProperty(window, 'localStorage', {
+        get() {
+          throw new DOMException('Storage blocked', 'SecurityError');
+        },
+      });
+    });
+    await page.goto(site());
+    await expect(page.locator('html')).toHaveAttribute('lang', 'en');
+    await chooseLanguage(page, '简体中文');
+    await expect(page.locator('html')).toHaveAttribute('lang', 'zh-CN');
+    await page.reload();
+    await expect(
+      page.getByRole('combobox', { name: '切换语言', exact: true }),
+    ).toBeEnabled();
+    await expect(page.locator('html')).toHaveAttribute('lang', 'zh-CN');
+  });
+
+  test('keeps manual language switching usable when all storage is blocked', async ({
+    page,
+  }) => {
+    await page.addInitScript(() => {
+      for (const storage of ['localStorage', 'sessionStorage'])
+        Object.defineProperty(window, storage, {
+          get() {
+            throw new DOMException('Storage blocked', 'SecurityError');
+          },
+        });
+    });
+    await page.goto(site());
+    await chooseLanguage(page, 'English');
+    await expect(page.locator('html')).toHaveAttribute('lang', 'en');
+    await chooseLanguage(page, '简体中文');
+    await expect(page.locator('html')).toHaveAttribute('lang', 'zh-CN');
+  });
+});
+
+test('remembers manual English on a Chinese browser', async ({ page }) => {
+  await page.goto(site());
+  await chooseLanguage(page, 'English');
+  await expect(page.locator('html')).toHaveAttribute('lang', 'en');
+  await page.goto(site('models?engine=vllm#catalog'));
+  await expect(page.locator('html')).toHaveAttribute('lang', 'en');
+  await expect(page).toHaveURL(
+    new RegExp(`${site('en/models')}\\?engine=vllm#catalog$`),
+  );
+  const anotherPage = await page.context().newPage();
+  await anotherPage.goto(new URL(site('docs'), page.url()).href);
+  await expect(anotherPage.locator('html')).toHaveAttribute('lang', 'en');
+  await anotherPage.close();
+});
+
 test('switches languages on the same catalog URL and preserves filters', async ({
   page,
 }) => {
@@ -97,6 +182,51 @@ test('language switch is accessible on mobile and English pages render without s
   await expect(
     page.getByRole('heading', { name: 'Community maintainers' }),
   ).toBeVisible();
+  const footerNavigation = page.getByRole('navigation', {
+    name: 'Footer navigation',
+  });
+  await expect(footerNavigation.getByRole('heading')).toHaveText([
+    'Explore',
+    'Get started',
+    'Community',
+  ]);
+  await expect(footerNavigation.getByRole('link')).toHaveText([
+    'Home',
+    'Model Catalog',
+    'Blog',
+    'Documentation',
+    'Quickstart',
+    'Community',
+    'GitHub',
+    'Technical group',
+  ]);
+  await expect(
+    footerNavigation.getByRole('link', { name: 'Model Catalog', exact: true }),
+  ).toHaveAttribute('href', site('en/models'));
+  await expect(
+    footerNavigation.getByRole('link', { name: 'Quickstart', exact: true }),
+  ).toHaveAttribute('href', site('en/docs/quickstart'));
+  await expect(
+    footerNavigation.getByRole('link', {
+      name: 'Technical group',
+      exact: true,
+    }),
+  ).toHaveAttribute('href', site('en/community#community-channels'));
+  await page
+    .getByRole('link', { name: 'Become a partner', exact: true })
+    .click();
+  const joinDialog = page.getByRole('dialog', {
+    name: 'WeChat technical group',
+    exact: true,
+  });
+  await expect(joinDialog).toBeVisible();
+  await expect(joinDialog.getByRole('img')).toHaveAttribute(
+    'src',
+    site('en/community/wechat-group-qr.png'),
+  );
+  await joinDialog
+    .getByRole('button', { name: 'Close QR code', exact: true })
+    .click();
   expect(
     await page.evaluate(
       () => document.documentElement.scrollWidth <= window.innerWidth,
@@ -173,7 +303,7 @@ test('switching an article language retains the current section', async ({
   await expect(page.locator(`h2#${articleAnchor}`)).toBeInViewport();
 });
 
-test('English recipe details translate deployment and history tabs', async ({
+test('English recipe details translate the two remaining tabs', async ({
   page,
 }) => {
   const model = baseline.models.find((item) => item.name === 'mimo-v2.5')!;
@@ -236,12 +366,12 @@ test('English recipe details translate deployment and history tabs', async ({
   await expect(
     page.getByRole('combobox', { name: 'Recipe version', exact: true }),
   ).toBeVisible();
-  await page.getByRole('tab', { name: 'Version history', exact: true }).click();
   await expect(
-    page.getByRole('heading', { name: 'Version history', exact: true }),
-  ).toBeVisible();
+    page.getByRole('tab', { name: 'Version history', exact: true }),
+  ).toHaveCount(0);
+  await expect(page.getByRole('tab')).toHaveCount(2);
   await expect(page.getByRole('tablist')).toHaveText(
-    /Deployment configurationPerformance comparisonVersion history/,
+    /Deployment configurationPerformance comparison/,
   );
 });
 

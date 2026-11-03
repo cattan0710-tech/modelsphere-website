@@ -13,7 +13,6 @@ export interface Query {
   q: string;
   family: string;
   engine: string;
-  tag: string;
   role: string;
   vendor: string;
   hardware: string[];
@@ -23,14 +22,12 @@ export interface Query {
   sort: string;
   page: number;
   dataVersion: string;
-  hidedep: boolean;
 }
 export const PAGE_SIZE = 12;
 export const initialQuery: Query = {
   q: '',
   family: '',
   engine: '',
-  tag: '',
   role: '',
   vendor: '',
   hardware: [],
@@ -40,16 +37,24 @@ export const initialQuery: Query = {
   sort: 'improvement-desc',
   page: 1,
   dataVersion: '',
-  hidedep: false,
 };
+export function activeCatalog(c: Catalog): Catalog {
+  const models = c.models
+    .filter((model) => !model.deprecated)
+    .map((model) => ({
+      ...model,
+      variants: model.variants.filter((variant) => !variant.deprecated),
+    }));
+  return { ...c, count: models.length, models };
+}
 export function facets(c: Catalog, vendor = '') {
+  c = activeCatalog(c);
   const rs = recipesOf(c);
   return {
     family: Array.from(
       new Set(c.models.flatMap((m) => (m.family ? [m.family] : []))),
     ).sort(),
     engine: Array.from(new Set(rs.map((r) => r.variant.engine))).sort(),
-    tag: Array.from(new Set(c.models.flatMap((m) => m.tags))).sort(),
     vendor: Array.from(
       new Set(rs.flatMap((r) => variantVendors(r.variant))),
     ).sort(),
@@ -85,7 +90,6 @@ export function parseQuery(search: string, c: Catalog): Query {
       .join(''),
     family: allowed('family', f.family),
     engine: allowed('engine', f.engine),
-    tag: allowed('tag', f.tag),
     role: allowed('role', ['optimized', 'baseline', 'default', 'recipe']),
     vendor,
     hardware: Array.from(
@@ -104,12 +108,11 @@ export function parseQuery(search: string, c: Catalog): Query {
         ? +rawPage
         : 1,
     dataVersion: p.get('dataVersion') ?? '',
-    hidedep: p.get('hidedep') === '1',
   };
 }
 export function queryHref(q: Query) {
   const p = new URLSearchParams();
-  for (const k of ['q', 'family', 'engine', 'tag', 'role', 'vendor'] as const)
+  for (const k of ['q', 'family', 'engine', 'role', 'vendor'] as const)
     if (q[k]) p.set(k, q[k]);
   q.hardware.forEach((x) => p.append('hardware', x));
   for (const k of [
@@ -121,11 +124,10 @@ export function queryHref(q: Query) {
     'dataVersion',
   ] as const)
     if (q[k] && q[k] !== initialQuery[k]) p.set(k, String(q[k]));
-  if (q.hidedep) p.set('hidedep', '1');
   return '/models' + (p.size ? '?' + p.toString() : '');
 }
 export function queryRecipes(c: Catalog, q: Query) {
-  const list = recipesOf(c)
+  const list = recipesOf(activeCatalog(c))
     .filter((r) => {
       const m = r.model,
         v = r.variant;
@@ -151,7 +153,6 @@ export function queryRecipes(c: Catalog, q: Query) {
         (!q.q || text.includes(q.q.toLowerCase())) &&
         (!q.family || m.family === q.family) &&
         (!q.engine || v.engine === q.engine) &&
-        (!q.tag || m.tags.includes(q.tag)) &&
         (!q.role ||
           (q.role === 'default' ? isDefault(r) : role(r) === q.role)) &&
         (!q.topology || topology(v) === q.topology) &&
@@ -161,14 +162,14 @@ export function queryRecipes(c: Catalog, q: Query) {
             (x) =>
               v.requires.gpuProduct.includes(x) &&
               (!q.vendor || hardwareVendor(x, v.requires.vendor) === q.vendor),
-          )) &&
-        (!q.hidedep || !(m.deprecated || v.deprecated))
+          ))
       );
     })
     .sort((a, b) => compare(a, b, q.sort));
   return paginate(list, q.page);
 }
 export function queryModels(c: Catalog, q: Query) {
+  c = activeCatalog(c);
   const matching = new Set(queryRecipes(c, q).all.map((r) => r.model.name));
   const entries = c.models
     .filter((model) => {
@@ -195,9 +196,7 @@ export function queryModels(c: Catalog, q: Query) {
         .toLowerCase();
       return (
         (!q.q || text.includes(q.q.toLowerCase())) &&
-        (!q.family || model.family === q.family) &&
-        (!q.tag || model.tags.includes(q.tag)) &&
-        (!q.hidedep || !model.deprecated)
+        (!q.family || model.family === q.family)
       );
     })
     .map(summarizeModel)

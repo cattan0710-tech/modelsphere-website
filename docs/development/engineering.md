@@ -27,7 +27,7 @@
 | G06 | Catalog 数据独立更新 | 自定义界面覆盖源功能；不嵌入 `<model-catalog>` 或 iframe |
 | G07 | 字体、脚本和搜索自托管；Catalog 首期例外 | Catalog 直接使用公开 GitHub Pages/raw GitHub，后续再接自有服务 |
 | G08 | 静态站点明确能力边界 | 无逐请求服务端渲染；Catalog 最新详情依赖 JavaScript；博客和文档正文无脚本可读 |
-| G09 | 中文与英文统一构建 | 中文为默认语言，英文位于 `/en/`；界面、文档和博客翻译随 Git 维护 |
+| G09 | 中文与英文统一构建 | 中文无路由前缀，英文位于 `/en/`；首次访问按浏览器语言选择并记住手动偏好，显式英文 URL 优先；界面、文档和博客翻译随 Git 维护 |
 
 Docusaurus 支持自定义 React 页面、文档和博客内容插件，生产构建输出静态文件。职责依据：[页面](https://docusaurus.io/docs/creating-pages)、[路由](https://docusaurus.io/docs/advanced/routing)、[部署](https://docusaurus.io/docs/deployment)。选择静态部署不代表 Catalog 只能使用构建时数据。
 
@@ -101,7 +101,7 @@ docs/                          工程、设计规范及运行手册
 ### 4.1.1 统一主题与视觉接入
 
 - 页面结构仅依据 [Stitch 项目 3601238558355976464](https://stitch.withgoogle.com/projects/3601238558355976464) 顶部的“首页-更新”“模型目录”“博客洞见-更新”三张；底部旧稿仅作 dark mode 色彩参考，不继承旧页面结构。Header 继续由 [项目 14815301483114557678](https://stitch.withgoogle.com/projects/14815301483114557678) 覆盖，已实现文档双层 Footer 保留为既定特例；其余按当前组件和页面契约。同一 DOM/字体/尺寸支持浅色与深色。
-- 全站统一使用 Space Grotesk / Geist / JetBrains Mono；Header 的 Inter 为既定特例，不按 Catalog 源 HTML 另设 Plus Jakarta Sans / Inter 字体体系。门户 Footer 统一为“开源代码／社区与生态／开发者资源／法律与开源”，博客入口仅放“社区与生态”。
+- 全站统一使用 Space Grotesk / Geist / JetBrains Mono；Header 的 Inter 为既定特例，不按 Catalog 源 HTML 另设 Plus Jakarta Sans / Inter 字体体系。全站 Footer 右侧按浏览网站、文档与上手、社区参与三组组织五个主栏目及快速开始、GitHub、技术交流群八个入口。
 - Classic theme 配置基线为 `colorMode: {defaultMode: 'light', disableSwitch: false, respectPrefersColorScheme: true}`；参见 [Docusaurus 官方 color-mode 配置](https://docusaurus.io/docs/api/themes/configuration#color-mode)。ThemeModeSwitch 使用公开 provider 接入太阳／月亮按钮，首访跟随系统，点击后保存 light/dark，不显示三态下拉框。
 - 偏好 `system/light/dark` 与解析后的 `light/dark` 分离；通过 Docusaurus provider 的公开能力设置手动覆盖，不硬编码内部 storage key 或再建独立存储。系统变化只作用于 system 模式，存储受限降级为会话偏好。
 - 根节点首帧初始化、data-theme、color-scheme 和 hydration 一起验证；不能依赖页面挂载后的 effect 才纠正白屏。无脚本以 CSS 系统主题回退，隐藏失效切换控件；不承诺恢复无法读取的存储偏好。

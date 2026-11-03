@@ -2,10 +2,10 @@ import { translate } from '@docusaurus/Translate';
 import React, { useRef } from 'react';
 import Link from '@docusaurus/Link';
 import useBaseUrl from '@docusaurus/useBaseUrl';
+import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import { useSitePath } from '@site/src/lib/use-site-path';
 import { useHomeMotion } from '@site/src/components/HomeMotion';
 import './styles.css';
-import { CommunityCalendar } from './Calendar';
 
 // GitHub profile names; fall back to the account ID when Name is empty.
 const maintainerNames: Partial<Record<string, string>> = {
@@ -196,6 +196,7 @@ export function CommunityContent() {
   const phancyLogo = useBaseUrl('/brand/phancy-logo.png');
   const riseUnionLogo = useBaseUrl('/brand/riseunion-logo.svg');
   const root = useRef<HTMLElement>(null);
+  const joinDialog = useRef<HTMLDialogElement>(null);
   useHomeMotion(root, '#community-hero');
   return (
     <main
@@ -472,46 +473,6 @@ export function CommunityContent() {
         </section>
 
         <section
-          className="w-full px-6 md:px-8 py-16 bg-[#f8fafc] border-b border-slate-200/80"
-          id="community-calendar"
-          aria-labelledby="community-calendar-title"
-        >
-          <div className="w-full max-w-6xl mx-auto flex flex-col gap-10">
-            <div className="flex flex-col gap-1.5" data-home-intro="">
-              <div className="flex items-center gap-2">
-                <span className="w-2.5 h-2.5 rounded-sm bg-sky-600"></span>
-                <span className="font-label-caps text-xs font-bold text-sky-700 tracking-widest uppercase">
-                  {'TECH TALKS & BI-WEEKLY CALENDAR'}
-                </span>
-              </div>
-              <h2
-                className="font-headline-lg text-2xl md:text-3xl font-bold text-slate-900 tracking-tight"
-                id="community-calendar-title"
-              >
-                {translate({
-                  id: 'site.98fcedca6dd0',
-                  message: '线上技术分享与社区例会日历',
-                })}
-              </h2>
-              <p className="font-body-md text-sm text-slate-600">
-                {translate({
-                  id: 'site.721f5a8ebb14',
-                  message: '社区技术分享与例会安排将在这里公布',
-                })}
-              </p>
-            </div>
-
-            <div
-              className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start"
-              data-home-reveal="panel"
-              data-home-pair=""
-            >
-              <CommunityCalendar />
-            </div>
-          </div>
-        </section>
-
-        <section
           className="w-full px-6 md:px-8 py-16 bg-[#faf8ff] border-b border-slate-200/80"
           id="community-partners"
           aria-labelledby="community-partners-title"
@@ -594,18 +555,8 @@ export function CommunityContent() {
                           message: '范式智能 (PHANCY)',
                         })}
                       </h3>
-                      <p className="font-code-sm text-xs text-slate-500">
-                        {'Enterprise AI Infrastructure'}
-                      </p>
                     </div>
                   </div>
-                  <p className="font-body-sm text-sm text-slate-600 leading-relaxed mb-6">
-                    {translate({
-                      id: 'site.3cc070cc56f5',
-                      message:
-                        '\n            作为社区联合发起方，负责提供工业级异构算力集群底座验证支持、海量信创芯片软硬件适配数据沉淀，以及企业级生产落地场景的持续拓展与规范制定。\n          ',
-                    })}
-                  </p>
                 </div>
               </div>
 
@@ -646,18 +597,8 @@ export function CommunityContent() {
                           message: '睿思智联 (RiseUnion)',
                         })}
                       </h3>
-                      <p className="font-code-sm text-xs text-slate-500">
-                        {'Cloud-Native AI Middleware'}
-                      </p>
                     </div>
                   </div>
-                  <p className="font-body-sm text-sm text-slate-600 leading-relaxed mb-6">
-                    {translate({
-                      id: 'site.de57ac18e315',
-                      message:
-                        '\n            作为社区联合发起方，主导核心推理中间件研发、Tuning Agent 调优搜索算法、Kubernetes 云原生推理算子设计，以及面向极端并发的智能路由网关工程演进。\n          ',
-                    })}
-                  </p>
                 </div>
               </div>
             </div>
@@ -682,7 +623,18 @@ export function CommunityContent() {
               </div>
               <a
                 className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-xl bg-sky-600 text-white font-body-sm text-sm font-semibold hover:bg-sky-700 transition-colors shadow-sm shrink-0"
-                href="mailto:contact@modelsphere.org"
+                href={groupQr}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-haspopup="dialog"
+                aria-controls="community-join-dialog"
+                onClick={(event) => {
+                  const dialog = joinDialog.current;
+                  if (dialog && typeof dialog.showModal === 'function') {
+                    event.preventDefault();
+                    dialog.showModal();
+                  }
+                }}
               >
                 <span className="">
                   {translate({
@@ -904,20 +856,75 @@ export function CommunityContent() {
           </div>
         </section>
       </div>
+      <dialog
+        ref={joinDialog}
+        id="community-join-dialog"
+        className="community-join-dialog"
+        aria-labelledby="community-join-title"
+        aria-describedby="community-join-description"
+        onClick={(event) => {
+          if (event.target === event.currentTarget) event.currentTarget.close();
+        }}
+      >
+        <div className="community-join-content">
+          <button
+            type="button"
+            className="community-join-close"
+            aria-label={translate({
+              id: 'community.closeQr',
+              message: '关闭二维码',
+            })}
+            autoFocus
+            onClick={() => joinDialog.current?.close()}
+          >
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              aria-hidden="true"
+            >
+              <path d="m6 6 12 12M18 6 6 18" />
+            </svg>
+          </button>
+          <h2 id="community-join-title">
+            {translate({ id: 'site.c6e8323544d9', message: '微信技术交流群' })}
+          </h2>
+          <p id="community-join-description">
+            {translate({
+              id: 'community.joinQrDescription',
+              message: '使用微信扫描二维码加入技术交流群。',
+            })}
+          </p>
+          <img
+            src={groupQr}
+            alt={translate({
+              id: 'site.7842c842f4dd',
+              message: '微信技术交流群入群二维码',
+            })}
+            width={500}
+            height={500}
+          />
+        </div>
+      </dialog>
     </main>
   );
 }
 export function CommunityFooter() {
   const symbol = useBaseUrl('/brand/modelsphere-symbol.png');
   const { siteHref } = useSitePath();
+  const { siteConfig } = useDocusaurusContext();
+  const quickstartHref = String(
+    siteConfig.customFields?.docsQuickstartHref ?? '/docs',
+  );
   return (
     <footer
       className="w-full bg-white border-t border-slate-200 community-footer"
       data-community-design=""
     >
       <div className="w-full px-6 md:px-8 py-14 max-w-7xl mx-auto">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 mb-12">
-          <div className="lg:col-span-2 flex flex-col gap-3">
+        <div className="community-footer-grid mb-12">
+          <div className="flex flex-col gap-3">
             <div className="flex items-center gap-2.5">
               <img
                 alt="ModelSphere Logo"
@@ -946,102 +953,73 @@ export function CommunityFooter() {
             </p>
             <div className="flex items-center gap-3 font-code-sm text-xs text-slate-500 pt-1"></div>
           </div>
-          <div className="flex flex-col gap-2.5">
-            <div className="font-label-caps text-xs text-slate-400 font-bold uppercase tracking-wider">
-              {translate({ id: 'site.6db8afcd8915', message: '核心产品' })}
+          <nav
+            className="community-footer-nav"
+            aria-label={translate({
+              id: 'community.footerNavigation',
+              message: '页脚导航',
+            })}
+          >
+            <div className="community-footer-group">
+              <h3>
+                {translate({
+                  id: 'community.footerBrowse',
+                  message: '浏览网站',
+                })}
+              </h3>
+              <Link to="/">
+                {translate({ id: 'site.203c08e0d44a', message: '首页' })}
+              </Link>
+              <Link to="/models">
+                {translate({ id: 'site.34b3cac2a496', message: '模型目录' })}
+              </Link>
+              <Link to="/blog">
+                {translate({ id: 'site.7855e5e9727e', message: '博客' })}
+              </Link>
             </div>
-            <Link
-              className="font-body-sm text-sm text-slate-600 hover:text-sky-600 transition-colors"
-              to="/docs"
-            >
-              {translate({
-                id: 'site.0cde2d8a5585',
-                message: '推理引擎运行时',
-              })}
-            </Link>
-            <Link
-              className="font-body-sm text-sm text-slate-600 hover:text-sky-600 transition-colors"
-              to="/models"
-            >
-              {translate({ id: 'site.f7821c3f955a', message: '模型加速套件' })}
-            </Link>
-            <Link
-              className="font-body-sm text-sm text-slate-600 hover:text-sky-600 transition-colors"
-              to="/models"
-            >
-              {translate({ id: 'site.5f7a4b1ece53', message: '性能基准测评' })}
-            </Link>
-            <Link
-              className="font-body-sm text-sm text-slate-600 hover:text-sky-600 transition-colors"
-              to="/docs"
-            >
-              {translate({ id: 'site.7d1bb773a6bf', message: '分布式编排器' })}
-            </Link>
-          </div>
-          <div className="flex flex-col gap-2.5">
-            <div className="font-label-caps text-xs text-slate-400 font-bold uppercase tracking-wider">
-              {translate({ id: 'site.8c59843609d4', message: '社区与生态' })}
+            <div className="community-footer-group">
+              <h3>
+                {translate({
+                  id: 'community.footerDocs',
+                  message: '文档与上手',
+                })}
+              </h3>
+              <Link to="/docs">
+                {translate({ id: 'site.fda4566fda7d', message: '文档指南' })}
+              </Link>
+              <Link to={quickstartHref}>
+                {translate({ id: 'site.334c20e1a480', message: '快速开始' })}
+              </Link>
             </div>
-            <a
-              className="font-body-sm text-sm text-slate-600 hover:text-sky-600 transition-colors"
-              href={siteHref('/community#community-channels')}
-            >
-              {translate({
-                id: 'site.a39d5d6a8909',
-                message: '开发者社区 SIG',
-              })}
-            </a>
-            <a
-              className="font-body-sm text-sm text-slate-600 hover:text-sky-600 transition-colors"
-              href={siteHref('/community#community-maintainers')}
-            >
-              {translate({
-                id: 'site.b78151d50c19',
-                message: '社区维护者治理',
-              })}
-            </a>
-            <Link
-              className="font-body-sm text-sm text-slate-600 hover:text-sky-600 transition-colors"
-              to="/community"
-            >
-              {translate({ id: 'site.2bcf194ad150', message: '贡献者荣誉墙' })}
-            </Link>
-            <a
-              className="font-body-sm text-sm text-slate-600 hover:text-sky-600 transition-colors"
-              href={siteHref('/community#community-calendar')}
-            >
-              {translate({ id: 'site.536c0bc75f5d', message: '线上技术日历' })}
-            </a>
-          </div>
-          <div className="flex flex-col gap-2.5">
-            <div className="font-label-caps text-xs text-slate-400 font-bold uppercase tracking-wider">
-              {translate({ id: 'site.f0009e1a62b1', message: '开发者资源' })}
+            <div className="community-footer-group">
+              <h3>
+                {translate({
+                  id: 'community.footerParticipate',
+                  message: '社区参与',
+                })}
+              </h3>
+              <Link to="/community">
+                {translate({ id: 'site.01cca2c2836f', message: '社区生态' })}
+              </Link>
+              <a
+                href="https://github.com/modelsphere"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={translate({
+                  id: 'site.7a3a176413cc',
+                  message: 'ModelSphere GitHub（新窗口打开）',
+                })}
+              >
+                GitHub
+              </a>
+              <a href={siteHref('/community#community-channels')}>
+                {translate({
+                  id: 'community.footerGroup',
+                  message: '技术交流群',
+                })}
+              </a>
             </div>
-            <Link
-              className="font-body-sm text-sm text-slate-600 hover:text-sky-600 transition-colors"
-              to="/docs"
-            >
-              {translate({ id: 'site.ed82269fbd7e', message: '快速接入文档' })}
-            </Link>
-            <Link
-              className="font-body-sm text-sm text-slate-600 hover:text-sky-600 transition-colors"
-              to="/docs"
-            >
-              {'RESTful / gRPC API'}
-            </Link>
-            <Link
-              className="font-body-sm text-sm text-slate-600 hover:text-sky-600 transition-colors"
-              to="/blog"
-            >
-              {translate({ id: 'site.85f3058b9a7e', message: '架构演进内幕' })}
-            </Link>
-            <Link
-              className="font-body-sm text-sm text-slate-600 hover:text-sky-600 transition-colors"
-              to="/blog"
-            >
-              {translate({ id: 'site.359c2cf95c95', message: '量化实战案例' })}
-            </Link>
-          </div>
+          </nav>
         </div>
         <div className="pt-6 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="font-code-sm text-xs text-slate-500">
