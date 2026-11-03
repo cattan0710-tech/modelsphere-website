@@ -2617,5 +2617,293 @@
   "home.architecture.hardware": {
     "message": "AI accelerators",
     "description": "异构算力"
+  },
+  "home.qos.rateTitle": {
+    "message": "Dynamic rate limiting",
+    "description": "动态限流"
+  },
+  "home.qos.rateTitleEnd": {
+    "message": ": maximize compute utilization while maintaining service quality",
+    "description": "：在保障服务质量的前提下，最大化算力利用"
+  },
+  "home.qos.rateSubtitle": {
+    "message": "Keep every model service on the platform meeting its expected quality, including response and generation speed",
+    "description": "让平台上的所有大模型服务，都持续满足预期的服务质量（如响应速度、生成速度等）"
+  },
+  "home.qos.staticTitle": {
+    "message": "Traditional static rate limiting",
+    "description": "传统静态限流"
+  },
+  "home.qos.staticSubtitle": {
+    "message": "(based on RPM, TPM)",
+    "description": "（基于 RPM, TPM）"
+  },
+  "home.qos.concurrencyLimit": {
+    "message": "Concurrency limit",
+    "description": "并发上限"
+  },
+  "home.qos.simpleRequest": {
+    "message": "Simple requests",
+    "description": "简单请求"
+  },
+  "home.qos.simpleDetail": {
+    "message": "(spare compute capacity)",
+    "description": "（算力有富余）"
+  },
+  "home.qos.complexRequest": {
+    "message": "Complex requests",
+    "description": "复杂请求"
+  },
+  "home.qos.complexDetail": {
+    "message": "(prone to slowdowns)",
+    "description": "（容易变慢）"
+  },
+  "home.qos.problemTitle": {
+    "message": "Why is static rate limiting hard to get right?",
+    "description": "为什么静态限流很难做好？"
+  },
+  "home.qos.differentRequests": {
+    "message": "Requests vary greatly",
+    "description": "请求差异大"
+  },
+  "home.qos.differentRequestsDetail": {
+    "message": "Simple Q&A and long texts require very different amounts of compute",
+    "description": "简单问答和长文本的算力消耗差很多"
+  },
+  "home.qos.changingCapacity": {
+    "message": "Processing capacity changes",
+    "description": "处理能力会变化"
+  },
+  "home.qos.changingCapacityDetail": {
+    "message": "Affected by model, context length, load and more",
+    "description": "受模型、上下文长度、负载等影响"
+  },
+  "home.qos.solutionTitle": {
+    "message": "ModelSphere dynamic rate limiting",
+    "description": "ModelSphere 动态限流"
+  },
+  "home.qos.solutionDetail": {
+    "message": "Automatically adjust concurrency to real-time processing capacity",
+    "description": "根据实时处理能力，自动调整并发"
+  },
+  "home.qos.openNote": {
+    "message": "Spare capacity: raise the limit",
+    "description": "性能充足 自动放开"
+  },
+  "home.qos.tightenNote": {
+    "message": "Capacity drops: tighten the limit",
+    "description": "性能下降 及时收紧"
+  },
+  "home.qos.concurrency": {
+    "message": "Concurrency",
+    "description": "并发"
+  },
+  "home.qos.time": {
+    "message": "Time",
+    "description": "时间"
+  },
+  "home.qos.dynamicLimit": {
+    "message": "Concurrency limit (dynamically adjusted)",
+    "description": "并发上限（动态调整）"
+  },
+  "home.qos.utilization": {
+    "message": "Higher utilization",
+    "description": "更高利用率"
+  },
+  "home.qos.utilizationDetail": {
+    "message": "Get more value from your compute",
+    "description": "让算力发挥更大价值"
+  },
+  "home.qos.stability": {
+    "message": "A more stable experience",
+    "description": "更稳定体验"
+  },
+  "home.qos.stabilityDetail": {
+    "message": "Maintain response quality during peak traffic",
+    "description": "高峰期也能保持响应质量"
+  },
+  "home.qos.operations": {
+    "message": "Lower operational costs",
+    "description": "更低运维成本"
+  },
+  "home.qos.operationsDetail": {
+    "message": "Automatically adapt to different models and workloads",
+    "description": "自动适配不同模型和业务"
+  },
+  "home.qos.allDayTrend": {
+    "message": "24-hour workload distribution (combined share = 100%)",
+    "description": "24小时全天候负载流转趋势 (两者占比之和 = 100%)"
+  },
+  "home.qos.dynamicUtilization": {
+    "message": "Dynamic compute utilization: 100%",
+    "description": "动态算力利用率: 100%"
+  },
+  "home.qos.glmCoverage": {
+    "message": "GLM 5.3 compute allocation ↑",
+    "description": "GLM 5.3 算力覆盖区 ↑"
+  },
+  "home.qos.minimaxCoverage": {
+    "message": "MiniMax M3 compute allocation ↓",
+    "description": "MiniMax M3 算力覆盖区 ↓"
+  },
+  "home.qos.morningAxis": {
+    "message": "09:00 (blue 80% : purple 20%)",
+    "description": "09:00 (蓝80% : 紫20%)"
+  },
+  "home.qos.afternoonAxis": {
+    "message": "15:00 (blue 60% : purple 40%)",
+    "description": "15:00 (蓝60% : 紫40%)"
+  },
+  "home.qos.nightAxis": {
+    "message": "23:00 (blue 20% : purple 80%)",
+    "description": "23:00 (蓝20% : 紫80%)"
+  },
+  "home.qos.morningTitle": {
+    "message": "Daytime peak 09:00",
+    "description": "白天高峰 09:00"
+  },
+  "home.qos.morningDetail": {
+    "message": "High office workload traffic",
+    "description": "办公模型流量大"
+  },
+  "home.qos.afternoonTitle": {
+    "message": "Regular hours 15:00",
+    "description": "日常时段 15:00"
+  },
+  "home.qos.afternoonDetail": {
+    "message": "Balanced traffic",
+    "description": "流量均衡"
+  },
+  "home.qos.nightTitle": {
+    "message": "Nighttime peak 23:00",
+    "description": "深夜高峰 23:00"
+  },
+  "home.qos.nightDetail": {
+    "message": "High nighttime task traffic",
+    "description": "夜间任务流量大"
+  },
+  "home.qos.scalingPill": {
+    "message": "Smart compute scheduling · Eliminate idle resources",
+    "description": "智能算力调度 · 告别资源闲置"
+  },
+  "home.qos.scalingTitle": {
+    "message": "Dynamic compute scaling:",
+    "description": "算力动态扩缩容："
+  },
+  "home.qos.scalingTitleAccent": {
+    "message": "Allocate to model traffic in real time",
+    "description": "按模型流量实时分配"
+  },
+  "home.qos.scalingTitleEnd": {
+    "message": "Keep compute fully utilized, 24/7",
+    "description": "算力24小时满负荷"
+  },
+  "home.qos.scalingDescription": {
+    "message": "Overcome the limits of binding models to fixed compute: wasted resources off-peak and insufficient capacity at peak demand.",
+    "description": "解决传统模式下模型固定部署在指定算力上，导致低峰期算力空转浪费、高峰期算力不足的业务痛点。"
+  },
+  "home.qos.measureUsage": {
+    "message": "Measure model usage in real time",
+    "description": "实时判断模型使用量"
+  },
+  "home.qos.scaleWithTraffic": {
+    "message": "Scale compute automatically with traffic",
+    "description": "算力随流量自动扩缩"
+  },
+  "home.qos.eliminateIdle": {
+    "message": "Eliminate waste from idle compute",
+    "description": "消灭低使用率闲置浪费"
+  },
+  "home.qos.noStutter": {
+    "message": "Keep popular models responsive",
+    "description": "热门模型不卡顿"
+  },
+  "home.qos.zeroIdle": {
+    "message": "Zero idle compute resources",
+    "description": "算力资源 0 闲置"
+  },
+  "home.qos.fixedMode": {
+    "message": "Traditional fixed allocation",
+    "description": "传统固定绑定模式"
+  },
+  "home.qos.fixedModeDetail": {
+    "message": "Large amounts of compute sit idle off-peak",
+    "description": "模型低谷期大量算力闲置空转"
+  },
+  "home.qos.dynamicMode": {
+    "message": "ModelSphere dynamic allocation",
+    "description": "ModelSphere 动态调配"
+  },
+  "home.qos.dynamicModeDetail": {
+    "message": "Compute follows traffic, keeping the cluster 100% utilized",
+    "description": "算力随流量流动，集群 100% 满载"
+  },
+  "home.qos.glmWorkload": {
+    "message": "Office / analysis",
+    "description": "办公/分析"
+  },
+  "home.qos.minimaxWorkload": {
+    "message": "Code / batch processing",
+    "description": "代码/批处理"
+  },
+  "home.qos.gpuPool": {
+    "message": "Cluster compute pool: 10 fixed GPUs, seamlessly reallocated in real time",
+    "description": "集群算力总池：固定 10 张 GPU 算力卡，实时无感流转"
+  },
+  "home.qos.reallocateFirst": {
+    "message": "Sense demand",
+    "description": "实时感知"
+  },
+  "home.qos.reallocateSecond": {
+    "message": "and reallocate",
+    "description": "调配"
+  },
+  "home.qos.autoFirst": {
+    "message": "Auto",
+    "description": "自动"
+  },
+  "home.qos.autoSecond": {
+    "message": "scaling",
+    "description": "扩缩容"
+  },
+  "home.qos.summaryStart": {
+    "message": "Compute scales with model traffic in real time, with the combined allocation always at ",
+    "description": "算力随模型流量大小实时增减，两者资源占比之和始终保持 "
+  },
+  "home.qos.summaryEnd": {
+    "message": ", eliminating idle compute",
+    "description": "，彻底消除算力闲置"
+  },
+  "home.qos.glm2": {
+    "message": "GLM 20% (2 GPUs)",
+    "description": "GLM 20% (2卡)"
+  },
+  "home.qos.minimax2": {
+    "message": "MiniMax 20% (2 GPUs)",
+    "description": "MiniMax 20% (2卡)"
+  },
+  "home.qos.glm6": {
+    "message": "GLM 60% (6 GPUs)",
+    "description": "GLM 60% (6卡)"
+  },
+  "home.qos.glm8": {
+    "message": "GLM 80% (8 GPUs)",
+    "description": "GLM 80% (8卡)"
+  },
+  "home.qos.minimax8": {
+    "message": "MiniMax 80% (8 GPUs)",
+    "description": "MiniMax 80% (8卡)"
+  },
+  "home.qos.rateChart": {
+    "message": "Concurrency limit adjusts dynamically to real-time processing capacity",
+    "description": "并发上限随实时处理能力动态调整的曲线"
+  },
+  "home.qos.scalingChart": {
+    "message": "Complementary GLM 5.3 and MiniMax M3 compute allocation over 24 hours, totaling 100%",
+    "description": "全天 GLM 5.3 与 MiniMax M3 算力占比互补，总和为 100%"
+  },
+  "home.qos.minimax4": {
+    "message": "MiniMax 40% (4 GPUs)",
+    "description": "MiniMax 40% (4卡)"
   }
 }

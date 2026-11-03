@@ -87,9 +87,10 @@ Catalog 的目录、详情、配方历史和报告绑定其数据版本；门户
 | 2 `comparison` | 4 项能力：生产部署、异构硬件、快速调优部署、持续优化；各含标题、说明与能力面板 | SectionHeading、4 个 FeatureCard | 必填；桌面/平板 2×2，手机纵排；不增加独立四项 Tab |
 | 3 `benchmarks` | 开箱即用，性能调优模型 Day-0 部署；用户提供的 Console 模型广场截图 | SectionHeading、完整产品截图 | 核心特性首项；以 2568×1528 原始 PNG 展示部署变体与调优收益标签，不压缩或转换图片，不显示图片下方说明及链接；窄屏可横向滚动，浅深主题保留原图，不将截图标签作为统一性能承诺 |
 | 4 `fault-tolerance` | 断流续写的探测、上下文接续、前提与限制 | SectionHeading、DiagramFrame、分步说明 | 条件：有可核实的机制资料与 Claim；不承诺无条件零中断 |
-| 5 `qos-scaling` | QoS 限流与 SLO 弹性伸缩两项机制 | SectionHeading、2 个机制卡与图示 | 条件：有实现资料；区分目标、示意与实测，不输出模拟实时遥测 |
-| 6 `autotune-evolution` | 线上服务、流量收集、空闲算力调优、配置验证、自动上线的五步闭环 | SectionHeading、DiagramFrame、步骤说明 | 条件：有对应实现资料；标明适用范围，不把调优闭环当作请求执行流程 |
-| 7 `get-started` | 居中接入邀请与社区入口，手机纵排操作组 | CtaBlock | 必填邀请；真实快速开始就绪后使用 `docsQuickstartHref`，否则显示准备说明和 `/community` |
+| 5 `qos-scaling` | ModelSphere 动态限流：静态限流、请求差异与动态并发对比；3 项收益 | SectionHeading、3 栏机制图、收益横栏 | 来源覆盖：Stitch `12e3c505c12147f788aac9b503645a9d`；文字、SVG 图标和曲线按稿，字体、尺寸与颜色使用当前首页 tokens |
+| 6 `dynamic-scaling` | 算力动态扩缩容：全天负载趋势、10 张 GPU 与 8:2、6:4、2:8 分配场景 | SectionHeading、3 个特性卡、双模型堆叠面积图与 GPU 阵列 | 来源覆盖：Stitch `6217c9871bea457192cbcb39bb7e01ba`；沿用首页响应式及双主题，首屏伸缩链接指向本节 |
+| 7 `autotune-evolution` | 线上服务、流量收集、空闲算力调优、配置验证、自动上线的五步闭环 | SectionHeading、DiagramFrame、步骤说明 | 条件：有对应实现资料；标明适用范围，不把调优闭环当作请求执行流程 |
+| 8 `get-started` | 居中接入邀请与社区入口，手机纵排操作组 | CtaBlock | 必填邀请；真实快速开始就绪后使用 `docsQuickstartHref`，否则显示准备说明和 `/community` |
 
 Hero 只展示新版单张完整系统架构图，浅深主题表达相同信息并保持同一框尺寸；不预置监控标签、双 Tab、隐藏面板、Live UI 或轮播。核心特性首项使用用户提供的 Console 模型广场截图，资源位于 `static/screenshots/console-model-catalog.png`。首页不再设置独立 `features` 四项 Tab、`request-flow`、`audiences` 或推荐文章区块；架构页及其他页面的既定功能保留。
 

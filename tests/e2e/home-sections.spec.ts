@@ -1,10 +1,13 @@
 import { expect, test } from '@playwright/test';
 import source from '../../docs/design/sources/stitch-home-sections-copy.json';
 import communitySource from '../../docs/design/sources/stitch-community.json';
+import qosSource from '../../docs/design/sources/stitch-qos-scaling.json';
 
 // Approved changes reserve loop-arrow gaps and remove the CTA metadata row.
 const modules = {
-  ...source.modules,
+  ...Object.fromEntries(
+    Object.entries(source.modules).filter(([id]) => id !== 'qos-scaling'),
+  ),
   'autotune-evolution': {
     ...source.modules['autotune-evolution'],
     height: 720,
@@ -114,6 +117,7 @@ for (const [id, expected] of Object.entries(modules)) {
         'benchmarks',
         'fault-tolerance',
         'qos-scaling',
+        'dynamic-scaling',
         'autotune-evolution',
         'get-started',
       ]);
@@ -168,9 +172,10 @@ for (const [id, expected] of Object.entries(modules)) {
         color: heading.color,
       })),
     );
-    if ('columns' in expected) {
+    if ('columns' in expected && Array.isArray(expected.columns)) {
+      const columns: number[] = expected.columns;
       measured.columns.forEach((width, index) =>
-        expect(width).toBeCloseTo(expected.columns[index], 1),
+        expect(width).toBeCloseTo(columns[index], 1),
       );
     }
   });
@@ -188,13 +193,16 @@ test('source status and chart signals animate without affecting the existing ent
     2,
   );
   await expect(
+    page.locator('#dynamic-scaling [data-home-pair] > *'),
+  ).toHaveCount(2);
+  await expect(
     page.locator('#autotune-evolution [data-home-pair] > *'),
   ).toHaveCount(2);
-  await expect(page.locator('[data-home-intro]')).toHaveCount(6);
+  await expect(page.locator('[data-home-intro]')).toHaveCount(7);
   const signals = page.locator(
     '[data-home-design] .animate-pulse,[data-home-design] .animate-ping',
   );
-  expect(await signals.count()).toBe(9);
+  expect(await signals.count()).toBe(10);
   expect(
     await signals.evaluateAll((elements) =>
       elements.every(
@@ -282,4 +290,177 @@ test('restored modules contain narrow layouts and preserve working section links
   await expect(
     page.getByRole('link', { name: '加入开发者交流群', exact: true }),
   ).toHaveAttribute('href', '#home-community');
+});
+
+for (const [id, source] of Object.entries(qosSource)) {
+  test(`${id} follows the selected source copy, icons and chart geometry`, async ({
+    page,
+  }) => {
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    await page.goto('/');
+    await page.evaluate(() => document.fonts.ready);
+    const section = page.locator(`#${id}`);
+    const measured = await section.evaluate((element) => {
+      const walker = document.createTreeWalker(element, NodeFilter.SHOW_TEXT);
+      const text: string[] = [];
+      while (walker.nextNode()) {
+        const node = walker.currentNode;
+        if (
+          !node.parentElement!.closest(
+            '.material-symbols-outlined,[aria-hidden="true"],script',
+          )
+        )
+          text.push(node.textContent!);
+      }
+      return {
+        text: text.join(' ').replace(/\s+/g, ' ').trim(),
+        icons: Array.from(
+          element.querySelectorAll('.material-symbols-outlined'),
+        ).map((icon) => icon.textContent!.trim()),
+        paths: Array.from(
+          element.querySelectorAll('svg path,svg polygon,svg polyline'),
+        ).map((path) =>
+          (path.getAttribute('d') ?? path.getAttribute('points') ?? '')
+            .replace(/\s+/g, ' ')
+            .trim(),
+        ),
+      };
+    });
+    expect(measured.text.replace(/\s/g, '')).toBe(
+      source.text.replace(/\s/g, ''),
+    );
+    expect(measured.icons).toEqual(source.icons);
+    for (const path of source.svgPaths)
+      expect(measured.paths).toContain(path.replace(/\s+/g, ' ').trim());
+    if (id === 'dynamic-scaling') {
+      for (const count of [8, 6, 2]) {
+        const scenario = section.locator(`[data-gpu-scenario="${count}"]`);
+        await expect(scenario.locator('[data-model="glm"]')).toHaveCount(count);
+        await expect(scenario.locator('[data-model="minimax"]')).toHaveCount(
+          10 - count,
+        );
+      }
+      await expect(
+        section.locator('.material-symbols-outlined').first(),
+      ).toHaveCSS('font-family', '"ModelSphere Scaling Symbols"');
+    }
+    await section.screenshot({
+      path: `reports/${id}-desktop.png`,
+      style: '.site-header { visibility: hidden; }',
+    });
+  });
+}
+
+test('QoS sections fit both themes and supported widths, including English and no-script rendering', async ({
+  page,
+  browser,
+}) => {
+  test.setTimeout(90_000);
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  for (const theme of ['light', 'dark'] as const) {
+    await page.emulateMedia({ colorScheme: theme });
+    await page.goto('/');
+    for (const width of [320, 390, 768, 1024, 1280, 1440]) {
+      await page.setViewportSize({ width, height: 1000 });
+      for (const id of ['qos-scaling', 'dynamic-scaling']) {
+        const section = page.locator(`#${id}`);
+        const box = await section.evaluate((element) => ({
+          width: element.clientWidth,
+          scroll: element.scrollWidth,
+        }));
+        expect(box.scroll).toBeLessThanOrEqual(box.width + 1);
+        if (width === 390 || width === 1280)
+          await section.screenshot({
+            path: `reports/${id}-${theme}-${width}.png`,
+            style: '.site-header { visibility: hidden; }',
+          });
+      }
+    }
+  }
+  const context = await browser.newContext({
+    javaScriptEnabled: false,
+    locale: 'en-US',
+  });
+  const plain = await context.newPage();
+  await plain.goto(new URL('/en/', page.url()).href);
+  for (const id of ['qos-scaling', 'dynamic-scaling']) {
+    const section = plain.locator(`#${id}`);
+    await expect(section).toBeVisible();
+    expect(await section.innerText()).not.toMatch(/[\u3400-\u9fff]/);
+  }
+  await context.close();
+});
+
+test('QoS chart limits align with bars and annotations follow unscaled points', async ({
+  page,
+}) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await page.goto('/');
+  const section = page.locator('#qos-scaling');
+  for (const width of [320, 390, 768, 1280, 1440]) {
+    await page.setViewportSize({ width, height: 1000 });
+    const measured = await section.evaluate((element) => {
+      const line = element
+        .querySelector('[data-qos-static-limit] i')!
+        .getBoundingClientRect();
+      const bars = Array.from(
+        element.querySelectorAll('[data-qos-static-bar]'),
+      ).map((bar) => bar.getBoundingClientRect().top);
+      const svg = element
+        .querySelector('svg[role="img"]')!
+        .getBoundingClientRect();
+      const points = ['open', 'tighten'].map((kind) => {
+        const wrapper = element.querySelector(`[data-qos-point="${kind}"]`)!;
+        const dot = wrapper.querySelector('i')!.getBoundingClientRect();
+        const annotation = wrapper
+          .querySelector('span')!
+          .getBoundingClientRect();
+        return {
+          kind,
+          x: dot.x + dot.width / 2,
+          y: dot.y + dot.height / 2,
+          width: dot.width,
+          height: dot.height,
+          labelX:
+            annotation.x + annotation.width * (kind === 'open' ? 0.5 : 0.55),
+          labelY: annotation.bottom + (kind === 'open' ? 18 : 14),
+        };
+      });
+      const axes = Array.from(element.querySelectorAll('[data-qos-axis]')).map(
+        (axis) => ({
+          namespace: axis.namespaceURI,
+          font: getComputedStyle(axis).fontFamily,
+          size: getComputedStyle(axis).fontSize,
+        }),
+      );
+      return {
+        lineY: line.y + line.height / 2,
+        bars,
+        points,
+        axes,
+        font: getComputedStyle(element).fontFamily,
+        svg: { x: svg.x, y: svg.y, width: svg.width, height: svg.height },
+      };
+    });
+    for (const top of measured.bars)
+      expect(Math.abs(top - measured.lineY)).toBeLessThanOrEqual(1);
+    for (const point of measured.points) {
+      const [x, y] = point.kind === 'open' ? [120, 74] : [295, 103];
+      expect(
+        Math.abs(point.x - (measured.svg.x + (measured.svg.width * x) / 380)),
+      ).toBeLessThanOrEqual(1);
+      expect(
+        Math.abs(point.y - (measured.svg.y + (measured.svg.height * y) / 150)),
+      ).toBeLessThanOrEqual(1);
+      expect(point.width).toBe(12);
+      expect(point.height).toBe(12);
+      expect(Math.abs(point.labelX - point.x)).toBeLessThanOrEqual(1);
+      expect(Math.abs(point.labelY - point.y)).toBeLessThanOrEqual(1);
+    }
+    for (const axis of measured.axes) {
+      expect(axis.namespace).toBe('http://www.w3.org/1999/xhtml');
+      expect(axis.font).toBe(measured.font);
+      expect(axis.size).toBe('12px');
+    }
+  }
 });

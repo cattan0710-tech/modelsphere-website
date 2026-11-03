@@ -8,13 +8,13 @@
 
 设计来源：[ModelSphere 推理基础设施官网](https://stitch.withgoogle.com/projects/3601238558355976464)。页面结构仅采用顶部“首页-更新”“模型目录”“博客洞见-更新”三张新版，底部旧稿仅参考 dark mode 色彩；[来源快照](docs/design/sources/stitch-foundations.json)记录当前采用范围与原始证据。Header 的独立来源覆盖和已实现文档双层 Footer 保留为既定特例。当前已实现首页、博客功能与文档栏目；博客保留明确标注的阅读示例，文档栏目已发布 Console 使用文档。
 
-首页按 hero、四张同时展开的能力卡、Day-0 部署与模型广场截图、断流续写、SLO、Tuning-Agent、渐变 CTA 排列。Catalog 默认显示配方卡片，按源报告记录的最佳负载增幅降序，保留测量版本与口径提示，不表示统一吞吐排名；信息边界见[可靠性清单](docs/development/catalog-implementation.md)。博客推荐文章优先，采用分类、技术标签、搜索与可选社区侧栏；详情由 Markdown 生成独立阅读页。浅深主题共享布局与 Space Grotesk / Geist / JetBrains Mono 字体，Header 的 Inter 为既定例外；开发者文档保留标准阅读格式。
+首页按 hero、四张同时展开的能力卡、Day-0 部署与模型广场截图、断流续写、动态限流、算力动态扩缩容、Tuning-Agent、渐变 CTA 排列。Catalog 默认显示配方卡片，按源报告记录的最佳负载增幅降序，保留测量版本与口径提示，不表示统一吞吐排名；信息边界见[可靠性清单](docs/development/catalog-implementation.md)。博客推荐文章优先，采用分类、技术标签、搜索与可选社区侧栏；详情由 Markdown 生成独立阅读页。浅深主题共享布局与 Space Grotesk / Geist / JetBrains Mono 字体，Header 的 Inter 为既定例外；开发者文档保留标准阅读格式。
 
 ## 当前阶段
 
 已确认采用 **Docusaurus + React + TypeScript 统一全站**，博客首期使用 **Markdown/Git 发布**。门户、博客和开发者文档构建为一个静态站点；Model Catalog 使用自定义 React 界面读取独立数据源。当前已建立 Docusaurus 应用、依赖锁文件和 CI 配置，实现首页、博客列表与阅读页、文档栏目及太阳／月亮主题切换。站内 Catalog 现已接入公开源；博客与文档在本仓库正式目录维护，独立文档仓库同步尚未接入。正式发布使用公开仓库与 GitHub Pages 自定义域名 `modelsphere.tech`；是否已上线以 Actions 发布结果和线上版本为准。
 
-首页实现七个区块：`hero`、`comparison`、`benchmarks`、`fault-tolerance`、`qos-scaling`、`autotune-evolution`、`get-started`；`benchmarks` 保留锚点，作为核心特性首项展示 Day-0 部署与 Console 模型广场截图。完整架构与机制图、说明文字和真实链接均在初始 HTML 中静态输出；首页标题按 D13 整体翻起渐显，引导语与简介从左滑入渐显，架构拓扑正文按 D14 从上向下揭示。屏外能力卡与各机制直接子块分别在自身起点进入 85% 触发线时入场；并排时左右聚合，堆叠时逐卡上移渐显。首屏按钮、技术标签、拓扑标题及其上方三张卡静态可用；架构数据与布局保持稳定，减少动效、无脚本及历史恢复显示最终态。机制说明链接到已核对的项目资料及固定提交，示意曲线明确标注为机制示意。原设计稿实测表格已由用户提供的 Console 模型广场截图替换；截图完整展示模型、部署变体与调优收益标签，窄屏可横向滚动。模型入口进入站内 `/models`，目录读取公开 Catalog 数据；正式 `/docs` 读取 `content/docs/`，当前发布 Console 使用文档。
+首页实现八个区块：`hero`、`comparison`、`benchmarks`、`fault-tolerance`、`qos-scaling`、`dynamic-scaling`、`autotune-evolution`、`get-started`；`benchmarks` 保留锚点，作为核心特性首项展示 Day-0 部署与 Console 模型广场截图。完整架构与机制图、说明文字和真实链接均在初始 HTML 中静态输出；首页标题按 D13 整体翻起渐显，引导语与简介从左滑入渐显，架构拓扑正文按 D14 从上向下揭示。屏外能力卡与各机制直接子块分别在自身起点进入 85% 触发线时入场；并排时左右聚合，堆叠时逐卡上移渐显。首屏按钮、技术标签、拓扑标题及其上方三张卡静态可用；架构数据与布局保持稳定，减少动效、无脚本及历史恢复显示最终态。机制说明链接到已核对的项目资料及固定提交，示意曲线明确标注为机制示意。原设计稿实测表格已由用户提供的 Console 模型广场截图替换；截图完整展示模型、部署变体与调优收益标签，窄屏可横向滚动。模型入口进入站内 `/models`，目录读取公开 Catalog 数据；正式 `/docs` 读取 `content/docs/`，当前发布 Console 使用文档。
 
 技术与发布边界以[工程与代码生成规范](docs/development/engineering.md)为依据；[架构说明](docs/design/architecture.html)、页面、组件、内容及交互规范描述同一套当前设计。修改直接覆盖原文，不保留并行架构副本。
 

@@ -457,7 +457,7 @@ export default function Home() {
                   id: 'site.d561bdc88e86',
                   message: '基于 Kubernetes 构建，将模型部署、缓存感知路由、',
                 })}
-                <a href="#qos-scaling">
+                <a href="#dynamic-scaling">
                   {translate({
                     id: 'site.cf231cb85b11',
                     message: '按 SLO 弹性伸缩',
