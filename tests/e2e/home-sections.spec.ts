@@ -1,6 +1,7 @@
 import { expect, test } from '@playwright/test';
 import source from '../../docs/design/sources/stitch-home-sections-copy.json';
 import communitySource from '../../docs/design/sources/stitch-community.json';
+import continuationSource from '../../docs/design/sources/stitch-continuation.json';
 import qosSource from '../../docs/design/sources/stitch-qos-scaling.json';
 
 // Approved changes reserve loop-arrow gaps and remove the CTA metadata row.
@@ -159,6 +160,55 @@ for (const [id, expected] of Object.entries(modules)) {
         ),
       };
     });
+    if (id === 'fault-tolerance') {
+      expect(measured.text.replace(/\s/g, '')).toBe(
+        continuationSource.text.replace(/\s/g, ''),
+      );
+      expect(measured.icons).toEqual(continuationSource.icons);
+      await expect(section.locator('.continuation-icon').first()).toHaveCSS(
+        'font-family',
+        '"ModelSphere Continuation Symbols Filled"',
+      );
+      await expect(section.locator('.continuation-feature')).toHaveCount(3);
+      await expect(section.locator('.continuation-step')).toHaveCount(4);
+      const semanticColors = await section.evaluate((element) => ({
+        expected: getComputedStyle(element)
+          .getPropertyValue('--color-home-success')
+          .trim(),
+        actual: getComputedStyle(element.querySelector('.continuation-step-4')!)
+          .color,
+      }));
+      const expectedSuccess = await page.evaluate((color) => {
+        const probe = document.createElement('span');
+        probe.style.color = color;
+        document.body.append(probe);
+        const result = getComputedStyle(probe).color;
+        probe.remove();
+        return result;
+      }, semanticColors.expected);
+      expect(semanticColors.actual).toBe(expectedSuccess);
+      await expect(section.locator('.continuation-title a')).toHaveAttribute(
+        'href',
+        'https://github.com/modelsphere/modelsphere/blob/d5c892d2c1747b9411b423dae5c776d0c84a8003/docs/deploy-a-model.md#continuation-gateway-optional',
+      );
+      const layout = await section
+        .locator('.continuation-layout')
+        .evaluate((element) => {
+          const [left, right] = Array.from(element.children).map((child) =>
+            child.getBoundingClientRect(),
+          );
+          return {
+            left: left.right,
+            right: right.left,
+            topDelta: Math.abs(left.top - right.top),
+            height: element.getBoundingClientRect().height,
+          };
+        });
+      expect(layout.left).toBeLessThan(layout.right);
+      expect(layout.topDelta).toBeLessThan(1);
+      expect(layout.height).toBeLessThan(950);
+      return;
+    }
     expect(measured.text).toBe(expected.text);
     expect(measured.icons).toEqual(expected.icons);
     expect(measured.font).toBe(true);
@@ -202,7 +252,7 @@ test('source status and chart signals animate without affecting the existing ent
   const signals = page.locator(
     '[data-home-design] .animate-pulse,[data-home-design] .animate-ping',
   );
-  expect(await signals.count()).toBe(10);
+  expect(await signals.count()).toBe(14);
   expect(
     await signals.evaluateAll((elements) =>
       elements.every(

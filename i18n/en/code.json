@@ -2618,6 +2618,206 @@
     "message": "AI accelerators",
     "description": "异构算力"
   },
+  "home.continuation.detect": {
+    "message": "Detect anomalies immediately",
+    "description": "第一时间识别异常"
+  },
+  "home.continuation.detectDetail": {
+    "message": "Millisecond heartbeat detection proactively prevents single-GPU cascading failures",
+    "description": "心跳毫秒探测，主动拦截单卡雪崩"
+  },
+  "home.continuation.detectBadge": {
+    "message": "Millisecond detection",
+    "description": "毫秒级感知"
+  },
+  "home.continuation.switch": {
+    "message": "Automatically switch to another cluster machine",
+    "description": "自动切换集群其他机器"
+  },
+  "home.continuation.switchDetail": {
+    "message": "Health-aware topology scheduling moves requests to idle nodes in seconds",
+    "description": "拓扑健康调度，秒级迁往空闲节点"
+  },
+  "home.continuation.switchBadge": {
+    "message": "Seamless load optimization",
+    "description": "无缝负载调优"
+  },
+  "home.continuation.resume": {
+    "message": "Continue the existing answer",
+    "description": "已回答内容继续回复"
+  },
+  "home.continuation.resumeDetail": {
+    "message": "Synchronize and migrate cached history for a coherent continuation",
+    "description": "历史缓存同步热迁，语义连贯无割裂"
+  },
+  "home.continuation.resumeBadge": {
+    "message": "No repeated tokens",
+    "description": "零重复吐字"
+  },
+  "home.continuation.machineA": {
+    "message": "Machine A",
+    "description": "机器 A"
+  },
+  "home.continuation.responding": {
+    "message": "Responding to the request",
+    "description": "正在响应回答"
+  },
+  "home.continuation.load": {
+    "message": "Load 42%",
+    "description": "负载 42%"
+  },
+  "home.continuation.healthy": {
+    "message": "Healthy",
+    "description": "健康"
+  },
+  "home.continuation.failedMachine": {
+    "message": "Machine A",
+    "description": "机器 A"
+  },
+  "home.continuation.failure": {
+    "message": "Unexpected failure / hang",
+    "description": "突发异常 / 卡死"
+  },
+  "home.continuation.circuit": {
+    "message": "Circuit breaker triggered",
+    "description": "触发熔断"
+  },
+  "home.continuation.interruption": {
+    "message": "Hardware interruption",
+    "description": "硬件中断"
+  },
+  "home.continuation.machineB": {
+    "message": "Machine B",
+    "description": "机器 B"
+  },
+  "home.continuation.scheduling": {
+    "message": "Scheduled takeover in seconds",
+    "description": "秒级调度接入"
+  },
+  "home.continuation.latency": {
+    "message": "Latency <18ms",
+    "description": "耗时 <18ms"
+  },
+  "home.continuation.loss": {
+    "message": "Zero loss",
+    "description": "0 丢失"
+  },
+  "home.continuation.resumedMachine": {
+    "message": "Machine B",
+    "description": "机器 B"
+  },
+  "home.continuation.continuing": {
+    "message": "Continue streaming the answer",
+    "description": "继续吐字回复"
+  },
+  "home.continuation.restored": {
+    "message": "Output restored",
+    "description": "恢复输出"
+  },
+  "home.continuation.coherence": {
+    "message": "100% coherent",
+    "description": "100% 连贯"
+  },
+  "home.continuation.badge": {
+    "message": "Cluster-wide service quality protection",
+    "description": "集群级服务质量兜底"
+  },
+  "home.continuation.title": {
+    "message": "Stream resumption:",
+    "description": "断流续写："
+  },
+  "home.continuation.subtitle": {
+    "message": "Uninterrupted answers when a machine hangs or crashes",
+    "description": "单机卡死宕机，用户回答零中断"
+  },
+  "home.continuation.description": {
+    "message": "Use the resources of the entire compute cluster to protect model service quality for every user. No need to ask again, no error interruptions.",
+    "description": "利用整个算力集群的整体资源，保障每一位用户的模型服务质量。无需重新提问，绝无报错中断。"
+  },
+  "home.continuation.userGuarantee": {
+    "message": "Invisible to end users",
+    "description": "终端用户 0 感知"
+  },
+  "home.continuation.machineGuarantee": {
+    "message": "100% protection from service interruptions caused by single-machine failures",
+    "description": "100% 屏蔽单机故障导致的服务中断"
+  },
+  "home.continuation.chat": {
+    "message": "AI chat",
+    "description": "AI 对话"
+  },
+  "home.continuation.connection": {
+    "message": "Connected · Responding in real time",
+    "description": "连接正常 · 实时响应"
+  },
+  "home.continuation.invisible": {
+    "message": "Seamless for users",
+    "description": "用户无感"
+  },
+  "home.continuation.prompt": {
+    "message": "Please analyze the core principles and best practices for building enterprise LLM compute clusters in 2025.",
+    "description": "请详细分析一下2025年企业级大模型算力集群的核心建设原则与最佳实践？"
+  },
+  "home.continuation.distributed": {
+    "message": "Distributed cluster inference",
+    "description": "集群分布式推理"
+  },
+  "home.continuation.throughput": {
+    "message": "Throughput: 64.2 tokens/s",
+    "description": "吞吐速度: 64.2 tokens/s"
+  },
+  "home.continuation.answerA": {
+    "message": "Answered by cluster machine A (initial route)",
+    "description": "由集群机器 A 回答 (初始链路)"
+  },
+  "home.continuation.progressA": {
+    "message": "Generation progress 45%",
+    "description": "生成进度 45%"
+  },
+  "home.continuation.answerStart": {
+    "message": "The foremost principle of LLM cluster construction is ",
+    "description": "大模型集群建设的首要原则是"
+  },
+  "home.continuation.answerEmphasis": {
+    "message": "[high throughput and disaster resilience]",
+    "description": "【高吞吐与容灾韧性】"
+  },
+  "home.continuation.answerEnd": {
+    "message": ". In production under high concurrency, individual-node memory fluctuations, momentary network failures, or hardware hangs are inevitable.",
+    "description": "。在实际生产高并发场景下，单节点显存波动、网卡瞬断或硬件死机在所难免。"
+  },
+  "home.continuation.handover": {
+    "message": "Automatic background handover complete",
+    "description": "后台无感自动接力完成"
+  },
+  "home.continuation.handoverDetail": {
+    "message": "(Switch time <18ms · 0 lost tokens)",
+    "description": "(切换耗时 <18ms · 0 丢失 Token)"
+  },
+  "home.continuation.answerB": {
+    "message": "Cluster machine B continues the previous machine’s answer",
+    "description": "由集群机器 B 接着上一台机器继续回答"
+  },
+  "home.continuation.progressB": {
+    "message": "Generation complete 100%",
+    "description": "生成完成 100%"
+  },
+  "home.continuation.answerContinuation": {
+    "message": "The system must therefore support intelligent live context migration, automatically allocating healthy compute to continue the analysis without client retries, protecting core production workloads from hardware instability.",
+    "description": "因此系统必须具备智能上下文热迁移能力，无需客户端重试，自动分配健康算力平滑输出后续分析，确保核心业务生产不受任何硬件抖动影响。"
+  },
+  "home.continuation.technology": {
+    "message": "Stream resumption technology",
+    "description": "断流续写技术"
+  },
+  "home.continuation.pipeline": {
+    "message": "Cluster background handover in seconds",
+    "description": "集群后台秒级接力链路"
+  },
+  "home.continuation.available": {
+    "message": "Real-time handover available",
+    "description": "实时接力可用"
+  },
   "home.qos.rateTitle": {
     "message": "Dynamic rate limiting",
     "description": "动态限流"
