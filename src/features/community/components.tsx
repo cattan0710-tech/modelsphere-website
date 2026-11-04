@@ -193,6 +193,9 @@ export function CommunityHeader() {
 }
 export function CommunityContent() {
   const groupQr = useBaseUrl('/community/wechat-group-qr.png');
+  const officialAccountQr = useBaseUrl(
+    '/community/wechat-official-account-qr.png',
+  );
   const phancyLogo = useBaseUrl('/brand/phancy-logo.png');
   const riseUnionLogo = useBaseUrl('/brand/riseunion-logo.svg');
   const root = useRef<HTMLElement>(null);
@@ -689,6 +692,84 @@ export function CommunityContent() {
               data-home-reveal="panel"
               data-home-pair=""
             >
+              <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between hover:border-teal-300 hover:shadow-md transition-all group">
+                <div className="flex flex-col gap-4">
+                  <div className="flex items-center justify-between pb-2 border-b border-slate-100">
+                    <div className="w-10 h-10 rounded-xl bg-teal-50 border border-teal-100 flex items-center justify-center text-teal-700">
+                      <span
+                        className="material-symbols-outlined text-[24px]"
+                        aria-hidden="true"
+                      >
+                        {'newspaper'}
+                      </span>
+                    </div>
+                    <span className="px-2.5 py-0.5 rounded-full bg-teal-50 border border-teal-100 text-teal-700 font-label-caps text-xs font-semibold">
+                      {translate({
+                        id: 'community.officialAccountBadge',
+                        message: '权威发布',
+                      })}
+                    </span>
+                  </div>
+                  <div>
+                    <h3 className="font-headline-sm text-lg font-bold text-slate-900 mb-0.5">
+                      {translate({
+                        id: 'community.officialAccountTitle',
+                        message: '官方微信公众号',
+                      })}
+                    </h3>
+                    <span className="font-code-sm text-xs text-slate-500">
+                      {translate({
+                        id: 'community.officialAccountName',
+                        message: '公众号:「模域 ModelSphere」',
+                      })}
+                    </span>
+                  </div>
+                  <p className="font-body-sm text-sm text-slate-600 leading-relaxed">
+                    {translate({
+                      id: 'community.officialAccountDescription',
+                      message:
+                        '第一时间获取最新版本发布动态、深度内核架构长文推送及线下沙龙活动一手资讯。',
+                    })}
+                  </p>
+                  <div className="p-4 bg-slate-50 border border-slate-100 rounded-xl flex flex-col items-center justify-center text-center gap-2">
+                    <a
+                      className="community-group-qr bg-white border border-slate-200 rounded-lg shadow-sm"
+                      href={officialAccountQr}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      title={translate({
+                        id: 'community.officialAccountOpenQr',
+                        message: '打开公众号二维码原图',
+                      })}
+                    >
+                      <img
+                        className="w-full h-full"
+                        src={officialAccountQr}
+                        alt={translate({
+                          id: 'community.officialAccountQrAlt',
+                          message: '模域 ModelSphere 微信公众号二维码',
+                        })}
+                        width={1280}
+                        height={1280}
+                      />
+                    </a>
+                    <span className="font-code-sm text-xs text-slate-500">
+                      {translate({
+                        id: 'community.officialAccountScan',
+                        message: '微信扫码关注公众号',
+                      })}
+                    </span>
+                  </div>
+                </div>
+                <div className="pt-5 border-t border-slate-100 mt-4">
+                  <div className="font-code-sm text-xs text-center text-slate-500">
+                    {translate({
+                      id: 'community.officialAccountCadence',
+                      message: '双周刊载 ｜ 深度技术沉淀',
+                    })}
+                  </div>
+                </div>
+              </div>
               <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between hover:border-sky-300 hover:shadow-md transition-all group">
                 <div className="flex flex-col gap-4">
                   <div className="flex items-center justify-between pb-2 border-b border-slate-100">

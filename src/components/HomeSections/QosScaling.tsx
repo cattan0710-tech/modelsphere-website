@@ -12,109 +12,71 @@ function Symbol({ name }: { name: string }) {
     </span>
   );
 }
-function Icon({
+// Geometry from Google's Material Symbols, matching the selected Stitch screen.
+function RateIcon({
   name,
 }: {
-  name: 'shield' | 'document' | 'trend' | 'cube' | 'layers' | 'settings';
+  name:
+    | 'tune'
+    | 'warning'
+    | 'info'
+    | 'insight'
+    | 'arrow'
+    | 'verified'
+    | 'heartShield'
+    | 'settingsSuggest'
+    | 'shield'
+    | 'document'
+    | 'trend'
+    | 'cube'
+    | 'layers';
 }) {
-  const icons = {
-    shield: (
-      <svg
-        aria-hidden="true"
-        className={styles.svgIcon}
-        fill="none"
-        stroke="currentColor"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth="2"
-        viewBox="0 0 24 24"
-      >
-        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
-        <path d="m9 12 2 2 4-4"></path>
-      </svg>
-    ),
-    document: (
-      <svg
-        aria-hidden="true"
-        className={styles.svgIcon}
-        fill="none"
-        stroke="currentColor"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth="2"
-        viewBox="0 0 24 24"
-      >
-        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-        <polyline points="14 2 14 8 20 8"></polyline>
-        <line x1="16" x2="8" y1="13" y2="13"></line>
-        <line x1="16" x2="8" y1="17" y2="17"></line>
-        <line x1="10" x2="8" y1="9" y2="9"></line>
-      </svg>
-    ),
-    trend: (
-      <svg
-        aria-hidden="true"
-        className={styles.svgIcon}
-        fill="none"
-        stroke="currentColor"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth="2"
-        viewBox="0 0 24 24"
-      >
-        <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
-        <polyline points="17 6 23 6 23 12"></polyline>
-      </svg>
-    ),
-    cube: (
-      <svg
-        aria-hidden="true"
-        className={styles.svgIcon}
-        fill="none"
-        stroke="currentColor"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth="2"
-        viewBox="0 0 24 24"
-      >
-        <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
-        <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
-        <line x1="12" x2="12" y1="22.08" y2="12"></line>
-      </svg>
-    ),
-    layers: (
-      <svg
-        aria-hidden="true"
-        className={styles.svgIcon}
-        fill="none"
-        stroke="currentColor"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth="2"
-        viewBox="0 0 24 24"
-      >
-        <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
-        <polyline points="2 17 12 22 22 17"></polyline>
-        <polyline points="2 12 12 17 22 12"></polyline>
-      </svg>
-    ),
-    settings: (
-      <svg
-        aria-hidden="true"
-        className={styles.svgIcon}
-        fill="none"
-        stroke="currentColor"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth="2"
-        viewBox="0 0 24 24"
-      >
-        <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path>
-        <circle cx="12" cy="12" r="3"></circle>
-      </svg>
-    ),
+  const paths = {
+    tune: 'M440-120v-240h80v80h320v80H520v80h-80Zm-320-80v-80h240v80H120Zm160-160v-80H120v-80h160v-80h80v240h-80Zm160-80v-80h400v80H440Zm160-160v-240h80v80h160v80H680v80h-80Zm-480-80v-80h400v80H120Z',
+    warning:
+      'm40-120 440-760 440 760H40Zm138-80h604L480-720 178-200Zm302-40q17 0 28.5-11.5T520-280q0-17-11.5-28.5T480-320q-17 0-28.5 11.5T440-280q0 17 11.5 28.5T480-240Zm-40-120h80v-200h-80v200Zm40-100Z',
+    info: 'M440-280h80v-240h-80v240Zm40-320q17 0 28.5-11.5T520-640q0-17-11.5-28.5T480-680q-17 0-28.5 11.5T440-640q0 17 11.5 28.5T480-600Zm0 520q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z',
+    insight:
+      'M240-80v-172q-57-52-88.5-121.5T120-520q0-150 105-255t255-105q125 0 221.5 73.5T827-615l52 205q5 19-7 34.5T840-360h-80v120q0 33-23.5 56.5T680-160h-80v80h-80v-160h160v-200h108l-38-155q-23-91-98-148t-172-57q-116 0-198 81t-82 197q0 60 24.5 114t69.5 96l26 24v208h-80Zm254-360Zm-14 120q17 0 28.5-11.5T520-360q0-17-11.5-28.5T480-400q-17 0-28.5 11.5T440-360q0 17 11.5 28.5T480-320Zm-30-128h61q0-25 6.5-40.5T544-526q18-20 35-40.5t17-53.5q0-42-32.5-71T483-720q-40 0-72.5 23T365-637l55 23q7-22 24.5-35.5T483-663q22 0 36.5 12t14.5 31q0 21-12.5 37.5T492-549q-20 21-31 42t-11 59Z',
+    arrow: 'M647-440H160v-80h487L423-744l57-56 320 320-320 320-57-56 224-224Z',
+    verified:
+      'm344-60-76-128-144-32 14-148-98-112 98-112-14-148 144-32 76-128 136 58 136-58 76 128 144 32-14 148 98 112-98 112 14 148-144 32-76 128-136-58-136 58Zm34-102 102-44 104 44 56-96 110-26-10-112 74-84-74-86 10-112-110-24-58-96-102 44-104-44-56 96-110 24 10 112-74 86 74 84-10 114 110 24 58 96Zm102-318Zm-42 142 226-226-56-58-170 170-86-84-56 56 142 142Z',
+    heartShield:
+      'M480-320q102-92 131-129.5t29-74.5q0-36-26-62t-62-26q-21 0-40.5 8.5T480-580q-12-15-31-23.5t-41-8.5q-36 0-62 26t-26 62q0 19 5 35t22 37.5q17 21.5 48.5 52.5t84.5 79Zm0 240q-139-35-229.5-159.5T160-516v-244l320-120 320 120v244q0 152-90.5 276.5T480-80Z',
+    settingsSuggest:
+      'm18.525 9-1.1-2.4-2.4-1.1 2.4-1.1 1.1-2.4 1.1 2.4 2.4 1.1-2.4 1.1Zm2 7-.8-1.7-1.7-.8 1.7-.8.8-1.7.8 1.7 1.7.8-1.7.8Zm-13 6-.3-2.35q-.2-.075-.387-.2-.188-.125-.313-.25l-2.2.95L1.85 15.8l1.875-1.4v-.8L1.85 12.2l2.475-4.35 2.2.95q.125-.125.313-.25.187-.125.387-.2l.3-2.35h5l.3 2.35q.2.075.388.2.187.125.312.25l2.2-.95L18.2 12.2l-1.875 1.4v.8l1.875 1.4-2.475 4.35-2.2-.95q-.125.125-.312.25-.188.125-.388.2l-.3 2.35Zm2.5-5q1.25 0 2.125-.875T13.025 14q0-1.25-.875-2.125T10.025 11q-1.25 0-2.125.875T7.025 14q0 1.25.875 2.125t2.125.875Zm0-2q-.425 0-.713-.288-.287-.287-.287-.712t.287-.713Q9.6 13 10.025 13t.713.287q.287.288.287.713t-.287.712q-.288.288-.713.288Zm-.75 5h1.5l.2-1.8q.725-.2 1.238-.512.512-.313 1.012-.838l1.65.75.7-1.25-1.45-1.1q.2-.575.2-1.25t-.2-1.25l1.45-1.1-.7-1.25-1.65.75q-.5-.525-1.012-.838Q11.7 10 10.975 9.8l-.2-1.8h-1.5l-.2 1.8q-.725.2-1.237.512-.513.313-1.013.838l-1.65-.75-.7 1.25 1.45 1.1q-.2.575-.212 1.25-.013.675.212 1.25l-1.45 1.1.7 1.25 1.65-.75q.5.525 1.013.838.512.312 1.237.512Zm.75-6Z',
+    shield:
+      'm438-338 226-226-57-57-169 169-84-84-57 57 141 141Zm42 258q-139-35-229.5-159.5T160-516v-244l320-120 320 120v244q0 152-90.5 276.5T480-80Z',
+    document:
+      'M320-240h320v-80H320v80Zm0-160h320v-80H320v80ZM240-80q-33 0-56.5-23.5T160-160v-640q0-33 23.5-56.5T240-880h320l240 240v480q0 33-23.5 56.5T720-80H240Zm280-520v-200H240v640h480v-440H520ZM240-800v200-200 640-640Z',
+    trend:
+      'm136-240-56-56 296-298 160 160 208-206H640v-80h240v240h-80v-104L536-320 376-480 136-240Z',
+    cube: 'M480-80 120-280v-400l360-200 360 200v400L480-80ZM364-590q23-24 53-37t63-13q33 0 63 13t53 37l120-67-236-131-236 131 120 67Zm76 396v-131q-54-14-87-57t-33-98q0-11 1-20.5t4-19.5l-125-70v263l240 133Zm40-206q33 0 56.5-23.5T560-480q0-33-23.5-56.5T480-560q-33 0-56.5 23.5T400-480q0 33 23.5 56.5T480-400Zm40 206 240-133v-263l-125 70q3 10 4 19.5t1 20.5q0 55-33 98t-87 57v131Z',
+    layers:
+      'M480-118 120-398l66-50 294 228 294-228 66 50-360 280Zm0-202L120-600l360-280 360 280-360 280Zm0-280Zm0 178 230-178-230-178-230 178 230 178Z',
   };
-  return icons[name];
+  return (
+    <svg
+      aria-hidden="true"
+      className={styles.svgIcon}
+      viewBox={name === 'settingsSuggest' ? '0 0 24 24' : '0 -960 960 960'}
+      fill="currentColor"
+    >
+      <path d={paths[name]} />
+    </svg>
+  );
+}
+
+function RateArrow({ primary = false }: { primary?: boolean }) {
+  return (
+    <div
+      className={`${styles.rateArrow} ${primary ? styles.primaryArrow : ''}`}
+      data-qos-arrow=""
+      aria-hidden="true"
+    >
+      <RateIcon name="arrow" />
+    </div>
+  );
 }
 
 // Content and icon geometry follow the two selected Stitch screens.
@@ -129,16 +91,22 @@ export function QosScaling() {
 
 function DynamicRateLimiting() {
   const gradient = React.useId();
-  const arrow = React.useId();
   return (
     <section
       id="qos-scaling"
       data-home-design=""
-      className={`w-full py-12 px-margin bg-slate-50/70 border-b border-slate-200/70 ${styles.section}`}
+      className={`w-full py-12 px-margin bg-slate-50/70 border-b border-slate-200/70 ${styles.section} ${styles.rateSection}`}
       aria-labelledby="dynamic-rate-title"
     >
-      <div className="max-w-7xl mx-auto">
+      <div className={`${styles.rateContainer} mx-auto`}>
         <header className={styles.rateIntro} data-home-intro="">
+          <span className={styles.introPill}>
+            <i aria-hidden="true" />
+            {translate({
+              id: 'home.qos.ratePill',
+              message: '全局吞吐与 SLO 自适应保障机制',
+            })}
+          </span>
           <h2 id="dynamic-rate-title" className={styles.title}>
             ModelSphere{' '}
             <span>
@@ -151,12 +119,12 @@ function DynamicRateLimiting() {
           </h2>
           <p className={styles.valueBanner}>
             <span className={styles.shieldBadge}>
-              <Icon name="shield" />
+              <RateIcon name="shield" />
             </span>
             {translate({
               id: 'home.qos.rateSubtitle',
               message:
-                '让平台上的所有大模型服务，都持续满足预期的服务质量（如响应速度、生成速度等）',
+                '让平台上的所有大模型服务，都持续满足预期的服务质量（如响应速度、生成流畅度、确定性低抖动）',
             })}
           </p>
         </header>
@@ -166,8 +134,17 @@ function DynamicRateLimiting() {
           data-home-reveal="panel"
         >
           <div className={styles.staticComparison}>
-            <article className={styles.rateCard}>
-              <div>
+            <article className={styles.rateCard} data-qos-card="static">
+              <div className={styles.rateBody}>
+                <div className={styles.cardEyebrow} data-qos-card-header="">
+                  <span className={styles.neutralPill}>
+                    {translate({
+                      id: 'home.qos.staticPill',
+                      message: '传统静态模式',
+                    })}
+                  </span>
+                  <RateIcon name="tune" />
+                </div>
                 <h3>
                   {translate({
                     id: 'home.qos.staticTitle',
@@ -177,293 +154,392 @@ function DynamicRateLimiting() {
                 <p className={styles.cardSubtitle}>
                   {translate({
                     id: 'home.qos.staticSubtitle',
-                    message: '（基于 RPM, TPM）',
+                    message: '按固定次数/固定上限一刀切配置硬阈值',
                   })}
                 </p>
-              </div>
-              <div className={styles.staticChart}>
-                <div className={styles.staticPlot}>
-                  <div className={styles.staticLimit} data-qos-static-limit="">
-                    <span>
-                      {translate({
-                        id: 'home.qos.concurrencyLimit',
-                        message: '并发上限',
-                      })}
-                    </span>
-                    <i />
+                <div className={styles.staticChart}>
+                  <div className={styles.staticPlot}>
+                    <div
+                      className={styles.staticLimit}
+                      data-qos-static-limit=""
+                    >
+                      <span>
+                        {translate({
+                          id: 'home.qos.concurrencyLimit',
+                          message: '并发上限',
+                        })}
+                      </span>
+                      <i />
+                    </div>
+                    <div className={styles.staticBars}>
+                      <i data-qos-static-bar="" />
+                      <i data-qos-static-bar="" />
+                    </div>
                   </div>
-                  <div className={styles.staticBars}>
-                    <i data-qos-static-bar="" />
-                    <i data-qos-static-bar="" />
+                  <div className={styles.staticLabels}>
+                    <div>
+                      {translate({
+                        id: 'home.qos.simpleRequest',
+                        message: '简单请求',
+                      })}
+                      <small>
+                        {translate({
+                          id: 'home.qos.simpleDetail',
+                          message: '（算力有富余）',
+                        })}
+                      </small>
+                    </div>
+                    <div>
+                      {translate({
+                        id: 'home.qos.complexRequest',
+                        message: '复杂请求',
+                      })}
+                      <small>
+                        {translate({
+                          id: 'home.qos.complexDetail',
+                          message: '（容易变慢）',
+                        })}
+                      </small>
+                    </div>
                   </div>
                 </div>
-                <div className={styles.staticLabels}>
-                  <div>
-                    {translate({
-                      id: 'home.qos.simpleRequest',
-                      message: '简单请求',
-                    })}
-                    <small>
-                      {translate({
-                        id: 'home.qos.simpleDetail',
-                        message: '（算力有富余）',
-                      })}
-                    </small>
-                  </div>
-                  <div>
-                    {translate({
-                      id: 'home.qos.complexRequest',
-                      message: '复杂请求',
-                    })}
-                    <small>
-                      {translate({
-                        id: 'home.qos.complexDetail',
-                        message: '（容易变慢）',
-                      })}
-                    </small>
-                  </div>
-                </div>
               </div>
+              <p className={styles.cardFootnote}>
+                <RateIcon name="info" />
+                <span>
+                  {translate({
+                    id: 'home.qos.staticNote',
+                    message: '固定阈值无法感知真实算力负载，旱涝不均。',
+                  })}
+                </span>
+              </p>
             </article>
-            <article className={`${styles.rateCard} ${styles.problemCard}`}>
-              <h3>
-                {translate({
-                  id: 'home.qos.problemTitle',
-                  message: '为什么静态限流很难做好？',
-                })}
-              </h3>
-              <div className={styles.problems}>
-                <div className={styles.problem}>
-                  <span className={styles.iconTile}>
-                    <Icon name="document" />
+            <article
+              className={`${styles.rateCard} ${styles.problemCard}`}
+              data-qos-card="challenge"
+            >
+              <RateArrow />
+              <div className={styles.rateBody}>
+                <div className={styles.cardEyebrow} data-qos-card-header="">
+                  <span className={styles.warningPill}>
+                    {translate({
+                      id: 'home.qos.problemPill',
+                      message: '核心矛盾与挑战',
+                    })}
                   </span>
-                  <div>
-                    <h4>
-                      {translate({
-                        id: 'home.qos.differentRequests',
-                        message: '请求差异大',
-                      })}
-                    </h4>
-                    <p>
-                      {translate({
-                        id: 'home.qos.differentRequestsDetail',
-                        message: '简单问答和长文本的算力消耗差很多',
-                      })}
-                    </p>
-                  </div>
+                  <RateIcon name="warning" />
                 </div>
-                <div className={styles.problem}>
-                  <span className={styles.iconTile}>
-                    <Icon name="trend" />
-                  </span>
-                  <div>
-                    <h4>
-                      {translate({
-                        id: 'home.qos.changingCapacity',
-                        message: '处理能力会变化',
-                      })}
-                    </h4>
-                    <p>
-                      {translate({
-                        id: 'home.qos.changingCapacityDetail',
-                        message: '受模型、上下文长度、负载等影响',
-                      })}
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </article>
-          </div>
-          <article className={`${styles.rateCard} ${styles.solutionCard}`}>
-            <div className={styles.solutionHeading}>
-              <span className={`${styles.iconTile} ${styles.cubeBadge}`}>
-                <Icon name="cube" />
-              </span>
-              <div>
                 <h3>
                   {translate({
-                    id: 'home.qos.solutionTitle',
-                    message: 'ModelSphere 动态限流',
+                    id: 'home.qos.problemTitle',
+                    message: '为什么静态限流很难做好？',
                   })}
                 </h3>
-                <p>
+                <p className={styles.cardSubtitle}>
                   {translate({
-                    id: 'home.qos.solutionDetail',
-                    message: '根据实时处理能力，自动调整并发',
+                    id: 'home.qos.problemSubtitle',
+                    message: '大模型计算特征具备非线性的本质波动',
                   })}
                 </p>
+                <div className={styles.problems}>
+                  <div className={styles.problem}>
+                    <span className={styles.iconTile}>
+                      <RateIcon name="document" />
+                    </span>
+                    <div>
+                      <h4>
+                        {translate({
+                          id: 'home.qos.differentRequests',
+                          message: '请求差异巨大',
+                        })}
+                      </h4>
+                      <p>
+                        {translate({
+                          id: 'home.qos.differentRequestsDetail',
+                          message:
+                            '简单日常问答与 32k+ 长代码分析的显存占用、KV Cache 与时长相差可达数十倍。',
+                        })}
+                      </p>
+                    </div>
+                  </div>
+                  <div className={styles.problem}>
+                    <span className={styles.iconTile}>
+                      <RateIcon name="trend" />
+                    </span>
+                    <div>
+                      <div className={styles.problemHeading}>
+                        <h4>
+                          {translate({
+                            id: 'home.qos.changingCapacity',
+                            message: '处理能力实时变化',
+                          })}
+                        </h4>
+                        <span className={styles.detailPill}>
+                          {translate({
+                            id: 'home.qos.capacityPill',
+                            message: '时变动态拓扑',
+                          })}
+                        </span>
+                      </div>
+                      <p>
+                        {translate({
+                          id: 'home.qos.changingCapacityDetail',
+                          message:
+                            '受批量并发 (Continuous Batching)、注意力矩阵填充度及节点网络负载等多重变量动态影响。',
+                        })}
+                      </p>
+                    </div>
+                  </div>
+                </div>
               </div>
-            </div>
-            <div className={styles.dynamicChart}>
-              <div className={styles.dynamicPlot}>
-                <span
-                  className={`${styles.pointAnnotation} ${styles.openNote}`}
-                  data-qos-point="open"
-                >
-                  <span className={styles.chartNote} data-qos-annotation="open">
+              <p className={styles.cardFootnote}>
+                <RateIcon name="insight" />
+                <span>
+                  {translate({
+                    id: 'home.qos.problemNote',
+                    message:
+                      '传统 APM 指标在 Transformer 架构下无法作为静态阈值依据。',
+                  })}
+                </span>
+              </p>
+            </article>
+          </div>
+          <article
+            className={`${styles.rateCard} ${styles.solutionCard}`}
+            data-qos-card="adaptive"
+          >
+            <RateArrow primary />
+            <div className={styles.rateBody}>
+              <div className={styles.cardEyebrow} data-qos-card-header="">
+                <span className={styles.successPill}>
+                  {translate({
+                    id: 'home.qos.solutionPill',
+                    message: 'AI 自适应调度内核',
+                  })}
+                </span>
+                <span className={`${styles.iconTile} ${styles.cubeBadge}`}>
+                  <RateIcon name="cube" />
+                </span>
+              </div>
+              <div className={styles.solutionHeading}>
+                <div>
+                  <h3>
                     {translate({
-                      id: 'home.qos.openNote',
-                      message: '性能充足 自动放开',
+                      id: 'home.qos.solutionTitle',
+                      message: 'ModelSphere 动态限流',
+                    })}
+                  </h3>
+                  <p>
+                    {translate({
+                      id: 'home.qos.solutionDetail',
+                      message: '感知微观硬件负载，毫秒级呼吸调整并发门限',
+                    })}
+                  </p>
+                </div>
+              </div>
+              <div className={styles.dynamicChart}>
+                <div className={styles.dynamicChartHeading}>
+                  <span data-qos-axis="y">
+                    {translate({
+                      id: 'home.qos.capacityHeading',
+                      message: '并发能力度量 (Concurrency / Capacity)',
                     })}
                   </span>
-                  <i className={styles.chartPoint} aria-hidden="true" />
-                </span>
-                <span
-                  className={`${styles.pointAnnotation} ${styles.tightenNote}`}
-                  data-qos-point="tighten"
-                >
+                  <span className={styles.liveStatus}>
+                    <i aria-hidden="true" />
+                    {translate({
+                      id: 'home.qos.liveStatus',
+                      message: '实时自适应跟随',
+                    })}
+                  </span>
+                </div>
+                <div className={styles.dynamicPlot}>
                   <span
-                    className={styles.chartNote}
+                    className={`${styles.pointAnnotation} ${styles.openNote}`}
+                    data-qos-point="open"
+                  >
+                    <i className={styles.chartPoint} aria-hidden="true" />
+                  </span>
+                  <span
+                    className={`${styles.pointAnnotation} ${styles.tightenNote}`}
+                    data-qos-point="tighten"
+                  >
+                    <i className={styles.chartPoint} aria-hidden="true" />
+                  </span>
+                  <span
+                    className={`${styles.chartNote} ${styles.openChartNote}`}
+                    data-qos-annotation="open"
+                  >
+                    {translate({
+                      id: 'home.qos.openNote',
+                      message: '性能充足 自动放开 (98% 满载)',
+                    })}
+                  </span>
+                  <span
+                    className={`${styles.chartNote} ${styles.tightenChartNote}`}
                     data-qos-annotation="tighten"
                   >
                     {translate({
                       id: 'home.qos.tightenNote',
-                      message: '性能下降 及时收紧',
+                      message: '延迟攀升 及时收紧保护',
                     })}
                   </span>
-                  <i className={styles.chartPoint} aria-hidden="true" />
-                </span>
-                <span
-                  className={`${styles.axisLabel} ${styles.yAxisLabel}`}
-                  data-qos-axis="y"
-                >
-                  {translate({ id: 'home.qos.concurrency', message: '并发' })}
-                </span>
-                <span
-                  className={`${styles.axisLabel} ${styles.xAxisLabel}`}
-                  data-qos-axis="x"
-                >
-                  {translate({ id: 'home.qos.time', message: '时间' })}
-                </span>
-                <svg
-                  viewBox="0 0 380 150"
-                  fill="none"
-                  preserveAspectRatio="none"
-                  role="img"
-                  aria-label={translate({
-                    id: 'home.qos.rateChart',
-                    message: '并发上限随实时处理能力动态调整的曲线',
-                  })}
-                >
-                  <defs>
-                    <linearGradient id={gradient} x1="0" x2="0" y1="0" y2="1">
-                      <stop
-                        offset="0%"
-                        stopColor="var(--color-home-primary)"
-                        stopOpacity="0.22"
-                      />
-                      <stop
-                        offset="100%"
-                        stopColor="var(--color-home-primary)"
-                        stopOpacity="0.01"
-                      />
-                    </linearGradient>
-                    <marker
-                      id={arrow}
-                      markerHeight="6"
-                      markerWidth="6"
-                      orient="auto-start-reverse"
-                      refX="6"
-                      refY="5"
-                      viewBox="0 0 10 10"
-                    >
-                      <path
-                        d="M 0 1.5 L 8 5 L 0 8.5 z"
-                        fill="var(--color-home-muted)"
-                      />
-                    </marker>
-                  </defs>
-                  <line
-                    markerEnd={`url(#${arrow})`}
-                    stroke="var(--color-home-muted)"
-                    strokeWidth="1.5"
-                    x1="28"
-                    x2="28"
-                    y1="130"
-                    y2="12"
-                  />
-                  <line
-                    markerEnd={`url(#${arrow})`}
-                    stroke="var(--color-home-muted)"
-                    strokeWidth="1.5"
-                    x1="28"
-                    x2="368"
-                    y1="130"
-                    y2="130"
-                  />
-                  <path
-                    d="M 28 108 C 55 106, 75 100, 100 85 C 120 73, 140 60, 175 60 C 210 60, 240 85, 275 98 C 295 106, 310 105, 335 98 C 345 96, 355 98, 365 102 L 365 130 L 28 130 Z"
-                    fill={`url(#${gradient})`}
-                  />
-                  <path
-                    d="M 28 108 C 55 106, 75 100, 100 85 C 120 73, 140 60, 175 60 C 210 60, 240 85, 275 98 C 295 106, 310 105, 335 98 C 345 96, 355 98, 365 102"
-                    stroke="var(--color-home-primary)"
-                    strokeLinecap="round"
-                    strokeWidth="2.5"
-                  />
-                </svg>
+                  <svg
+                    viewBox="0 0 320 120"
+                    fill="none"
+                    preserveAspectRatio="none"
+                    role="img"
+                    aria-label={translate({
+                      id: 'home.qos.rateChart',
+                      message: '并发上限随实时处理能力动态调整的曲线',
+                    })}
+                  >
+                    <defs>
+                      <linearGradient id={gradient} x1="0" x2="0" y1="0" y2="1">
+                        <stop
+                          offset="0%"
+                          stopColor="var(--color-home-primary)"
+                          stopOpacity="0.3"
+                        />
+                        <stop
+                          offset="100%"
+                          stopColor="var(--color-home-primary)"
+                          stopOpacity="0"
+                        />
+                      </linearGradient>
+                    </defs>
+                    <line
+                      stroke="var(--color-border-default)"
+                      strokeDasharray="3 3"
+                      x1="0"
+                      x2="320"
+                      y1="30"
+                      y2="30"
+                    />
+                    <line
+                      stroke="var(--color-border-default)"
+                      strokeDasharray="3 3"
+                      x1="0"
+                      x2="320"
+                      y1="70"
+                      y2="70"
+                    />
+                    <line
+                      stroke="var(--color-border-default)"
+                      x1="0"
+                      x2="320"
+                      y1="110"
+                      y2="110"
+                    />
+                    <path
+                      d="M 0,90 Q 50,15 110,35 T 210,85 T 320,40 L 320,110 L 0,110 Z"
+                      fill={`url(#${gradient})`}
+                    />
+                    <path
+                      d="M 0,90 Q 50,15 110,35 T 210,85 T 320,40"
+                      stroke="var(--color-home-primary)"
+                      strokeLinecap="round"
+                      strokeWidth="2.5"
+                    />
+                  </svg>
+                </div>
+                <div className={styles.chartFooter}>
+                  <p className={styles.chartLegend}>
+                    <i />
+                    {translate({
+                      id: 'home.qos.dynamicLimit',
+                      message: '并发上限按 SLO 实时调整',
+                    })}
+                  </p>
+                  <span data-qos-axis="x">
+                    {translate({
+                      id: 'home.qos.sampleWindow',
+                      message: '时序窗口: 50ms采样周期',
+                    })}
+                  </span>
+                </div>
               </div>
-              <p className={styles.chartLegend}>
-                <i />
-                {translate({
-                  id: 'home.qos.dynamicLimit',
-                  message: '并发上限（动态调整）',
-                })}
-              </p>
             </div>
+            <p className={`${styles.cardFootnote} ${styles.solutionNote}`}>
+              <RateIcon name="verified" />
+              <span>
+                {translate({
+                  id: 'home.qos.solutionNote',
+                  message: '弹性水位线动态吸顶，不浪费任何一颗 GPU 周期。',
+                })}
+              </span>
+            </p>
           </article>
         </div>
         <div className={styles.benefits}>
           <div>
             <span className={styles.iconTile}>
-              <Icon name="layers" />
+              <RateIcon name="layers" />
             </span>
             <div>
-              <h3>
-                {translate({
-                  id: 'home.qos.utilization',
-                  message: '更高利用率',
-                })}
-              </h3>
+              <div className={styles.benefitHeading}>
+                <h3>
+                  {translate({
+                    id: 'home.qos.utilization',
+                    message: '更高利用率',
+                  })}
+                </h3>
+              </div>
               <p>
                 {translate({
                   id: 'home.qos.utilizationDetail',
-                  message: '让算力发挥更大价值',
+                  message:
+                    '算力充裕时系统自动弹性放量，消除闲置气泡时间，让昂贵的高性能计算资源发挥极致产出。',
                 })}
               </p>
             </div>
           </div>
           <div>
             <span className={styles.iconTile}>
-              <Icon name="shield" />
+              <RateIcon name="heartShield" />
             </span>
             <div>
-              <h3>
-                {translate({ id: 'home.qos.stability', message: '更稳定体验' })}
-              </h3>
+              <div className={styles.benefitHeading}>
+                <h3>
+                  {translate({
+                    id: 'home.qos.stability',
+                    message: '更稳定体验',
+                  })}
+                </h3>
+              </div>
               <p>
                 {translate({
                   id: 'home.qos.stabilityDetail',
-                  message: '高峰期也能保持响应质量',
+                  message:
+                    '高峰期或遇超长复杂任务时毫秒级退避防护，杜绝雪崩效应，稳固首字延迟 (TTFT) 及吐字速率。',
                 })}
               </p>
             </div>
           </div>
           <div>
             <span className={styles.iconTile}>
-              <Icon name="settings" />
+              <RateIcon name="settingsSuggest" />
             </span>
             <div>
-              <h3>
-                {translate({
-                  id: 'home.qos.operations',
-                  message: '更低运维成本',
-                })}
-              </h3>
+              <div className={styles.benefitHeading}>
+                <h3>
+                  {translate({
+                    id: 'home.qos.operations',
+                    message: '更低运维成本',
+                  })}
+                </h3>
+                <span className={styles.detailPill}>
+                  {translate({
+                    id: 'home.qos.operationsPill',
+                    message: '零人工打标',
+                  })}
+                </span>
+              </div>
               <p>
                 {translate({
                   id: 'home.qos.operationsDetail',
-                  message: '自动适配不同模型和业务',
+                  message:
+                    '告别平台工程师繁琐的人工压测与反复设参，多模型混部场景下自主适应吞吐基线并持续自我进化。',
                 })}
               </p>
             </div>

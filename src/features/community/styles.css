@@ -1800,6 +1800,12 @@
   --tw-text-opacity: 1;
   color: rgb(255 255 255 / var(--tw-text-opacity, 1));
 }
+html[data-theme='light']
+  [data-community-design]
+  :is(a, button).text-white:is(:hover, :focus-visible, :active) {
+  color: #fff;
+  text-decoration: none;
+}
 :where([data-community-design]).antialiased,
 :where([data-community-design]) .antialiased {
   -webkit-font-smoothing: antialiased;
@@ -2364,6 +2370,6 @@ html[data-theme='dark'] [data-community-design] [class*='bg-gradient-to-r'] {
 }
 @media (min-width: 768px) {
   [data-community-design] .community-channels-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }

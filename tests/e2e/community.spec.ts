@@ -1,15 +1,6 @@
 import { expect, test } from '@playwright/test';
 import source from '../../docs/design/sources/stitch-community.json';
 
-// User deferred the official account until certification; retain the source snapshot.
-const deferredAccountCopy = new Set([
-  '权威发布',
-  '官方微信公众号',
-  '公众号:「模域 ModelSphere」',
-  '第一时间获取最新版本发布动态、深度内核架构长文推送及线下沙龙活动一手资讯。',
-  '微信扫码关注公众号',
-  '双周刊载 ｜ 深度技术沉淀',
-]);
 const removedPlaceholderCopy = new Set([
   'GitHub Stars',
   '14.8k',
@@ -43,8 +34,7 @@ test('community preserves approved copy and the four-section order without the c
     for (const copy of source.sectionCopy[index].filter(
       (copy) =>
         !removedPlaceholderCopy.has(copy) &&
-        (id !== 'community-partners' || !removedPartnerCopy.has(copy)) &&
-        (id !== 'community-channels' || !deferredAccountCopy.has(copy)),
+        (id !== 'community-partners' || !removedPartnerCopy.has(copy)),
     ))
       expect(text, `${id}: ${copy}`).toContain(copy);
   }
@@ -164,10 +154,29 @@ test('community preserves approved copy and the four-section order without the c
   }
   const channels = page.locator('#community-channels');
   await expect(channels.getByRole('heading', { level: 3 })).toHaveText([
+    '官方微信公众号',
     '微信技术交流群',
     'GitHub 开源社区',
   ]);
-  await expect(channels).not.toContainText('公众号');
+  const officialQr = channels.getByRole('img', {
+    name: '模域 ModelSphere 微信公众号二维码',
+    exact: true,
+  });
+  await expect(officialQr).toHaveAttribute(
+    'src',
+    '/community/wechat-official-account-qr.png',
+  );
+  await expect
+    .poll(() =>
+      officialQr.evaluate((image) => (image as HTMLImageElement).naturalWidth),
+    )
+    .toBe(1280);
+  await expect(
+    channels.getByRole('link', {
+      name: '模域 ModelSphere 微信公众号二维码',
+      exact: true,
+    }),
+  ).toHaveAttribute('href', '/community/wechat-official-account-qr.png');
   await expect(channels).toContainText('Apache-2.0');
   await expect(
     channels.getByRole('link', { name: '前往 GitHub 组织', exact: true }),
@@ -324,7 +333,7 @@ test('community stays readable on mobile, tablet and desktop in both themes', as
             (grid) =>
               getComputedStyle(grid).gridTemplateColumns.split(' ').length,
           ),
-      ).toBe(width >= 768 ? 2 : 1);
+      ).toBe(width >= 768 ? 3 : 1);
       if (width === 320) {
         await page
           .getByRole('link', { name: '申请加入生态共建', exact: true })

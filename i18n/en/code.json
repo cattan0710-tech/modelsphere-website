@@ -1,4 +1,36 @@
 {
+  "community.officialAccountBadge": {
+    "message": "Official updates",
+    "description": "权威发布"
+  },
+  "community.officialAccountTitle": {
+    "message": "Official WeChat account",
+    "description": "官方微信公众号"
+  },
+  "community.officialAccountName": {
+    "message": "WeChat: ModelSphere",
+    "description": "公众号:「模域 ModelSphere」"
+  },
+  "community.officialAccountDescription": {
+    "message": "Get the latest releases, in-depth architecture articles and first-hand news about in-person community events.",
+    "description": "第一时间获取最新版本发布动态、深度内核架构长文推送及线下沙龙活动一手资讯。"
+  },
+  "community.officialAccountOpenQr": {
+    "message": "Open the official account QR code",
+    "description": "打开公众号二维码原图"
+  },
+  "community.officialAccountQrAlt": {
+    "message": "ModelSphere official WeChat account QR code",
+    "description": "模域 ModelSphere 微信公众号二维码"
+  },
+  "community.officialAccountScan": {
+    "message": "Scan with WeChat to follow",
+    "description": "微信扫码关注公众号"
+  },
+  "community.officialAccountCadence": {
+    "message": "Biweekly articles | In-depth technical insights",
+    "description": "双周刊载 ｜ 深度技术沉淀"
+  },
   "community.closeQr": {
     "message": "Close QR code",
     "description": "关闭二维码"
@@ -2827,16 +2859,16 @@
     "description": "：在保障服务质量的前提下，最大化算力利用"
   },
   "home.qos.rateSubtitle": {
-    "message": "Keep every model service on the platform meeting its expected quality, including response and generation speed",
-    "description": "让平台上的所有大模型服务，都持续满足预期的服务质量（如响应速度、生成速度等）"
+    "message": "Keep every model service on the platform meeting expected service quality, including response speed, generation fluency and consistently low jitter",
+    "description": "让平台上的所有大模型服务，都持续满足预期的服务质量（如响应速度、生成流畅度、确定性低抖动）"
   },
   "home.qos.staticTitle": {
     "message": "Traditional static rate limiting",
     "description": "传统静态限流"
   },
   "home.qos.staticSubtitle": {
-    "message": "(based on RPM, TPM)",
-    "description": "（基于 RPM, TPM）"
+    "message": "Hard thresholds based on fixed request counts or limits",
+    "description": "按固定次数/固定上限一刀切配置硬阈值"
   },
   "home.qos.concurrencyLimit": {
     "message": "Concurrency limit",
@@ -2864,35 +2896,35 @@
   },
   "home.qos.differentRequests": {
     "message": "Requests vary greatly",
-    "description": "请求差异大"
+    "description": "请求差异巨大"
   },
   "home.qos.differentRequestsDetail": {
-    "message": "Simple Q&A and long texts require very different amounts of compute",
-    "description": "简单问答和长文本的算力消耗差很多"
+    "message": "Everyday Q&A and 32k+ code analysis can differ by tens of times in memory usage, KV cache and duration.",
+    "description": "简单日常问答与 32k+ 长代码分析的显存占用、KV Cache 与时长相差可达数十倍。"
   },
   "home.qos.changingCapacity": {
-    "message": "Processing capacity changes",
-    "description": "处理能力会变化"
+    "message": "Capacity changes in real time",
+    "description": "处理能力实时变化"
   },
   "home.qos.changingCapacityDetail": {
-    "message": "Affected by model, context length, load and more",
-    "description": "受模型、上下文长度、负载等影响"
+    "message": "Continuous batching, attention matrix utilization and node network load all affect processing capacity dynamically.",
+    "description": "受批量并发 (Continuous Batching)、注意力矩阵填充度及节点网络负载等多重变量动态影响。"
   },
   "home.qos.solutionTitle": {
     "message": "ModelSphere dynamic rate limiting",
     "description": "ModelSphere 动态限流"
   },
   "home.qos.solutionDetail": {
-    "message": "Automatically adjust concurrency to real-time processing capacity",
-    "description": "根据实时处理能力，自动调整并发"
+    "message": "Sense hardware load and adjust concurrency thresholds in milliseconds",
+    "description": "感知微观硬件负载，毫秒级呼吸调整并发门限"
   },
   "home.qos.openNote": {
-    "message": "Spare capacity: raise the limit",
-    "description": "性能充足 自动放开"
+    "message": "Spare capacity: raise the limit (98% utilization)",
+    "description": "性能充足 自动放开 (98% 满载)"
   },
   "home.qos.tightenNote": {
-    "message": "Capacity drops: tighten the limit",
-    "description": "性能下降 及时收紧"
+    "message": "Rising latency: tighten the limit for protection",
+    "description": "延迟攀升 及时收紧保护"
   },
   "home.qos.concurrency": {
     "message": "Concurrency",
@@ -2903,32 +2935,32 @@
     "description": "时间"
   },
   "home.qos.dynamicLimit": {
-    "message": "Concurrency limit (dynamically adjusted)",
-    "description": "并发上限（动态调整）"
+    "message": "Concurrency limit adjusts to SLO in real time",
+    "description": "并发上限按 SLO 实时调整"
   },
   "home.qos.utilization": {
     "message": "Higher utilization",
     "description": "更高利用率"
   },
   "home.qos.utilizationDetail": {
-    "message": "Get more value from your compute",
-    "description": "让算力发挥更大价值"
+    "message": "Automatically admit more traffic when compute is available, eliminate idle gaps and maximize output from high-performance resources.",
+    "description": "算力充裕时系统自动弹性放量，消除闲置气泡时间，让昂贵的高性能计算资源发挥极致产出。"
   },
   "home.qos.stability": {
     "message": "A more stable experience",
     "description": "更稳定体验"
   },
   "home.qos.stabilityDetail": {
-    "message": "Maintain response quality during peak traffic",
-    "description": "高峰期也能保持响应质量"
+    "message": "Millisecond backoff protects against peak traffic and long tasks, preventing cascading overload while stabilizing time to first token (TTFT) and token generation speed.",
+    "description": "高峰期或遇超长复杂任务时毫秒级退避防护，杜绝雪崩效应，稳固首字延迟 (TTFT) 及吐字速率。"
   },
   "home.qos.operations": {
     "message": "Lower operational costs",
     "description": "更低运维成本"
   },
   "home.qos.operationsDetail": {
-    "message": "Automatically adapt to different models and workloads",
-    "description": "自动适配不同模型和业务"
+    "message": "Replace repeated manual load tests and parameter tuning with automatic adaptation to throughput baselines across colocated models.",
+    "description": "告别平台工程师繁琐的人工压测与反复设参，多模型混部场景下自主适应吞吐基线并持续自我进化。"
   },
   "home.qos.allDayTrend": {
     "message": "24-hour workload distribution (combined share = 100%)",
@@ -3109,5 +3141,57 @@
   "catalog.recipeName": {
     "message": "Recipe",
     "description": "配方"
+  },
+  "home.qos.ratePill": {
+    "message": "Adaptive global throughput and SLO assurance",
+    "description": "全局吞吐与 SLO 自适应保障机制"
+  },
+  "home.qos.staticPill": {
+    "message": "Traditional static mode",
+    "description": "传统静态模式"
+  },
+  "home.qos.staticNote": {
+    "message": "Fixed thresholds cannot sense actual compute load, leaving capacity either idle or overloaded.",
+    "description": "固定阈值无法感知真实算力负载，旱涝不均。"
+  },
+  "home.qos.problemPill": {
+    "message": "Core challenges",
+    "description": "核心矛盾与挑战"
+  },
+  "home.qos.problemSubtitle": {
+    "message": "LLM compute demand fluctuates nonlinearly",
+    "description": "大模型计算特征具备非线性的本质波动"
+  },
+  "home.qos.capacityPill": {
+    "message": "Time-varying topology",
+    "description": "时变动态拓扑"
+  },
+  "home.qos.problemNote": {
+    "message": "Traditional APM metrics cannot serve as a basis for static thresholds in Transformer architectures.",
+    "description": "传统 APM 指标在 Transformer 架构下无法作为静态阈值依据。"
+  },
+  "home.qos.solutionPill": {
+    "message": "AI adaptive scheduling core",
+    "description": "AI 自适应调度内核"
+  },
+  "home.qos.capacityHeading": {
+    "message": "Concurrency / Capacity",
+    "description": "并发能力度量 (Concurrency / Capacity)"
+  },
+  "home.qos.liveStatus": {
+    "message": "Real-time adaptive tracking",
+    "description": "实时自适应跟随"
+  },
+  "home.qos.sampleWindow": {
+    "message": "Time window: 50ms sampling interval",
+    "description": "时序窗口: 50ms采样周期"
+  },
+  "home.qos.solutionNote": {
+    "message": "An elastic concurrency ceiling that wastes no GPU cycles.",
+    "description": "弹性水位线动态吸顶，不浪费任何一颗 GPU 周期。"
+  },
+  "home.qos.operationsPill": {
+    "message": "No manual labeling",
+    "description": "零人工打标"
   }
 }

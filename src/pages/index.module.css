@@ -1080,6 +1080,11 @@
     text-underline-offset: 4px;
   }
 }
+:global(html[data-theme='light'])
+  .primaryAction:is(:hover, :focus-visible, :active) {
+  background: var(--color-home-info);
+  color: var(--color-brand-on-primary);
+}
 @media (max-width: 1279px) {
   .heroCopy h1 {
     font-size: 36px;

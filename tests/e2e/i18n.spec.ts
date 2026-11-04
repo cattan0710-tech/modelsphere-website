@@ -177,6 +177,15 @@ test('language switch is accessible on mobile and English pages render without s
   await page.setViewportSize({ width: 320, height: 844 });
   await page.goto(site('en/community'));
   await expect(
+    page.getByRole('heading', { name: 'Official WeChat account', exact: true }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole('img', {
+      name: 'ModelSphere official WeChat account QR code',
+      exact: true,
+    }),
+  ).toHaveAttribute('src', site('en/community/wechat-official-account-qr.png'));
+  await expect(
     page.getByRole('combobox', { name: 'Change language', exact: true }),
   ).toBeVisible();
   await expect(

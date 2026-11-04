@@ -87,7 +87,7 @@ Catalog 的目录、详情、配方历史和报告绑定其数据版本；门户
 | 2 `comparison` | 4 项能力：生产部署、异构硬件、快速调优部署、持续优化；各含标题、说明与能力面板 | SectionHeading、4 个 FeatureCard | 必填；桌面/平板 2×2，手机纵排；不增加独立四项 Tab |
 | 3 `benchmarks` | 性能调优模型 Day-0 部署；用户提供的 Console 模型广场截图 | SectionHeading、完整产品截图 | 核心特性首项；以 2568×1528 原始 PNG 展示部署变体与调优收益标签，不压缩或转换图片，不显示图片下方说明及链接；窄屏可横向滚动，浅深主题保留原图，不将截图标签作为统一性能承诺 |
 | 4 `fault-tolerance` | 集群级断流续写：异常探测、机器切换与接续回答；AI 对话与 4 步集群接力链路 | SectionHeading、3 个特性卡、AI 对话、接力步骤与动效 | 来源覆盖：Stitch `11190555543817321216`；文字和图标按稿，沿用当前首页 tokens；示例数值不作为实测证明或服务保证 |
-| 5 `qos-scaling` | ModelSphere 动态限流：静态限流、请求差异与动态并发对比；3 项收益 | SectionHeading、3 栏机制图、收益横栏 | 来源覆盖：Stitch `12e3c505c12147f788aac9b503645a9d`；文字、SVG 图标和曲线按稿，字体、尺寸与颜色使用当前首页 tokens |
+| 5 `qos-scaling` | ModelSphere 动态限流：静态限流、请求差异与动态并发对比；3 项收益 | SectionHeading、3 栏机制图、收益横栏 | 来源覆盖：Stitch `1186bfc660c6404da176e360aaa564e4`；保留既有静态限流图表，移除用户标出的三个量化标签；其余文案、卡片布局、箭头与曲线按稿，字体、字号与颜色使用当前首页预设 |
 | 6 `dynamic-scaling` | 算力动态扩缩容：全天负载趋势、10 张 GPU 与 8:2、6:4、2:8 分配场景 | SectionHeading、3 个特性卡、双模型堆叠面积图与 GPU 阵列 | 来源覆盖：Stitch `6217c9871bea457192cbcb39bb7e01ba`；沿用首页响应式及双主题，首屏伸缩链接指向本节 |
 | 7 `autotune-evolution` | 线上服务、流量收集、空闲算力调优、配置验证、自动上线的五步闭环 | SectionHeading、DiagramFrame、步骤说明 | 条件：有对应实现资料；标明适用范围，不把调优闭环当作请求执行流程 |
 | 8 `get-started` | 居中接入邀请与社区入口，手机纵排操作组 | CtaBlock | 必填邀请；真实快速开始就绪后使用 `docsQuickstartHref`，否则显示准备说明和 `/community` |
@@ -220,7 +220,7 @@ Catalog 模型详情的身份参数为 `modelId`，配方页为 `modelId` 和 `r
 | 1 `community-hero` | 面包屑、生态标签、主标题与说明 | 原稿 44px 桌面标题、浅紫底色和天蓝强调；不补回已删除的三张生态卡片 |
 | 2 `community-maintainers` | 五位维护者、单位、GitHub 账号；桌面三列 | 姓名使用 GitHub 公开 Name，有值显示姓名、无值或仅空白时显示账号 ID；在 `src/features/community/components.tsx` 的 `maintainerNames` 中维护；原稿的“第四范式 (Paradigm)”统一显示为“范式智能（Phancy）”，链接与显示账号对应；不添加头像或维护者 |
 | 3 `community-partners` | 两家发起单位与共建横幅 | 卡片只保留联合发起单位标记、Logo 与名称，移除英文副标题与合作介绍；“申请加入生态共建”弹出已有微信群二维码，支持关闭按钮、Esc、点击遮罩关闭，禁用脚本时直接打开二维码原图；不使用未核实邮箱 |
-| 4 `community-channels` | 微信群、GitHub 两列卡片 | 按用户确认暂时移除尚未认证的公众号；微信群使用用户提供的原始二维码，可打开原图；手机纵排 |
+| 4 `community-channels` | 公众号、微信群、GitHub 三列卡片 | 公众号和微信群使用用户提供的原始二维码，可打开原图；手机纵排 |
 
 该路由复用全站 Header；首页、模型目录、文档指南、博客洞见和社区生态统一复用社区版 Footer。字体、图标均为本地资源；社区样式限于 `data-community-design`，保留移动导航、主题继承和减少动效支持。不展示没有真实数据来源的 Star / Fork 数量、播放量、集群状态或 Footer 遥测指标；原始设计稿中的示例数字与状态不作为可发布内容。“线上技术分享与社区例会日历”整个区块及 Footer 的“线上技术日历”入口已按用户要求移除，预览与正式页面均不展示该区块或空状态。活动数据格式与校验工具保留，维护说明见 [社区活动维护](../development/community-maintenance.md)。
 

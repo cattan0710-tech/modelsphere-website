@@ -446,76 +446,191 @@ test('QoS sections fit both themes and supported widths, including English and n
   await context.close();
 });
 
-test('QoS chart limits align with bars and annotations follow unscaled points', async ({
+test('QoS matches the design spacing, arrow shape, title alignment and chart positions', async ({
   page,
 }) => {
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.goto('/');
   const section = page.locator('#qos-scaling');
-  for (const width of [320, 390, 768, 1280, 1440]) {
+  const layout = qosSource['qos-scaling'].layout;
+  for (const removed of ['计算复杂度 ×50', '+34.8% 吞吐提升', 'P99 抖动 < 8%'])
+    await expect(section).not.toContainText(removed);
+  await expect(section).toContainText('时变动态拓扑');
+  await expect(section).toContainText('零人工打标');
+  const challenge = section.locator(
+    '[data-qos-card="challenge"] [data-qos-card-header]',
+  );
+  await expect(challenge.locator('span')).toHaveCSS(
+    'color',
+    await challenge
+      .locator('svg')
+      .evaluate((icon) => getComputedStyle(icon).color),
+  );
+  const iconsWithinViewBox = await section
+    .locator('svg[aria-hidden="true"]')
+    .evaluateAll((icons) =>
+      icons.every((icon) => {
+        const svg = icon as SVGSVGElement;
+        const view = svg.viewBox.baseVal;
+        const bounds = svg.querySelector('path')!.getBBox();
+        return (
+          bounds.x >= view.x &&
+          bounds.y >= view.y &&
+          bounds.x + bounds.width <= view.x + view.width &&
+          bounds.y + bounds.height <= view.y + view.height
+        );
+      }),
+    );
+  expect(iconsWithinViewBox).toBe(true);
+  for (const width of [320, 390, 768, 1024, 1280, 1440]) {
     await page.setViewportSize({ width, height: 1000 });
     const measured = await section.evaluate((element) => {
-      const line = element
-        .querySelector('[data-qos-static-limit] i')!
-        .getBoundingClientRect();
-      const bars = Array.from(
-        element.querySelectorAll('[data-qos-static-bar]'),
-      ).map((bar) => bar.getBoundingClientRect().top);
-      const svg = element
-        .querySelector('svg[role="img"]')!
-        .getBoundingClientRect();
-      const points = ['open', 'tighten'].map((kind) => {
-        const wrapper = element.querySelector(`[data-qos-point="${kind}"]`)!;
-        const dot = wrapper.querySelector('i')!.getBoundingClientRect();
-        const annotation = wrapper
-          .querySelector('span')!
-          .getBoundingClientRect();
+      const rect = (e: Element) => {
+        const r = e.getBoundingClientRect();
         return {
-          kind,
-          x: dot.x + dot.width / 2,
-          y: dot.y + dot.height / 2,
-          width: dot.width,
-          height: dot.height,
-          labelX:
-            annotation.x + annotation.width * (kind === 'open' ? 0.5 : 0.55),
-          labelY: annotation.bottom + (kind === 'open' ? 18 : 14),
+          x: r.x,
+          y: r.y,
+          width: r.width,
+          height: r.height,
+          right: r.right,
+          bottom: r.bottom,
+          cx: r.x + r.width / 2,
+          cy: r.y + r.height / 2,
         };
-      });
-      const axes = Array.from(element.querySelectorAll('[data-qos-axis]')).map(
-        (axis) => ({
-          namespace: axis.namespaceURI,
-          font: getComputedStyle(axis).fontFamily,
-          size: getComputedStyle(axis).fontSize,
+      };
+      const cards = Array.from(element.querySelectorAll('[data-qos-card]')).map(
+        (card) => ({
+          ...rect(card),
+          padding: getComputedStyle(card).padding,
+          heading: rect(card.querySelector('h3')!),
+          footer: rect(card.lastElementChild!),
+          chart: rect(
+            card.querySelector(
+              '[class*="staticChart"],[class*="problems"],[class*="dynamicChart"]',
+            )!,
+          ),
         }),
       );
+      const arrows = Array.from(
+        element.querySelectorAll('[data-qos-arrow]'),
+      ).map((arrow) => ({
+        ...rect(arrow),
+        display: getComputedStyle(arrow).display,
+        radius: getComputedStyle(arrow).borderRadius,
+        color: getComputedStyle(arrow).color,
+        path: arrow.querySelector('path')!.getAttribute('d'),
+      }));
+      const benefits = element.querySelector('[class*="benefits"]')!;
+      const benefitItems = Array.from(benefits.children).map((item) => ({
+        border: getComputedStyle(item).borderLeftWidth,
+        borderTop: getComputedStyle(item).borderTopWidth,
+        heading: rect(item.querySelector('h3')!),
+        tag: item.querySelector('[class*="detailPill"]')
+          ? rect(item.querySelector('[class*="detailPill"]')!)
+          : null,
+      }));
+      const line = rect(element.querySelector('[data-qos-static-limit] i')!);
+      const svg = rect(element.querySelector('svg[role="img"]')!);
+      const points = ['open', 'tighten'].map((kind) => ({
+        kind,
+        ...rect(element.querySelector(`[data-qos-point="${kind}"] i`)!),
+        annotation: rect(
+          element.querySelector(`[data-qos-annotation="${kind}"]`)!,
+        ),
+      }));
+      const bars = Array.from(
+        element.querySelectorAll('[data-qos-static-bar]'),
+      ).map((bar) => rect(bar).y);
       return {
-        lineY: line.y + line.height / 2,
+        cards,
+        arrows,
+        benefitItems,
+        benefitGap: rect(benefits).y - cards[2].bottom,
+        lineY: line.cy,
         bars,
+        svg,
         points,
-        axes,
-        font: getComputedStyle(element).fontFamily,
-        svg: { x: svg.x, y: svg.y, width: svg.width, height: svg.height },
+        accent: getComputedStyle(
+          element.querySelector('#dynamic-rate-title > span')!,
+        ).color,
       };
     });
     for (const top of measured.bars)
       expect(Math.abs(top - measured.lineY)).toBeLessThanOrEqual(1);
     for (const point of measured.points) {
-      const [x, y] = point.kind === 'open' ? [120, 74] : [295, 103];
-      expect(
-        Math.abs(point.x - (measured.svg.x + (measured.svg.width * x) / 380)),
-      ).toBeLessThanOrEqual(1);
-      expect(
-        Math.abs(point.y - (measured.svg.y + (measured.svg.height * y) / 150)),
-      ).toBeLessThanOrEqual(1);
+      const [x, y] = point.kind === 'open' ? [110, 35] : [210, 85];
+      expect(point.cx).toBeCloseTo(
+        measured.svg.x + (measured.svg.width * x) / 320,
+        0,
+      );
+      expect(point.cy).toBeCloseTo(
+        measured.svg.y + (measured.svg.height * y) / 120,
+        0,
+      );
       expect(point.width).toBe(12);
       expect(point.height).toBe(12);
-      expect(Math.abs(point.labelX - point.x)).toBeLessThanOrEqual(1);
-      expect(Math.abs(point.labelY - point.y)).toBeLessThanOrEqual(1);
+      expect(point.annotation.x).toBeCloseTo(
+        measured.svg.x +
+          measured.svg.width * (point.kind === 'open' ? 0.2 : 0.54),
+        0,
+      );
+      if (point.kind === 'open')
+        expect(point.annotation.y).toBeCloseTo(measured.svg.y - 4, 0);
+      else
+        expect(point.annotation.bottom).toBeCloseTo(measured.svg.bottom - 4, 0);
     }
-    for (const axis of measured.axes) {
-      expect(axis.namespace).toBe('http://www.w3.org/1999/xhtml');
-      expect(axis.font).toBe(measured.font);
-      expect(axis.size).toBe('12px');
+    expect(measured.svg.height).toBe(layout.plotHeight);
+    for (const card of measured.cards)
+      expect(card.padding).toBe(`${layout.cardPadding}px`);
+    expect(measured.benefitGap).toBe(layout.benefitsTopGap);
+    for (const item of measured.benefitItems) {
+      expect(item.border).toBe('0px');
+      expect(item.borderTop).toBe('0px');
+      if ((width >= 1024 || (width >= 390 && width < 768)) && item.tag)
+        expect(Math.abs(item.heading.cy - item.tag.cy)).toBeLessThanOrEqual(1);
     }
+    if (width >= 1024) {
+      expect(measured.cards[0].x).toBe(layout.desktopGutter);
+      for (let i = 1; i < 3; i++) {
+        expect(measured.cards[i].x - measured.cards[i - 1].right).toBeCloseTo(
+          layout.desktopCardGap,
+          0,
+        );
+        expect(measured.cards[i].width).toBeCloseTo(measured.cards[0].width, 0);
+        expect(measured.cards[i].heading.y).toBeCloseTo(
+          measured.cards[0].heading.y,
+          0,
+        );
+        if (width >= 1280)
+          expect(measured.cards[i].chart.y).toBeCloseTo(
+            measured.cards[0].chart.y,
+            0,
+          );
+        expect(measured.cards[i].footer.bottom).toBeCloseTo(
+          measured.cards[0].footer.bottom,
+          0,
+        );
+      }
+      for (let i = 0; i < 2; i++) {
+        const arrow = measured.arrows[i];
+        expect(arrow.width).toBe(layout.arrowSize);
+        expect(arrow.height).toBe(layout.arrowSize);
+        expect(arrow.radius).toBe(`${layout.arrowRadius}px`);
+        expect(arrow.x - measured.cards[i].right).toBeCloseTo(
+          layout.arrowGutter,
+          0,
+        );
+        expect(measured.cards[i + 1].x - arrow.right).toBeCloseTo(
+          layout.arrowGutter,
+          0,
+        );
+        expect(arrow.cy).toBeCloseTo(measured.cards[i].cy, 0);
+        expect(arrow.path).toBe(
+          'M647-440H160v-80h487L423-744l57-56 320 320-320 320-57-56 224-224Z',
+        );
+      }
+      expect(measured.arrows[1].color).toBe(measured.accent);
+    } else
+      for (const arrow of measured.arrows) expect(arrow.display).toBe('none');
   }
 });

@@ -11,14 +11,28 @@ test('community preserves source layout and local navigation under the Pages pre
   await page.evaluate(() => document.fonts.ready);
   await expect(
     page.locator('#community-channels [data-home-pair] > [data-home-pending]'),
-  ).toHaveCount(2);
+  ).toHaveCount(3);
   await expect(
     page.getByRole('img', { name: '微信技术交流群入群二维码' }),
   ).toHaveAttribute('src', `${prefix}community/wechat-group-qr.png`);
   await expect(
     page.getByRole('link', { name: '扫码加入技术交流微信群', exact: true }),
   ).toHaveAttribute('href', `${prefix}community/wechat-group-qr.png`);
-  await expect(page.locator('#community-channels')).not.toContainText('公众号');
+  await expect(
+    page.getByRole('img', {
+      name: '模域 ModelSphere 微信公众号二维码',
+      exact: true,
+    }),
+  ).toHaveAttribute('src', `${prefix}community/wechat-official-account-qr.png`);
+  await expect(
+    page.getByRole('link', {
+      name: '模域 ModelSphere 微信公众号二维码',
+      exact: true,
+    }),
+  ).toHaveAttribute(
+    'href',
+    `${prefix}community/wechat-official-account-qr.png`,
+  );
   for (const [name, file] of [
     ['范式智能 PHANCY Logo', 'phancy-logo.png'],
     ['睿思智联 RiseUnion Logo', 'riseunion-logo.svg'],
