@@ -20,7 +20,6 @@ export function queryPosts(index: BlogIndex, query: BlogQuery) {
   const filtered = hasFilters(query);
   const q = query.q.toLowerCase();
   const posts = sortedPosts(index.posts).filter((post) => {
-    if (!filtered && post.id === index.featuredId) return false;
     if (query.category && post.categoryId !== query.category) return false;
     if (query.tag && !post.tagIds.includes(query.tag)) return false;
     if (!q) return true;

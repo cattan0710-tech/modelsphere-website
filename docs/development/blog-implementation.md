@@ -61,7 +61,7 @@ tagIds: []
 
 可选字段包括 `author`、`categoryId`、`technicalKeywords`、`pullRequestRefs`、`cover`、`relatedIds`（最多三篇）和 `resources`。阅读时长必须同时提供 `readingMinutes` 与作者标注的 HTTPS `readingTimeSource`，不自动估算。`draft: true` 始终不进入公开产物；正式构建中的 `example: true` 由 `SITE_PUBLISH_EXAMPLES` 控制，开发与预览可读取示例。发布日期不能为空或晚于构建日期；首期不支持定时发布。
 
-分类、标签、推荐 id、社区渠道和来源记录在 `content/pages/blog.json` 维护（`categories`、`tags`、可选 `featuredId`、`channels`、`sources`）。id 与显示名称分离；错误引用会阻止构建。推荐项只在无筛选的第一页出现，且从所有无筛选分页的数据集中排除。有查询时允许推荐文章成为普通结果。
+分类、标签、推荐 id、社区渠道和来源记录在 `content/pages/blog.json` 维护（`categories`、`tags`、可选 `featuredId`、`channels`、`sources`）。id 与显示名称分离；错误引用会阻止构建。推荐区只在无筛选的第一页出现；推荐文章仍按普通文章的发布日期参与列表排序、计数和分页。搜索、分类和标签筛选均在全部已发布文章中进行。
 
 ## 图片与链接
 

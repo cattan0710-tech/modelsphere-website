@@ -47,7 +47,7 @@ test('blog navigation, published listing and real 404 responses', async ({
           nodes.map((node) => node.getAttribute('data-post-id')),
         ),
     ).toEqual(ids);
-    if (mock) expect(ids).toHaveLength(7);
+    if (mock) expect(ids).toHaveLength(8);
   }
   await expect(
     page.getByRole('complementary', { name: '社区交流渠道' }),
@@ -123,7 +123,7 @@ test.describe('mock blog interaction and reading', () => {
             complete: el.scrollHeight <= el.clientHeight + 1,
           })),
         );
-      expect(summaries.length).toBe(7);
+      expect(summaries.length).toBe(8);
       for (const summary of summaries) {
         expect(summary.complete).toBe(true);
         expect(summary.height).toBeGreaterThanOrEqual(
@@ -231,7 +231,8 @@ test.describe('mock blog interaction and reading', () => {
     const context = await browser.newContext({ javaScriptEnabled: false });
     const page = await context.newPage();
     await page.goto(`${baseURL}/blog?q=Token`);
-    await expect(page.locator('[data-post-id]')).toHaveCount(8);
+    await expect(page.locator('#featured [data-post-id]')).toHaveCount(1);
+    await expect(page.locator('#posts [data-post-id]')).toHaveCount(8);
     await expect(page.getByRole('searchbox')).toHaveCount(0);
     await expect(
       page.getByRole('link', {
@@ -257,7 +258,8 @@ test.describe('mock blog interaction and reading', () => {
     await expect(page.locator('[data-post-id]').first()).toBeVisible({
       timeout: 8000,
     });
-    await expect(page.locator('[data-post-id]')).toHaveCount(8);
+    await expect(page.locator('#featured [data-post-id]')).toHaveCount(1);
+    await expect(page.locator('#posts [data-post-id]')).toHaveCount(8);
   });
   test('detail layout, theme stability and visual snapshots', async ({
     page,

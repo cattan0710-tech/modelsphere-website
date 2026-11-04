@@ -55,7 +55,7 @@ describe('blog source isolation regression', () => {
       vi.stubEnv('TEST_BLOG_SOURCE', 'mock');
       const fixed = readBlogExpectations(root);
       expect(fixed.posts).toHaveLength(8);
-      expect(expectedBlogList(fixed).posts).toHaveLength(7);
+      expect(expectedBlogList(fixed).posts).toHaveLength(8);
 
       const published = await prepareBlog(root, {
         target: 'release',

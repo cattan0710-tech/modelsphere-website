@@ -168,20 +168,24 @@ test('English docs, blog and search use translated content and localized links',
   ).toBeVisible();
   await page.goto(site('en/blog'));
   const featured = blog.posts.find((post) => post.id === blog.featuredId);
-  const visible = [
-    ...(featured ? [featured] : []),
-    ...expectedBlogList(blog).posts,
-  ];
-  await expect(page.locator('[data-post-id]')).toHaveCount(visible.length);
+  if (featured)
+    await expect(page.locator('#featured').getByRole('heading')).toHaveText(
+      englishBlogTitle(featured),
+    );
+  const visible = expectedBlogList(blog).posts;
+  await expect(page.locator('#posts [data-post-id]')).toHaveCount(
+    visible.length,
+  );
   for (const post of visible) {
     await expect(
-      page.locator(`[data-post-id="${post.id}"]`).getByRole('heading'),
+      page.locator(`#posts [data-post-id="${post.id}"]`).getByRole('heading'),
     ).toHaveText(englishBlogTitle(post));
   }
   if (blog.source === 'mock') {
     await expect(
       page.getByRole('heading', {
         name: 'From request to token — understanding inference infrastructure',
+        level: 2,
         exact: true,
       }),
     ).toBeVisible();

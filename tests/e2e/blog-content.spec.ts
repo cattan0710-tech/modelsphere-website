@@ -5,7 +5,7 @@ import {
 } from '../helpers/blog-expectations';
 
 const blog = readBlogExpectations();
-const listing = blog.posts.filter((post) => post.id !== blog.featuredId);
+const listing = blog.posts;
 const staticIds = [
   ...blog.posts.filter((post) => post.id === blog.featuredId),
   ...listing,
@@ -51,6 +51,9 @@ test.describe('published blog content acceptance', () => {
         await expect(page.locator('#featured [data-post-id]')).toHaveCount(
           number === 1 && blog.featuredId ? 1 : 0,
         );
+        await expect(
+          page.getByRole('heading', { name: '暂无其他文章' }),
+        ).toHaveCount(0);
       }
     }
   });
@@ -75,7 +78,7 @@ test.describe('published blog content acceptance', () => {
         await expectIds(page, staticIds, '[data-post-id]');
         await expect(page.getByRole('searchbox')).toHaveCount(0);
         for (const post of blog.posts) {
-          const card = page.locator(`[data-post-id="${post.id}"]`);
+          const card = page.locator(`#posts [data-post-id="${post.id}"]`);
           await expect(card.locator('p')).toHaveText(post.summary);
           await expect(
             card.getByRole('heading').getByRole('link'),
@@ -151,7 +154,7 @@ test.describe('published blog content acceptance', () => {
           expected.map((post) => post.id),
         );
         for (const post of expected) {
-          const summary = page.locator(`[data-post-id="${post.id}"] p`);
+          const summary = page.locator(`#posts [data-post-id="${post.id}"] p`);
           await expect(summary).toHaveText(post.summary);
           expect(
             await summary.evaluate(
