@@ -1,5 +1,5 @@
 {
-  "featuredId": "example-blog-platform",
+  "featuredId": "modelsphere-open-source",
   "categories": [
     {
       "id": "release",
@@ -57,5 +57,30 @@
     }
   ],
   "channels": [],
-  "sources": []
+  "sources": [
+    {
+      "id": "modelsphere-platform-overview",
+      "label": "ModelSphere 项目概述与快速开始",
+      "kind": "documentation",
+      "publicHref": "https://github.com/modelsphere/modelsphere/blob/d5c892d2c1747b9411b423dae5c776d0c84a8003/README.zh-CN.md",
+      "locator": "概述、核心特性、快速开始、组件",
+      "sourceRevision": "d5c892d2c1747b9411b423dae5c776d0c84a8003",
+      "checkedAt": "2026-11-04T20:52:38+08:00",
+      "checkedBy": "Codex",
+      "checkResult": "supports",
+      "scope": "项目定位、服务栈组件、异构加速器支持、部署前提与自动调优预览版状态；不作为性能或生产稳定性证明。"
+    },
+    {
+      "id": "kimi-k3-b300-benchmark",
+      "label": "Kimi K3 1.0.4 B300 测试报告",
+      "kind": "benchmark-report",
+      "publicHref": "https://github.com/modelsphere/model-catalog/blob/5b668ff2bfd5459ff01d3be6e26cdeac1b037f60/models/kimi-k3/kimi-k3-1.0.4-b300-report.html",
+      "locator": "Kimi-K3 mxfp4；Agent 50k + 1.5k、Document QA 8k + 1k；SLO 内最佳并发点的 8 卡归一化吞吐量",
+      "sourceRevision": "5b668ff2bfd5459ff01d3be6e26cdeac1b037f60",
+      "checkedAt": "2026-11-04T20:52:38+08:00",
+      "checkedBy": "Codex",
+      "checkResult": "supports",
+      "scope": "B300、Kimi-K3 mxfp4，在 TTFT p50 ≤ 8000 ms、每请求生成速度 ≥ 15 tok/s 条件下，Agent 长上下文 7850→12368 tok/s（+57.6%）、Document QA 8394→10189 tok/s（+21.4%）；仅适用于报告记录的配置与负载。"
+    }
+  ]
 }
