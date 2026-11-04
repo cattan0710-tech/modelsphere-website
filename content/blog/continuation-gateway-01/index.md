@@ -6,7 +6,6 @@ kind: internal
 slug: continuation-gateway-01
 publishedAt: 2026-11-04
 updatedAt: 2026-11-04T10:00:00+08:00
-example: true
 evidenceIds: []
 author: Lu Xinlong
 categoryId: architecture
