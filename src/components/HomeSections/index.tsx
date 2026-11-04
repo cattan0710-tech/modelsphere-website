@@ -803,32 +803,13 @@ export function Benchmarks() {
                 alt={translate({
                   id: 'home.deployment.screenshotAlt',
                   message:
-                    'ModelSphere Console 模型广场：按提升排序，浏览模型和部署变体，DeepSeek 模型卡片展示调优 +50.7%、+58% 的性能提升标签。',
+                    'ModelSphere Console 模型库：按提升排序，浏览模型、部署变体与调优收益标签。',
                 })}
-                width={2568}
-                height={1528}
+                width={2566}
+                height={1522}
                 loading="lazy"
                 decoding="async"
               />
-              {/* Match the reviewed sort label without re-encoding the capture. */}
-              <svg
-                className="home-console-sort-label"
-                viewBox="0 0 2568 1528"
-                aria-hidden="true"
-                focusable="false"
-              >
-                <path fill="#fff" d="M2230 480h198v53h-198z" />
-                <text
-                  x="2240"
-                  y="508"
-                  dominantBaseline="middle"
-                  fontFamily="system-ui, sans-serif"
-                  fontSize="30"
-                  fill="#171717"
-                >
-                  {'按提升排序'}
-                </text>
-              </svg>
             </div>
           </div>
         </figure>

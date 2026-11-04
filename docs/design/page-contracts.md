@@ -85,14 +85,14 @@ Catalog 的目录、详情、配方历史和报告绑定其数据版本；门户
 | --- | --- | --- | --- |
 | 1 `hero` | 左对齐定位标题、简介、技术标签、系统架构概览 | 页面 h1、ActionLink、DiagramFrame | 必填；三个入口为 `docsQuickstartHref`（真实内容就绪后）、已核实 GitHub 源码仓库、`/models`；首屏完整直出，首页文字按 D13 入场、拓扑正文按 D14 一次纵向揭示；入口、拓扑标题及上方三卡静态可用，数据与布局稳定 |
 | 2 `comparison` | 4 项能力：生产部署、异构硬件、快速调优部署、持续优化；各含标题、说明与能力面板 | SectionHeading、4 个 FeatureCard | 必填；桌面/平板 2×2，手机纵排；不增加独立四项 Tab |
-| 3 `benchmarks` | 性能调优模型 Day-0 部署；用户提供的 Console 模型广场截图 | SectionHeading、完整产品截图 | 核心特性首项；以 2568×1528 原始 PNG 展示部署变体与调优收益标签，不压缩或转换图片，不显示图片下方说明及链接；窄屏可横向滚动，浅深主题保留原图，不将截图标签作为统一性能承诺 |
+| 3 `benchmarks` | 性能调优模型 Day-0 部署；用户提供的 Console 模型库截图 | SectionHeading、完整产品截图 | 核心特性首项；以 2566×1522 原始 PNG 展示部署变体与调优收益标签，不压缩或转换图片；页面裁切至 2558×1508 的圆角窗口内部，隐藏四周阴影，不显示图片下方说明及链接；窄屏可横向滚动，浅深主题保留原图，不将截图标签作为统一性能承诺 |
 | 4 `fault-tolerance` | 集群级断流续写：异常探测、机器切换与接续回答；AI 对话与 4 步集群接力链路 | SectionHeading、3 个特性卡、AI 对话、接力步骤与动效 | 来源覆盖：Stitch `11190555543817321216`；文字和图标按稿，沿用当前首页 tokens；示例数值不作为实测证明或服务保证 |
 | 5 `qos-scaling` | ModelSphere 动态限流：静态限流、请求差异与动态并发对比；3 项收益 | SectionHeading、3 栏机制图、收益横栏 | 来源覆盖：Stitch `1186bfc660c6404da176e360aaa564e4`；保留既有静态限流图表，移除用户标出的三个量化标签；其余文案、卡片布局、箭头与曲线按稿，字体、字号与颜色使用当前首页预设 |
 | 6 `dynamic-scaling` | 算力动态扩缩容：全天负载趋势、10 张 GPU 与 8:2、6:4、2:8 分配场景 | SectionHeading、3 个特性卡、双模型堆叠面积图与 GPU 阵列 | 来源覆盖：Stitch `6217c9871bea457192cbcb39bb7e01ba`；沿用首页响应式及双主题，首屏伸缩链接指向本节 |
 | 7 `autotune-evolution` | 线上服务、流量收集、空闲算力调优、配置验证、自动上线的五步闭环 | SectionHeading、DiagramFrame、步骤说明 | 条件：有对应实现资料；标明适用范围，不把调优闭环当作请求执行流程 |
 | 8 `get-started` | 居中接入邀请与社区入口，手机纵排操作组 | CtaBlock | 必填邀请；真实快速开始就绪后使用 `docsQuickstartHref`，否则显示准备说明和 `/community` |
 
-Hero 只展示新版单张完整系统架构图，浅深主题表达相同信息并保持同一框尺寸；不预置监控标签、双 Tab、隐藏面板、Live UI 或轮播。核心特性首项使用用户提供的 Console 模型广场截图，资源位于 `static/screenshots/console-model-catalog.png`；按用户审阅意见，在页面中叠加“按提升排序”标签，原始 PNG 保持不变。首页不再设置独立 `features` 四项 Tab、`request-flow`、`audiences` 或推荐文章区块；架构页及其他页面的既定功能保留。
+Hero 只展示新版单张完整系统架构图，浅深主题表达相同信息并保持同一框尺寸；不预置监控标签、双 Tab、隐藏面板、Live UI 或轮播。核心特性首项使用用户提供的 Console 模型库截图，资源位于 `static/screenshots/console-model-catalog.png`；原图自带“按提升”标签，页面不再叠加排序文字，通过圆角容器裁切隐藏截图外侧阴影，原始 PNG 保持不变。首页不再设置独立 `features` 四项 Tab、`request-flow`、`audiences` 或推荐文章区块；架构页及其他页面的既定功能保留。
 
 首页核心内容背景依次为能力概览白、Day-0 部署灰、断流续写白、QoS/SLO 灰、Tuning Agent 白，浅深主题使用对应语义色。
 

@@ -2044,8 +2044,8 @@
     "description": "模型广场截图，可横向滚动查看"
   },
   "home.deployment.screenshotAlt": {
-    "message": "ModelSphere Console model catalog: sorted by improvement, browse models and deployment variants, with DeepSeek cards showing tuning gains of +50.7% and +58%.",
-    "description": "ModelSphere Console 模型广场：按提升排序，浏览模型和部署变体，DeepSeek 模型卡片展示调优 +50.7%、+58% 的性能提升标签。"
+    "message": "ModelSphere Console model library: sorted by improvement, browse models, deployment variants, and tuning gains.",
+    "description": "ModelSphere Console 模型库：按提升排序，浏览模型、部署变体与调优收益标签。"
   },
   "site.0fb4c5c150d7": {
     "message": "Model and architecture",

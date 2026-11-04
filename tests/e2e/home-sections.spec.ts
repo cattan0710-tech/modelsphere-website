@@ -91,11 +91,7 @@ for (const [id, expected] of Object.entries(modules)) {
       const screenshot = section.getByRole('img');
       await screenshot.scrollIntoViewIfNeeded();
       await expect(screenshot).toBeVisible();
-      const sortLabel = section.locator('.home-console-sort-label');
-      await expect(sortLabel).toHaveText('按提升排序');
-      expect(await sortLabel.boundingBox()).toEqual(
-        await screenshot.boundingBox(),
-      );
+      await expect(section.locator('.home-console-sort-label')).toHaveCount(0);
       await expect(screenshot).toHaveAttribute(
         'src',
         '/screenshots/console-model-catalog.png',
@@ -105,8 +101,8 @@ for (const [id, expected] of Object.entries(modules)) {
           screenshot.evaluate(
             (image: HTMLImageElement) =>
               image.complete &&
-              image.naturalWidth === 2568 &&
-              image.naturalHeight === 1528,
+              image.naturalWidth === 2566 &&
+              image.naturalHeight === 1522,
           ),
         )
         .toBe(true);
