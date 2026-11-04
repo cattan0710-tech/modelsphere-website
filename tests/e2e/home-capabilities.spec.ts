@@ -12,7 +12,7 @@ test('four capability cards restore the selected Stitch copy, icons, colors and 
   const cards = page.locator(cardsSelector);
   await expect(cards).toHaveCount(4);
   await expect(cards.locator('h3')).toHaveText([
-    '开箱即用，性能调优模型 Day-0 部署',
+    '性能调优模型 Day-0 部署',
     '开箱即用，面向生产',
     '统一支持多种异构 AI 芯片',
     '性能优化持续演进',

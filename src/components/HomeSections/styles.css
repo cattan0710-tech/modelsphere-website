@@ -69,9 +69,20 @@
   outline: 2px solid var(--color-home-primary);
   outline-offset: -3px;
 }
-[data-home-design] .home-console-screenshot {
+[data-home-design] .home-console-frame {
+  position: relative;
   width: 100%;
   min-width: 900px;
+}
+[data-home-design] .home-console-sort-label {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+[data-home-design] .home-console-screenshot {
+  width: 100%;
   max-width: none;
   height: auto;
   /* Hide the capture's baked-in shadow without re-encoding the original PNG. */

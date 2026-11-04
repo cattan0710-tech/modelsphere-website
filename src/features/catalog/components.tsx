@@ -312,10 +312,20 @@ export function RecipeCard({
             </p>
             <Heading>
               <Link
-                to={detailHref(r, version, undefined, returnTo)}
-                title={r.variant.id}
+                to={
+                  context === 'catalog'
+                    ? modelHref(r.model, version, returnTo)
+                    : detailHref(r, version, undefined, returnTo)
+                }
+                title={
+                  context === 'catalog'
+                    ? r.model.displayName || r.model.name
+                    : r.variant.id
+                }
               >
-                {r.variant.id}
+                {context === 'catalog'
+                  ? r.model.displayName || r.model.name
+                  : r.variant.id}
               </Link>
             </Heading>
           </div>
@@ -329,16 +339,36 @@ export function RecipeCard({
                 : translate({ id: 'site.8be3a0d72f4d', message: '部署配方' })}
           </span>
         </div>
-        <dl className={styles.recipeModel}>
+        <dl
+          className={`${styles.recipeModel}${context === 'catalog' ? ` ${styles.recipeName}` : ''}`}
+        >
           <div>
-            <dt>{translate({ id: 'site.c98e118e0a43', message: '模型' })}</dt>
+            <dt>
+              {context === 'catalog'
+                ? translate({ id: 'catalog.recipeName', message: '配方' })
+                : translate({ id: 'site.c98e118e0a43', message: '模型' })}
+            </dt>
             <dd>
-              <Link to={modelHref(r.model, version, returnTo)}>
-                {r.model.displayName || r.model.name}
+              <Link
+                to={
+                  context === 'catalog'
+                    ? detailHref(r, version, undefined, returnTo)
+                    : modelHref(r.model, version, returnTo)
+                }
+              >
+                {context === 'catalog'
+                  ? r.variant.id
+                  : r.model.displayName || r.model.name}
               </Link>
             </dd>
           </div>
         </dl>
+        {context === 'catalog' && (
+          <p className={styles.recipeHardware} data-recipe-hardware="">
+            <Icon name="chip" />
+            <span>{translateCopy(hardwareText(r.variant))}</span>
+          </p>
+        )}
         <div className={styles.gain}>
           <GainMeter
             value={r.quotedGain}
@@ -356,8 +386,10 @@ export function RecipeCard({
           />
         </div>
         <div className={styles.chips}>
-          <span>{translateCopy(hardwareText(r.variant))}</span>
-          <span>{r.variant.engine}</span>
+          {context === 'model' && (
+            <span>{translateCopy(hardwareText(r.variant))}</span>
+          )}
+          <span className={styles.engineChip}>{r.variant.engine}</span>
           {isDefault(r) && (
             <span>
               {translate({ id: 'site.bb88a59baf57', message: '默认配方' })}

@@ -229,28 +229,49 @@ for (const width of [320, 390, 768, 1280, 1440])
       await page.goto('/models?q=mimo-v2.5');
       const recipe = page.locator(`[data-recipe-id="${m.name}/${variant.id}"]`);
       const title = recipe.getByRole('heading', { level: 2 }).getByRole('link');
-      await expect(title).toHaveText(variant.id);
+      await expect(title).toHaveText(m.displayName!);
+      await expect(title).toHaveAttribute('href', /\/models\/detail\?/);
+      const recipeLink = recipe
+        .locator('dl')
+        .filter({ has: page.getByText('配方', { exact: true }) })
+        .getByRole('link');
+      await expect(recipeLink).toHaveText(variant.id);
+      const hardware = recipe.locator('[data-recipe-hardware]');
+      await expect(hardware).toContainText('8 × H100');
+      const sizes = await Promise.all(
+        [title, recipeLink, hardware].map((element) =>
+          element.evaluate((node) =>
+            parseFloat(getComputedStyle(node).fontSize),
+          ),
+        ),
+      );
+      expect(sizes[0]).toBeGreaterThan(sizes[1]);
+      expect(sizes[1]).toBe(sizes[2]);
+      expect((await recipeLink.boundingBox())!.y).toBeGreaterThan(
+        (await title.boundingBox())!.y,
+      );
+      expect((await hardware.boundingBox())!.y).toBeGreaterThan(
+        (await recipeLink.boundingBox())!.y,
+      );
+      await expect(hardware).toHaveCSS('font-weight', '400');
+      await recipe.screenshot({
+        path: info.outputPath(`recipe-card-${width}-${colorScheme}.png`),
+      });
       const recipeWidth = (await recipe.boundingBox())!.width;
       const recipeUrl = new URL(
-        (await title.getAttribute('href'))!,
+        (await recipeLink.getAttribute('href'))!,
         'http://localhost',
       );
       expect(recipeUrl.pathname).toBe('/models/recipe');
       expect(recipeUrl.searchParams.get('recipeId')).toBe(variant.id);
       expect(recipeUrl.searchParams.get('dataVersion')).toBe(baseline.commit);
       expect(recipeUrl.searchParams.has('tab')).toBe(false);
-      const modelLink = recipe
-        .locator('dl')
-        .filter({ has: page.getByText('模型', { exact: true }) })
-        .getByRole('link');
-      await expect(modelLink).toHaveText(m.displayName!);
-      await expect(modelLink).toHaveAttribute('href', /\/models\/detail\?/);
-      await title.click();
+      await recipeLink.click();
       await expect(
         page.getByRole('tab', { name: '部署配置', selected: true }),
       ).toBeVisible();
       await page.goBack();
-      await modelLink.click();
+      await title.click();
       await expect(page).toHaveURL(/\/models\/detail\?/);
       await expect(page.getByRole('heading', { level: 1 })).toHaveText(
         m.displayName!,

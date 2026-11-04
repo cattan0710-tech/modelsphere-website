@@ -150,7 +150,7 @@ const capabilities: {
     icon: 'rocket_launch',
     title: translate({
       id: 'site.7da06f878c58',
-      message: '开箱即用，性能调优模型 Day-0 部署',
+      message: '性能调优模型 Day-0 部署',
     }),
     tag: 'Zero-Day Ready',
     tone: 'green',

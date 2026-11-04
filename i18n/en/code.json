@@ -168,8 +168,8 @@
     "description": "查看硬件与引擎说明"
   },
   "site.7da06f878c58": {
-    "message": "Deploy performance-tuned models on Day 0, out of the box",
-    "description": "开箱即用，性能调优模型 Day-0 部署"
+    "message": "Deploy performance-tuned models on Day 0",
+    "description": "性能调优模型 Day-0 部署"
   },
   "site.eb1398dad3b6": {
     "message": "Keep pace with the model ecosystem. Our inference optimization community adapts and tunes new models so you can import, configure, and deploy them to production quickly.",
@@ -1992,8 +1992,8 @@
     "description": "模型广场截图，可横向滚动查看"
   },
   "home.deployment.screenshotAlt": {
-    "message": "ModelSphere Console model catalog: browse models and deployment variants, with DeepSeek cards showing tuning gains of +50.7% and +58%.",
-    "description": "ModelSphere Console 模型广场：浏览模型和部署变体，DeepSeek 模型卡片展示调优 +50.7%、+58% 的性能提升标签。"
+    "message": "ModelSphere Console model catalog: sorted by improvement, browse models and deployment variants, with DeepSeek cards showing tuning gains of +50.7% and +58%.",
+    "description": "ModelSphere Console 模型广场：按提升排序，浏览模型和部署变体，DeepSeek 模型卡片展示调优 +50.7%、+58% 的性能提升标签。"
   },
   "site.0fb4c5c150d7": {
     "message": "Model and architecture",
@@ -3105,5 +3105,9 @@
   "home.qos.minimax4": {
     "message": "MiniMax 40% (4 GPUs)",
     "description": "MiniMax 40% (4卡)"
+  },
+  "catalog.recipeName": {
+    "message": "Recipe",
+    "description": "配方"
   }
 }

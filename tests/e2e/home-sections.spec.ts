@@ -85,12 +85,17 @@ for (const [id, expected] of Object.entries(modules)) {
     const section = page.locator(`#${id}`);
     if (id === 'benchmarks') {
       await expect(section.getByRole('heading', { level: 2 })).toHaveText(
-        '开箱即用，性能调优模型 Day-0 部署',
+        '性能调优模型 Day-0 部署',
       );
       await expect(section.getByRole('table')).toHaveCount(0);
       const screenshot = section.getByRole('img');
       await screenshot.scrollIntoViewIfNeeded();
       await expect(screenshot).toBeVisible();
+      const sortLabel = section.locator('.home-console-sort-label');
+      await expect(sortLabel).toHaveText('按提升排序');
+      expect(await sortLabel.boundingBox()).toEqual(
+        await screenshot.boundingBox(),
+      );
       await expect(screenshot).toHaveAttribute(
         'src',
         '/screenshots/console-model-catalog.png',
