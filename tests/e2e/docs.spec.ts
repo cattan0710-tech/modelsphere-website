@@ -43,29 +43,32 @@ if (mock) {
   }) => {
     await context.grantPermissions(['clipboard-read', 'clipboard-write']);
     await page.goto('/docs/quickstart');
-    const copyButton = page.getByRole('button', {
+    const codeBlock = page
+      .locator('.theme-code-block')
+      .filter({ hasText: copiedSnippet });
+    await expect(codeBlock).toHaveCount(1);
+    const copyButton = codeBlock.getByRole('button', {
       name: '复制代码',
       exact: true,
     });
+    const copyStatus = codeBlock.getByRole('status');
     const copyBounds = await copyButton.boundingBox();
     expect(copyBounds!.width).toBeGreaterThanOrEqual(44);
     expect(copyBounds!.height).toBeGreaterThanOrEqual(44);
     await copyButton.click();
-    await expect(page.getByRole('status')).toHaveText('代码已复制');
+    await expect(copyStatus).toHaveText('代码已复制');
     expect(await page.evaluate(() => navigator.clipboard.readText())).toContain(
       copiedSnippet,
     );
-    await expect(page.getByRole('status')).toBeEmpty({ timeout: 4000 });
+    await expect(copyStatus).toBeEmpty({ timeout: 4000 });
     await page.evaluate(() =>
       Object.defineProperty(navigator, 'clipboard', {
         configurable: true,
         value: { writeText: () => Promise.reject(new Error('Denied')) },
       }),
     );
-    await page.getByRole('button', { name: '复制代码', exact: true }).click();
-    await expect(page.getByRole('status')).toHaveText(
-      '复制失败，请手动选择代码',
-    );
+    await copyButton.click();
+    await expect(copyStatus).toHaveText('复制失败，请手动选择代码');
   });
   test('mobile navigation and reading stay within viewport', async ({
     page,
