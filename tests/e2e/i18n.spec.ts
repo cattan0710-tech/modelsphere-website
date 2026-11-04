@@ -1,6 +1,22 @@
 import { test, expect, type Page } from '@playwright/test';
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
+import { parseDocument } from 'yaml';
 import baseline from '../../content/catalog/baseline.json';
+import {
+  readBlogExpectations,
+  expectedBlogList,
+} from '../helpers/blog-expectations';
+
+const blog = readBlogExpectations();
+function englishBlogTitle(post: { id: string; title: string }) {
+  const file = `i18n/en/blog/${post.id}.md`;
+  if (!existsSync(file)) return post.title;
+  const frontmatter = /^---\r?\n([\s\S]*?)\r?\n---/.exec(
+    readFileSync(file, 'utf8'),
+  );
+  if (!frontmatter) throw new Error(`Missing translation frontmatter: ${file}`);
+  return (parseDocument(frontmatter[1]).toJS() as { title: string }).title;
+}
 
 const docsContent = process.env.TEST_DOCS_MODE === 'content';
 const enHomeTitle = docsContent ? 'User Guide' : 'Understanding ModelSphere';
@@ -151,17 +167,39 @@ test('English docs, blog and search use translated content and localized links',
     page.getByRole('heading', { name: enQuickstartTitle, exact: true }),
   ).toBeVisible();
   await page.goto(site('en/blog'));
-  await expect(
-    page.getByRole('heading', {
-      name: 'From request to token — understanding inference infrastructure',
-      exact: true,
-    }),
-  ).toBeVisible();
+  const featured = blog.posts.find((post) => post.id === blog.featuredId);
+  const visible = [
+    ...(featured ? [featured] : []),
+    ...expectedBlogList(blog).posts,
+  ];
+  await expect(page.locator('[data-post-id]')).toHaveCount(visible.length);
+  for (const post of visible) {
+    await expect(
+      page.locator(`[data-post-id="${post.id}"]`).getByRole('heading'),
+    ).toHaveText(englishBlogTitle(post));
+  }
+  if (blog.source === 'mock') {
+    await expect(
+      page.getByRole('heading', {
+        name: 'From request to token — understanding inference infrastructure',
+        exact: true,
+      }),
+    ).toBeVisible();
+  } else if (!blog.posts.length) {
+    await expect(
+      page.getByRole('heading', {
+        name: 'No published articles yet',
+        exact: true,
+      }),
+    ).toBeVisible();
+  }
   await page
     .getByRole('button', { name: 'Search docs and blog', exact: true })
     .click();
   const dialog = page.getByRole('dialog');
-  await dialog.getByRole('searchbox').fill('benchmark');
+  await dialog
+    .getByRole('searchbox')
+    .fill(blog.source === 'mock' ? 'benchmark' : enQuickstartTitle);
   await expect(dialog.getByRole('link').first()).toBeVisible();
   const results = await dialog
     .getByRole('link')
