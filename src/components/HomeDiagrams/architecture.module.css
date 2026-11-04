@@ -4,18 +4,6 @@
   color: var(--color-text-primary);
 }
 
-.caption {
-  margin-bottom: 24px;
-  text-align: center;
-}
-.architecture .caption h2 {
-  margin: 0 0 10px;
-  font-size: clamp(20px, 2.3vw, 30px);
-  font-weight: 750;
-  line-height: 1.4;
-  letter-spacing: -0.025em;
-}
-.caption p,
 .platformHeader p {
   margin: 0;
   color: var(--color-text-muted);
@@ -238,10 +226,6 @@
 }
 
 @media (max-width: 639px) {
-  .architecture .caption h2 {
-    font-size: 20px;
-  }
-  .caption p,
   .platformHeader p {
     font-size: 12px;
   }

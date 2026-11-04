@@ -2634,14 +2634,6 @@
     "message": "Integrated inference engines",
     "description": "集成推理引擎"
   },
-  "home.architecture.title": {
-    "message": "ModelSphere: connecting applications and AI accelerators",
-    "description": "ModelSphere：连接应用与异构算力的推理平台"
-  },
-  "home.architecture.subtitle": {
-    "message": "Connect applications to heterogeneous compute with unified inference orchestration and optimization",
-    "description": "上接应用生态，下接多元算力，统一推理调度与性能优化"
-  },
   "home.architecture.applications": {
     "message": "Applications",
     "description": "应用生态"
@@ -2651,8 +2643,8 @@
     "description": "标准 API 接入"
   },
   "home.architecture.core": {
-    "message": "Inference orchestration & optimization",
-    "description": "推理调度与性能优化核心"
+    "message": "Open source platform for production deployment and inference optimization",
+    "description": "生产级算力部署与推理优化开源平台"
   },
   "home.architecture.engineManagement": {
     "message": "Unified deployment & service management",
