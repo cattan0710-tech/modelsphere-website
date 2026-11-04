@@ -209,6 +209,9 @@
 }
 .theme-code-block code {
   font-family: var(--font-code);
+  font-feature-settings:
+    'liga' 0,
+    'calt' 0;
 }
 .theme-code-block [class*='codeBlockTitle'] {
   background: var(--color-background-subtle);

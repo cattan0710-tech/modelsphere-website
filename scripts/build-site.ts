@@ -11,9 +11,7 @@ import { artifactHash, checkArtifacts } from './check-artifacts';
 const action = process.argv[2];
 if (!['dev', 'preview', 'release'].includes(action))
   throw new Error('使用 dev / preview / release');
-const examplesSetting =
-  process.env.SITE_PUBLISH_EXAMPLES ??
-  (action === 'release' ? 'true' : 'false');
+const examplesSetting = process.env.SITE_PUBLISH_EXAMPLES ?? 'false';
 const env = {
   ...process.env,
   // CSS asset URLs depend on the deployment prefix, which is not part of

@@ -1,11 +1,13 @@
 import { test, expect } from '@playwright/test';
 import { readFileSync } from 'node:fs';
 import baseline from '../../content/catalog/baseline.json';
+import { readBlogExpectations } from '../helpers/blog-expectations';
 const report = readFileSync('tests/fixtures/catalog/mimo-report.html', 'utf8');
 
 const prefix = process.env.SITE_BASE_URL ?? '/';
 const origin = process.env.SITE_ORIGIN ?? 'https://modelsphere.tech';
 const mock = process.env.TEST_DOCS_MODE !== 'none';
+const blog = readBlogExpectations();
 const model = baseline.models.find((m) => m.name === 'mimo-v2.5')!;
 const recipe = model.variants.find(
   (v) => v.id === 'sglang-tp8-h100-optimized',
@@ -193,8 +195,12 @@ test('direct documents, blog routes, 404 responses and version metadata work und
   );
   expect(version.commit).toMatch(/^[a-f0-9]{40}$/);
   expect(Array.isArray(version.blogRoutes)).toBe(true);
-  if (mock) expect(version.blogRoutes).toContain('/blog/example-blog-platform');
-  else expect(version.blogRoutes).toEqual([]);
+  expect([...version.blogRoutes].sort()).toEqual(
+    blog.posts
+      .filter((post) => post.kind === 'internal')
+      .map((post) => post.href)
+      .sort(),
+  );
   for (const route of version.blogRoutes as string[]) {
     const response = await request.get(new URL(route.slice(1), baseURL).href);
     expect(response.status()).toBe(200);
@@ -210,7 +216,7 @@ test('direct documents, blog routes, 404 responses and version metadata work und
   }
 });
 
-if (mock) {
+if (blog.source === 'mock') {
   test('preview blog covers, filters, canonical links and search navigate within the deployment path', async ({
     page,
   }) => {

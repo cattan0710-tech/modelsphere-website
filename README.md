@@ -85,7 +85,7 @@ Catalog 需覆盖现有 [Model Catalog](https://modelsphere.github.io/model-cata
 
 ## 本地运行博客
 
-运行 `pnpm dev:blog` 后打开 `http://localhost:3000/blog`，查看正式目录中的文章；当前保留 7 篇站内阅读示例和 1 条站外示例。搜索、分类、标签、文章目录、代码复制与浅深主题均可操作。正式构建默认保留示例，设置 `SITE_PUBLISH_EXAMPLES=false` 可排除；未配置的微信与知乎卡片隐藏。固定回归样本另用 `pnpm dev:blog-mock` 预览。
+运行 `pnpm dev:blog` 后打开 `http://localhost:3000/blog`，查看正式目录中的文章。搜索、分类、标签、文章目录、代码复制与浅深主题均可操作。正式构建默认排除 `example: true` 的旧示例，仅发布真实文章；未配置的微信与知乎卡片隐藏。原有 7 篇站内阅读示例和 1 条站外示例作为固定回归样本保留，用 `pnpm dev:blog-mock` 预览。
 
 真实文章放入 `content/blog/<id>/index.md`，分类、标签与推荐项在 `content/pages/blog.json` 配置；使用 `pnpm dev:blog` 预览真实内容。格式、发布边界、响应式图片及验证命令见[博客功能与内容维护](docs/development/blog-implementation.md)。
 

@@ -1,4 +1,6 @@
 import { test, expect } from '@playwright/test';
+import { readBlogExpectations } from '../helpers/blog-expectations';
+const blog = readBlogExpectations();
 const release = process.env.TEST_DOCS_MODE === 'none';
 const docsContent = process.env.TEST_DOCS_MODE === 'content';
 const docsHomeTitle = release
@@ -198,7 +200,7 @@ test.describe('published preview content search', () => {
   test('searches blog body and tags, excludes external articles, and respects IME composition', async ({
     page,
   }) => {
-    test.skip(release, 'Mock content is excluded from release');
+    test.skip(blog.source !== 'mock', 'Fixed blog samples only');
     await page.goto('/docs');
     await page
       .getByRole('button', { name: '搜索文档和博客', exact: true })
@@ -231,6 +233,56 @@ test.describe('published preview content search', () => {
     await expect(input).toHaveValue('');
     await expect(input).toBeFocused();
   });
+});
+
+test('published blog search indexes exactly the published internal articles', async ({
+  page,
+}) => {
+  test.skip(
+    blog.source !== 'content',
+    'Published content has its own search acceptance',
+  );
+  const internal = blog.posts.filter((post) => post.kind === 'internal');
+  await page.goto('/blog');
+  const loading = page.waitForResponse((response) =>
+    /\/search-index\.[a-f0-9]+\.json$/.test(response.url()),
+  );
+  await page
+    .getByRole('button', { name: '搜索文档和博客', exact: true })
+    .click();
+  const index = (await (await loading).json()) as {
+    entries: { kind: string; pageHref: string }[];
+  };
+  const indexed = [
+    ...new Set(
+      index.entries
+        .filter((entry) => entry.kind === 'blog')
+        .map((entry) => entry.pageHref),
+    ),
+  ].sort();
+  expect(indexed).toEqual(internal.map((post) => post.href).sort());
+  const dialog = page.getByRole('dialog');
+  const input = dialog.getByRole('searchbox');
+  await dialog.getByRole('button', { name: '博客', exact: true }).click();
+  if (!internal.length) {
+    await input.fill('no-published-blog');
+    await expect(dialog.locator('[data-search-result]')).toHaveCount(0);
+    return;
+  }
+  await input.dispatchEvent('compositionstart');
+  await input.fill(Array.from(internal[0].title).slice(0, 50).join(''));
+  await input.press('Enter');
+  await expect(page).toHaveURL(/\/blog$/);
+  await expect(dialog.locator('[data-search-result]')).toHaveCount(0);
+  await input.dispatchEvent('compositionend');
+  const result = dialog.locator('[data-search-result]').first();
+  await expect(result).toBeVisible();
+  const href = await result.getAttribute('href');
+  const post = internal.find((post) => post.href === href?.split('#')[0]);
+  expect(post).toBeDefined();
+  await result.click();
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText(post!.title);
+  await expect(dialog).toHaveCount(0);
 });
 
 test.describe('published docs search', () => {
