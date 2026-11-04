@@ -11,7 +11,7 @@ test('community preserves source layout and local navigation under the Pages pre
   await page.evaluate(() => document.fonts.ready);
   await expect(
     page.locator('#community-channels [data-home-pair] > [data-home-pending]'),
-  ).toHaveCount(3);
+  ).toHaveCount(4);
   await expect(
     page.getByRole('img', { name: '微信技术交流群入群二维码' }),
   ).toHaveAttribute('src', `${prefix}community/wechat-group-qr.png`);
@@ -33,6 +33,11 @@ test('community preserves source layout and local navigation under the Pages pre
     'href',
     `${prefix}community/wechat-official-account-qr.png`,
   );
+  await expect(
+    page
+      .getByRole('link', { name: '前往知乎专栏（新窗口打开）', exact: true })
+      .getByRole('img'),
+  ).toHaveAttribute('src', `${prefix}community/zhihu.png`);
   for (const [name, file] of [
     ['范式智能 PHANCY Logo', 'phancy-logo.png'],
     ['睿思智联 RiseUnion Logo', 'riseunion-logo.svg'],

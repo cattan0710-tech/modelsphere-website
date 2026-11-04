@@ -157,7 +157,31 @@ test('community preserves approved copy and the four-section order without the c
     '官方微信公众号',
     '微信技术交流群',
     'GitHub 开源社区',
+    '知乎专栏',
   ]);
+  const zhihu = channels.getByRole('link', {
+    name: '前往知乎专栏（新窗口打开）',
+    exact: true,
+  });
+  await expect(zhihu).toHaveAttribute(
+    'href',
+    'https://www.zhihu.com/column/c_2101327451146150340',
+  );
+  await expect(zhihu).toHaveAttribute('target', '_blank');
+  await expect(zhihu.getByRole('img')).toHaveAttribute(
+    'src',
+    '/community/zhihu.png',
+  );
+  await expect
+    .poll(() =>
+      zhihu
+        .getByRole('img')
+        .evaluate((image) => (image as HTMLImageElement).naturalWidth),
+    )
+    .toBe(240);
+  await expect(channels).toContainText(
+    '探索社区硬核技术分享内容，了解社区技术发展近况。',
+  );
   const officialQr = channels.getByRole('img', {
     name: '模域 ModelSphere 微信公众号二维码',
     exact: true,
@@ -333,7 +357,7 @@ test('community stays readable on mobile, tablet and desktop in both themes', as
             (grid) =>
               getComputedStyle(grid).gridTemplateColumns.split(' ').length,
           ),
-      ).toBe(width >= 768 ? 3 : 1);
+      ).toBe(width >= 1280 ? 4 : width >= 768 ? 2 : 1);
       if (width === 320) {
         await page
           .getByRole('link', { name: '申请加入生态共建', exact: true })

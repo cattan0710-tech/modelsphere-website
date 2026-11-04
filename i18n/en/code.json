@@ -1,4 +1,24 @@
 {
+  "community.zhihuOpen": {
+    "message": "Visit the Zhihu column (opens in a new window)",
+    "description": "前往知乎专栏（新窗口打开）"
+  },
+  "community.zhihuBadge": {
+    "message": "Technical insights",
+    "description": "技术分享"
+  },
+  "community.zhihuTitle": {
+    "message": "Zhihu column",
+    "description": "知乎专栏"
+  },
+  "community.zhihuDescription": {
+    "message": "Explore in-depth technical articles from the community and keep up with its latest technical developments.",
+    "description": "探索社区硬核技术分享内容，了解社区技术发展近况。"
+  },
+  "community.zhihuVisit": {
+    "message": "Visit the Zhihu column",
+    "description": "前往知乎专栏"
+  },
   "community.officialAccountBadge": {
     "message": "Official updates",
     "description": "权威发布"

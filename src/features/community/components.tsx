@@ -192,6 +192,7 @@ export function CommunityHeader() {
   );
 }
 export function CommunityContent() {
+  const zhihuIcon = useBaseUrl('/community/zhihu.png');
   const groupQr = useBaseUrl('/community/wechat-group-qr.png');
   const officialAccountQr = useBaseUrl(
     '/community/wechat-official-account-qr.png',
@@ -929,6 +930,62 @@ export function CommunityContent() {
                         id: 'site.5581608eea5e',
                         message: '前往 GitHub 组织',
                       })}
+                    </span>
+                  </a>
+                </div>
+              </div>
+              <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between hover:border-sky-300 hover:shadow-md transition-all group">
+                <div className="flex flex-col gap-4">
+                  <div className="flex items-center justify-between pb-2 border-b border-slate-100">
+                    <a
+                      className="community-zhihu-icon"
+                      href="https://www.zhihu.com/column/c_2101327451146150340"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label={translate({
+                        id: 'community.zhihuOpen',
+                        message: '前往知乎专栏（新窗口打开）',
+                      })}
+                    >
+                      <img src={zhihuIcon} alt="知乎" width={40} height={40} />
+                    </a>
+                    <span className="px-2.5 py-0.5 rounded-full bg-sky-50 border border-sky-100 text-sky-700 font-label-caps text-xs font-semibold">
+                      {translate({
+                        id: 'community.zhihuBadge',
+                        message: '技术分享',
+                      })}
+                    </span>
+                  </div>
+                  <h3 className="font-headline-sm text-lg font-bold text-slate-900 mb-0.5">
+                    {translate({
+                      id: 'community.zhihuTitle',
+                      message: '知乎专栏',
+                    })}
+                  </h3>
+                  <p className="font-body-sm text-sm text-slate-600 leading-relaxed">
+                    {translate({
+                      id: 'community.zhihuDescription',
+                      message:
+                        '探索社区硬核技术分享内容，了解社区技术发展近况。',
+                    })}
+                  </p>
+                </div>
+                <div className="pt-5 border-t border-slate-100 mt-4">
+                  <a
+                    className="w-full inline-flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl bg-sky-600 text-white hover:bg-sky-700 transition-all font-body-sm text-xs font-semibold shadow-sm"
+                    href="https://www.zhihu.com/column/c_2101327451146150340"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {translate({
+                      id: 'community.zhihuVisit',
+                      message: '前往知乎专栏',
+                    })}
+                    <span
+                      className="material-symbols-outlined text-[15px]"
+                      aria-hidden="true"
+                    >
+                      {'arrow_forward'}
                     </span>
                   </a>
                 </div>

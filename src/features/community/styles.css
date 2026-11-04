@@ -2368,8 +2368,28 @@ html[data-theme='dark'] [data-community-design] [class*='bg-gradient-to-r'] {
   display: block;
   object-fit: contain;
 }
+#community-channels > .max-w-6xl {
+  max-width: 90rem;
+}
+[data-community-design] .community-zhihu-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+}
+[data-community-design] .community-zhihu-icon img {
+  display: block;
+  object-fit: contain;
+}
 @media (min-width: 768px) {
   [data-community-design] .community-channels-grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (min-width: 1280px) {
+  [data-community-design] .community-channels-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 }

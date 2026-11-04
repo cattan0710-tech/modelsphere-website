@@ -177,6 +177,18 @@ test('language switch is accessible on mobile and English pages render without s
   await page.setViewportSize({ width: 320, height: 844 });
   await page.goto(site('en/community'));
   await expect(
+    page.getByRole('heading', { name: 'Zhihu column', exact: true }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole('link', {
+      name: 'Visit the Zhihu column (opens in a new window)',
+      exact: true,
+    }),
+  ).toHaveAttribute(
+    'href',
+    'https://www.zhihu.com/column/c_2101327451146150340',
+  );
+  await expect(
     page.getByRole('heading', { name: 'Official WeChat account', exact: true }),
   ).toBeVisible();
   await expect(

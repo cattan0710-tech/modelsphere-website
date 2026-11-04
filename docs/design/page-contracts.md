@@ -220,7 +220,7 @@ Catalog 模型详情的身份参数为 `modelId`，配方页为 `modelId` 和 `r
 | 1 `community-hero` | 面包屑、生态标签、主标题与说明 | 原稿 44px 桌面标题、浅紫底色和天蓝强调；不补回已删除的三张生态卡片 |
 | 2 `community-maintainers` | 五位维护者、单位、GitHub 账号；桌面三列 | 姓名使用 GitHub 公开 Name，有值显示姓名、无值或仅空白时显示账号 ID；在 `src/features/community/components.tsx` 的 `maintainerNames` 中维护；原稿的“第四范式 (Paradigm)”统一显示为“范式智能（Phancy）”，链接与显示账号对应；不添加头像或维护者 |
 | 3 `community-partners` | 两家发起单位与共建横幅 | 卡片只保留联合发起单位标记、Logo 与名称，移除英文副标题与合作介绍；“申请加入生态共建”弹出已有微信群二维码，支持关闭按钮、Esc、点击遮罩关闭，禁用脚本时直接打开二维码原图；不使用未核实邮箱 |
-| 4 `community-channels` | 公众号、微信群、GitHub 三列卡片 | 公众号和微信群使用用户提供的原始二维码，可打开原图；手机纵排 |
+| 4 `community-channels` | 公众号、微信群、GitHub、知乎四张卡片 | 公众号和微信群使用用户提供的原始二维码，可打开原图；知乎图标跳转专栏；桌面四列一行（渠道区最大宽度 1440px）、平板两列、手机纵排 |
 
 该路由复用全站 Header；首页、模型目录、文档指南、博客洞见和社区生态统一复用社区版 Footer。字体、图标均为本地资源；社区样式限于 `data-community-design`，保留移动导航、主题继承和减少动效支持。不展示没有真实数据来源的 Star / Fork 数量、播放量、集群状态或 Footer 遥测指标；原始设计稿中的示例数字与状态不作为可发布内容。“线上技术分享与社区例会日历”整个区块及 Footer 的“线上技术日历”入口已按用户要求移除，预览与正式页面均不展示该区块或空状态。活动数据格式与校验工具保留，维护说明见 [社区活动维护](../development/community-maintenance.md)。
 
