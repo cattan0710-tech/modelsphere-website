@@ -75,6 +75,13 @@ test.describe('published blog content acceptance', () => {
           `${baseURL}/blog?q=unsubmitted-filter`,
         );
         expect(response?.status()).toBe(200);
+        // Failed bundles release the query mask after a five-second grace period.
+        // Await that transition before checking accessible titles and links.
+        await expect(page.locator('html')).not.toHaveAttribute(
+          'data-blog-query-pending',
+          '',
+          { timeout: 7_500 },
+        );
         await expectIds(page, staticIds, '[data-post-id]');
         await expect(page.getByRole('searchbox')).toHaveCount(0);
         for (const post of blog.posts) {
