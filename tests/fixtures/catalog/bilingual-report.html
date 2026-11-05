@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <title>双语性能报告</title>
+  </head>
+  <body>
+    <script id="autotune-report-data" type="application/json">
+      {
+        "initial": "zh",
+        "reports": [
+          {
+            "lang": "en",
+            "markdown": "English performance report",
+            "comparison": { "gain": 119.9 },
+            "assets": { "test": "data:image/png;base64,AAAA" }
+          },
+          {
+            "lang": "zh",
+            "markdown": "中文性能报告",
+            "comparison": { "gain": 119.9 }
+          }
+        ]
+      }
+    </script>
+    <nav aria-label="Report language"></nav>
+    <h1>中文性能报告</h1>
+    <p id="gain"></p>
+    <button id="results" type="button">Show raw results</button>
+    <pre hidden>Original benchmark results</pre>
+    <script>
+      const data = JSON.parse(
+        document.getElementById('autotune-report-data').textContent,
+      );
+      const reports = data.reports;
+      function show(language) {
+        const report =
+          reports.find((item) => item.lang === language) ?? reports[0];
+        document.documentElement.lang =
+          report.lang === 'zh' ? 'zh-CN' : report.lang;
+        document.querySelector('h1').textContent = report.markdown;
+        document.querySelector('#gain').textContent =
+          `${report.comparison.gain}%`;
+      }
+      for (const report of reports) {
+        const button = document.createElement('button');
+        button.textContent = report.lang === 'en' ? 'English' : '中文';
+        button.onclick = () => show(report.lang);
+        document.querySelector('nav').append(button);
+      }
+      const hash = location.hash.replace('#', '');
+      show(
+        reports.some((report) => report.lang === hash) ? hash : data.initial,
+      );
+      document.querySelector('#results').onclick = () => {
+        document.querySelector('pre').hidden = false;
+      };
+      try {
+        parent.document.body.dataset.reportEscaped = 'true';
+      } catch {
+        document.body.dataset.parentAccess = 'blocked';
+      }
+    </script>
+  </body>
+</html>

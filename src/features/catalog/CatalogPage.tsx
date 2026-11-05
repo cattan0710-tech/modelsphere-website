@@ -17,6 +17,7 @@ import {
   reportUrl,
 } from './data';
 import {
+  activeCatalog,
   facets,
   initialQuery,
   parseQuery,
@@ -42,7 +43,7 @@ export default function CatalogPage() {
     ? (new URLSearchParams(location.search).get('dataVersion') ?? '')
     : '';
   const state = useCatalog(version),
-    c = state.catalog;
+    c = useMemo(() => activeCatalog(state.catalog), [state.catalog]);
   const q = useMemo(
     () => (browser ? parseQuery(location.search, c) : initialQuery),
     [browser, location.search, c],
@@ -129,7 +130,7 @@ export default function CatalogPage() {
   const items = browser ? recipeResult.items : recipeResult.all;
   const modelItems = browser ? modelResult.items : modelResult.all;
   const select = (
-    key: 'family' | 'engine' | 'tag',
+    key: 'family' | 'engine',
     label: string,
     values: string[],
   ) => (
@@ -151,14 +152,14 @@ export default function CatalogPage() {
       title={translate({ id: 'site.34b3cac2a496', message: '模型目录' })}
       description={translate({
         id: 'site.d4db040011ae',
-        message:
-          '浏览 ModelSphere 模型部署配方、硬件要求、版本历史与源性能报告。',
+        message: '浏览 ModelSphere 模型部署配方、硬件要求与源性能报告。',
       })}
     >
       <main
         id="main-content"
         className={`${styles.page} ${styles.catalog}`}
         data-catalog-enhanced={browser}
+        data-catalog-status={state.status}
       >
         <div className={styles.container}>
           <div className={styles.topbar}>
@@ -273,33 +274,6 @@ export default function CatalogPage() {
                 </div>
                 <div className={styles.controls}>
                   <div className={styles.filters}>
-                    <span className={styles.select}>
-                      <CatalogSelect
-                        label={translate({
-                          id: 'site.372a79bbe944',
-                          message: '内容视图',
-                        })}
-                        active={q.view !== initialQuery.view}
-                        value={q.view}
-                        onValueChange={(value) => update({ view: value })}
-                        options={[
-                          {
-                            value: 'models',
-                            label: translate({
-                              id: 'site.bb15403ee7c7',
-                              message: '模型视角',
-                            }),
-                          },
-                          {
-                            value: 'recipes',
-                            label: translate({
-                              id: 'site.c4d6c65764e8',
-                              message: '配方视角',
-                            }),
-                          },
-                        ]}
-                      />
-                    </span>
                     {select(
                       'family',
                       translate({
@@ -315,14 +289,6 @@ export default function CatalogPage() {
                         message: '全部推理引擎',
                       }),
                       f.engine,
-                    )}
-                    {select(
-                      'tag',
-                      translate({
-                        id: 'site.28f5ffb5f56f',
-                        message: '全部技术标签',
-                      }),
-                      f.tag,
                     )}
                   </div>
                   <div className={styles.tools}>
@@ -527,7 +493,7 @@ export default function CatalogPage() {
                   <summary>
                     {translate({
                       id: 'site.6724ef3be3e4',
-                      message: '视图与更多筛选',
+                      message: '更多筛选',
                     })}
                   </summary>
                   <div>
@@ -631,17 +597,6 @@ export default function CatalogPage() {
                           },
                         ]}
                       />
-                    </label>
-                    <label>
-                      <input
-                        type="checkbox"
-                        checked={q.hidedep}
-                        onChange={(e) => update({ hidedep: e.target.checked })}
-                      />{' '}
-                      {translate({
-                        id: 'site.4b3bdd5f1c7e',
-                        message: '隐藏已弃用记录',
-                      })}
                     </label>
                   </div>
                 </details>

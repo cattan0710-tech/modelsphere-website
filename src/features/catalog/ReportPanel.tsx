@@ -1,7 +1,12 @@
 import { translate } from '@docusaurus/Translate';
+import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import React, { useEffect, useRef, useState } from 'react';
 import { reportUrl, type Recipe } from './data';
-import { loadReportDocument } from './report';
+import {
+  loadReportDocument,
+  localizeReportDocument,
+  type ReportDocument,
+} from './report';
 import styles from './styles.module.css';
 export default function ReportPanel({
   r,
@@ -12,7 +17,10 @@ export default function ReportPanel({
   commit: string;
   active?: boolean;
 }) {
-  const [data, setData] = useState<string | null>(null),
+  const {
+    i18n: { currentLocale },
+  } = useDocusaurusContext();
+  const [data, setData] = useState<ReportDocument | null>(null),
     [error, setError] = useState(''),
     [retry, setRetry] = useState(0),
     [fullscreen, setFullscreen] = useState(false),
@@ -70,7 +78,8 @@ export default function ReportPanel({
     setError('');
     loadReportDocument(r, commit, c.signal)
       .then((x) => {
-        if (!c.signal.aborted) setData(x);
+        if (!c.signal.aborted)
+          setData(localizeReportDocument(x, currentLocale));
       })
       .catch(() => {
         if (!c.signal.aborted)
@@ -82,7 +91,7 @@ export default function ReportPanel({
           );
       });
     return () => c.abort();
-  }, [r.key, commit, retry]);
+  }, [r.key, commit, retry, currentLocale]);
   return (
     <section
       id="benchmark"
@@ -132,7 +141,13 @@ export default function ReportPanel({
           </button>
           <a
             className={styles.primary}
-            href={reportUrl(r)!}
+            href={
+              reportUrl(
+                r,
+                undefined,
+                data?.language ?? (currentLocale === 'en' ? 'en' : 'zh'),
+              )!
+            }
             target="_blank"
             rel="noreferrer"
           >
@@ -141,6 +156,14 @@ export default function ReportPanel({
         </div>
       </div>
       {fullscreenError && <p role="status">{fullscreenError}</p>}
+      {data && !data.matchesLocale && (
+        <p className={styles.notice} role="status">
+          {translate({
+            id: 'catalog.reportLanguageFallback',
+            message: '该报告暂无当前语言版本，已显示原始报告。',
+          })}
+        </p>
+      )}
       {error ? (
         <p role="status">
           {error}{' '}
@@ -161,7 +184,7 @@ export default function ReportPanel({
             id: 'site.0bb54211e373',
             message: '原始性能对照报告',
           })}
-          srcDoc={data}
+          srcDoc={data.html}
           sandbox="allow-scripts"
           referrerPolicy="no-referrer"
         />

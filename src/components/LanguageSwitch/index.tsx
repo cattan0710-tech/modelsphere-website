@@ -3,7 +3,7 @@ import * as Select from '@radix-ui/react-select';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import useIsBrowser from '@docusaurus/useIsBrowser';
 import { useLocation } from '@docusaurus/router';
-import { languageHref } from '@site/src/lib/locale';
+import { languageHref, rememberLocale } from '@site/src/lib/locale';
 import styles from './styles.module.css';
 
 const languages = [
@@ -29,6 +29,7 @@ export default function LanguageSwitch() {
       <Select.Root
         value={i18n.currentLocale}
         onValueChange={(locale) => {
+          rememberLocale(locale);
           if (locale !== i18n.currentLocale) window.location.assign(href);
         }}
       >

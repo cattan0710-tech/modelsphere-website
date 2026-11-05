@@ -4,721 +4,239 @@ import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import React from 'react';
 import './styles.css';
 
-// Markup and labels transcribed from the selected Stitch screen; keep data-home hooks intact.
-export function FaultTolerance() {
-  return (
-    <section
-      className="w-full py-12 px-margin bg-slate-50/70 border-b border-slate-200/70"
-      id="fault-tolerance"
-      data-home-design=""
-      aria-label={translate({
-        id: 'site.0df458657238',
-        message: '大模型推理断流续写',
-      })}
-      aria-description={translate({
-        id: 'site.a52a481c1137',
-        message:
-          '按设计稿展示的机制、配置与性能示例，不代表运行时状态、实测证明或服务保证。',
-      })}
-    >
-      <div className="max-w-7xl mx-auto flex flex-col gap-8">
-        <div className="flex items-center gap-2" data-home-intro="">
-          <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-          <span className="font-code-sm text-code-sm text-emerald-600 font-bold uppercase tracking-widest">
-            {'CORE MECHANISM 01 · FAULT TOLERANCE'}
-          </span>
-        </div>
-        <div
-          className="grid grid-cols-1 xl:grid-cols-12 gap-8 xl:gap-12 items-start"
-          data-home-pair=""
-          data-home-reveal="panel"
-        >
-          <div className="xl:col-span-5 flex flex-col gap-6">
-            <div data-home-intro="">
-              <h2
-                className="font-headline-lg text-3xl xl:text-4xl font-extrabold text-slate-900 tracking-tight leading-tight"
-                id="continuation-title"
-              >
-                <a
-                  href="https://github.com/modelsphere/modelsphere/blob/d5c892d2c1747b9411b423dae5c776d0c84a8003/docs/deploy-a-model.md#continuation-gateway-optional"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  {translate({
-                    id: 'site.47c4307c4726',
-                    message: '大模型推理断流续写：',
-                  })}
-                </a>
-              </h2>
-              <p className="font-headline-lg text-3xl xl:text-4xl font-extrabold text-emerald-600 tracking-tight leading-tight mt-1">
-                {translate({
-                  id: 'site.51226c2de14d',
-                  message: '\n100% 隔离服务崩溃断流\n',
-                })}
-              </p>
-              <div>
-                <br />
-              </div>
-              <p></p>
-            </div>
-            <div className="flex flex-col gap-4 text-slate-700">
-              <div className="flex items-start gap-3.5">
-                <div className="w-6 h-6 rounded-md bg-emerald-50 border border-emerald-200 flex items-center justify-center flex-shrink-0 mt-0.5 text-emerald-600 shadow-sm">
-                  <span
-                    className="material-symbols-outlined text-[17px]"
-                    aria-hidden="true"
-                  >
-                    {'radar'}
-                  </span>
-                </div>
-                <div className="font-body-md text-sm leading-relaxed">
-                  <strong className="text-slate-900 font-semibold">
-                    {translate({
-                      id: 'site.5cf8fbac4dd2',
-                      message: 'Hang-Watcher 旁路秒级探活：',
-                    })}
-                  </strong>
-                  {translate({
-                    id: 'site.0e6ae6afa50a',
-                    message:
-                      '\n独立旁路探针实时监听引擎的 Token Emit 时间戳，若单 Token 生成等待时长超过动态阈值（如 150ms 超出 P99.9），立即将节点判定为 Hang 状态并下发熔断。\n',
-                  })}
-                </div>
-              </div>
-              <div className="flex items-start gap-3.5">
-                <div className="w-6 h-6 rounded-md bg-emerald-50 border border-emerald-200 flex items-center justify-center flex-shrink-0 mt-0.5 text-emerald-600 shadow-sm">
-                  <span
-                    className="material-symbols-outlined text-[17px]"
-                    aria-hidden="true"
-                  >
-                    {'replay'}
-                  </span>
-                </div>
-                <div className="font-body-md text-sm leading-relaxed">
-                  <strong className="text-slate-900 font-semibold">
-                    {translate({
-                      id: 'site.9c5774927a7b',
-                      message: 'Token 上下文状态重放：',
-                    })}
-                  </strong>
-                  {translate({
-                    id: 'site.4fcc2464b707',
-                    message:
-                      '\n网关层实时缓存当前流式对话已吐出的 Token 1~N，并在检测到节点异常时，自动向健康节点发起包含历史 Token 的接续 Prefill 请求。\n',
-                  })}
-                </div>
-              </div>
-              <div className="flex items-start gap-3.5">
-                <div className="w-6 h-6 rounded-md bg-emerald-50 border border-emerald-200 flex items-center justify-center flex-shrink-0 mt-0.5 text-emerald-600 shadow-sm">
-                  <span
-                    className="material-symbols-outlined text-[17px]"
-                    aria-hidden="true"
-                  >
-                    {'hub'}
-                  </span>
-                </div>
-                <div className="font-body-md text-sm leading-relaxed">
-                  <strong className="text-slate-900 font-semibold">
-                    {translate({
-                      id: 'site.a42264b66b5c',
-                      message: '客户端 SSE 无感知透明接力：',
-                    })}
-                  </strong>
-                  {translate({
-                    id: 'site.b644cf4ef045',
-                    message:
-                      '\n客户端浏览器或 API Client 的长连接永不中断，直接在 Token N+1 处无缝追加输出，前端对话 UI 毫无卡死与重试刷新感。\n',
-                  })}
-                  <div>
-                    <br />
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className="flex flex-wrap items-center gap-2.5 pt-2 font-code-sm text-xs">
-              <span className="px-2.5 py-1 rounded bg-emerald-50 text-emerald-700 font-semibold border border-emerald-200/90 shadow-sm">
-                {'\nResumption SLA: < 200ms\n'}
-              </span>
-              <span className="px-2.5 py-1 rounded bg-slate-100 text-slate-700 font-medium border border-slate-200 shadow-sm">
-                {'\nZero-Drop Guarantee\n'}
-              </span>
-            </div>
-          </div>
-          <div className="xl:col-span-7 bg-white rounded-2xl border border-slate-200/90 p-5 sm:p-6 shadow-[0_4px_24px_rgba(0,0,0,0.03)] flex flex-col gap-4">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-3 border-b border-slate-100 gap-2 font-code-sm text-xs">
-              <div className="flex items-center gap-2">
-                <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
-                <span className="text-slate-900 font-bold uppercase tracking-wider">
-                  {'TOKEN RESUMPTION SEQUENCE ENGINE'}
-                </span>
-              </div>
-              <span className="text-slate-500">
-                {'E2E TIME: 168ms FAILOVER'}
-              </span>
-            </div>
-            <div className="flex flex-col gap-3 font-body-sm text-xs leading-normal">
-              <div className="p-3.5 rounded-xl bg-slate-50/90 border border-slate-200 flex flex-col gap-2">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <span className="px-1.5 py-0.5 rounded bg-sky-100 text-sky-800 font-bold font-code-sm">
-                      {'01'}
-                    </span>
-                    <span className="font-bold text-slate-900 text-sm">
-                      {translate({
-                        id: 'site.00dd4ced7c84',
-                        message: '正常流式推理阶段',
-                      })}
-                    </span>
-                  </div>
-                  <span className="px-2 py-0.5 rounded text-[11px] font-bold font-code-sm bg-emerald-100 text-emerald-700 border border-emerald-200">
-                    {'STREAMING'}
-                  </span>
-                </div>
-                <p className="text-slate-600">
-                  {translate({
-                    id: 'site.f3eb7665088b',
-                    message: '\n客户端保持 SSE 长连接；网关将请求分流至 ',
-                  })}
-                  <strong className="text-sky-700">
-                    {translate({
-                      id: 'site.4b911f91b5ec',
-                      message: '模型服务 A',
-                    })}
-                  </strong>
-                  {translate({
-                    id: 'site.020f416393b4',
-                    message: '；服务依次生成并吐出 Token 1 → 2 → 3 → 4 → 5。\n',
-                  })}
-                </p>
-                <div className="px-3 py-1.5 rounded-lg bg-white border border-slate-200 font-code-sm text-[11px] text-slate-600 flex items-center gap-1.5 overflow-x-auto shadow-inner">
-                  <span className="text-slate-400 select-none">
-                    {'Client SSE:'}
-                  </span>
-                  <span className="text-emerald-600 font-semibold">
-                    {'[Tok 1]'}
-                  </span>
-                  <span className="text-emerald-600 font-semibold">
-                    {'[Tok 2]'}
-                  </span>
-                  <span className="text-emerald-600 font-semibold">
-                    {'[Tok 3]'}
-                  </span>
-                  <span className="text-emerald-600 font-semibold">
-                    {'[Tok 4]'}
-                  </span>
-                  <span className="text-emerald-600 font-semibold">
-                    {'[Tok 5] ...'}
-                  </span>
-                </div>
-              </div>
-              <div className="p-3.5 rounded-xl bg-red-50/70 border border-red-200 flex flex-col gap-2">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <span className="px-1.5 py-0.5 rounded bg-red-100 text-red-800 font-bold font-code-sm">
-                      {'02'}
-                    </span>
-                    <span className="font-bold text-red-900 text-sm">
-                      {translate({
-                        id: 'site.0a3f56544d29',
-                        message: '突发故障 & 旁路探针捕获',
-                      })}
-                    </span>
-                  </div>
-                  <span className="px-2 py-0.5 rounded text-[11px] font-bold font-code-sm bg-red-100 text-red-700 border border-red-300">
-                    {'HANG DETECTED (140ms)'}
-                  </span>
-                </div>
-                <p className="text-slate-700">
-                  <strong className="text-red-700">
-                    {translate({
-                      id: 'site.4b911f91b5ec',
-                      message: '模型服务 A',
-                    })}
-                  </strong>
-                  {translate({
-                    id: 'site.554610a92c94',
-                    message:
-                      ' 遭遇 GPU 显存死锁或 CUDA Illegal Memory Access，生成中断。Hang-Watcher 探针在 140ms 内检测到 Token Emit 超时，通知网关切断与 A 的通道。\n',
-                  })}
-                </p>
-              </div>
-              <div className="p-3.5 rounded-xl bg-sky-50/60 border border-sky-200 flex flex-col gap-2">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <span className="px-1.5 py-0.5 rounded bg-sky-100 text-sky-800 font-bold font-code-sm">
-                      {'03'}
-                    </span>
-                    <span className="font-bold text-slate-900 text-sm">
-                      {translate({
-                        id: 'site.995b760b23bd',
-                        message: '携带上下文无缝切换健康节点',
-                      })}
-                    </span>
-                  </div>
-                  <span className="px-2 py-0.5 rounded text-[11px] font-bold font-code-sm bg-sky-100 text-sky-700 border border-sky-300">
-                    {'RE-ROUTING'}
-                  </span>
-                </div>
-                <p className="text-slate-700">
-                  {translate({
-                    id: 'site.ef4c19e88cc2',
-                    message:
-                      '\n聚合调度网关截取已吐出的 Token 1~5，结合 L3 KV Cache 共享句柄，瞬间重定向发送至健康备用节点 ',
-                  })}
-                  <strong className="text-sky-700">
-                    {translate({
-                      id: 'site.fcd75b2b2a93',
-                      message: '模型服务 B',
-                    })}
-                  </strong>
-                  {'。\n'}
-                </p>
-              </div>
-              <div className="p-3.5 rounded-xl bg-emerald-50/70 border border-emerald-300 flex flex-col gap-2">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <span className="px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-800 font-bold font-code-sm">
-                      {'04'}
-                    </span>
-                    <span className="font-bold text-emerald-900 text-sm">
-                      {translate({
-                        id: 'site.1c174d4246c5',
-                        message: '断点接续与透明推流',
-                      })}
-                    </span>
-                  </div>
-                  <span className="px-2 py-0.5 rounded text-[11px] font-bold font-code-sm bg-emerald-100 text-emerald-700 border border-emerald-300">
-                    {'SEAMLESS RESUME'}
-                  </span>
-                </div>
-                <p className="text-slate-700">
-                  <strong className="text-emerald-700">
-                    {translate({
-                      id: 'site.fcd75b2b2a93',
-                      message: '模型服务 B',
-                    })}
-                  </strong>
-                  {translate({
-                    id: 'site.596ae806ae2a',
-                    message:
-                      ' 极速计算并接续生成 Token 6 → 7 → 8... 网关直接追加注入原 SSE 流，客户端用户界面毫无感知，零丢字体验。\n',
-                  })}
-                </p>
-                <div className="px-3 py-1.5 rounded-lg bg-white border border-emerald-200 font-code-sm text-[11px] text-slate-700 flex items-center gap-1.5 overflow-x-auto shadow-inner">
-                  <span className="text-slate-400 select-none">
-                    {'Client SSE Resumed:'}
-                  </span>
-                  <span className="text-slate-400">{'[1-5 Done]'}</span>
-                  <span className="text-emerald-700 font-bold">
-                    {'[Tok 6]'}
-                  </span>
-                  <span className="text-emerald-700 font-bold">
-                    {'[Tok 7]'}
-                  </span>
-                  <span className="text-emerald-700 font-bold">
-                    {'[Tok 8]'}
-                  </span>
-                  <span className="inline-block w-1.5 h-3.5 bg-emerald-600 animate-pulse"></span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-}
-export function QosScaling() {
-  return (
-    <section
-      className="w-full py-12 px-margin bg-white border-b border-slate-200/70"
-      id="qos-scaling"
-      data-home-design=""
-      aria-label={translate({
-        id: 'site.f039310ac86e',
-        message: '服务质量保障与弹性伸缩',
-      })}
-      aria-description={translate({
-        id: 'site.a52a481c1137',
-        message:
-          '按设计稿展示的机制、配置与性能示例，不代表运行时状态、实测证明或服务保证。',
-      })}
-    >
-      <div className="max-w-7xl mx-auto flex flex-col gap-8">
-        <div className="flex flex-col gap-2" data-home-intro="">
-          <div className="flex items-center gap-2">
-            <span
-              className="material-symbols-outlined text-[18px] text-sky-600"
-              aria-hidden="true"
-            >
-              {'tune'}
-            </span>
-            <span className="font-code-sm text-code-sm text-sky-600 font-bold uppercase tracking-widest">
-              {'CORE MECHANISM 02 · QOS & DYNAMIC SCALING'}
-            </span>
-          </div>
-          <h2 className="font-headline-lg text-3xl xl:text-4xl font-extrabold text-slate-900 tracking-tight leading-tight">
-            {translate({
-              id: 'site.e12e17ea0cf2',
-              message: '\n服务质量保障与 SLO 动态弹性伸缩\n',
-            })}
-          </h2>
-          <p className="font-body-md text-sm text-slate-600 leading-relaxed">
-            {translate({
-              id: 'site.77ee6098da09',
-              message:
-                '\n告别单一粗暴的 TPM/RPM 静态限流，建立基于首字延迟 (TTFT) 与每秒产出 (OTPS) 的生产级实时反馈调控。\n',
-            })}
-          </p>
-        </div>
-        <div
-          className="grid grid-cols-1 md:grid-cols-2 gap-6 items-stretch"
-          data-home-pair=""
-          data-home-reveal="panel"
-        >
-          <div className="bg-white rounded-2xl border border-slate-200/90 p-6 shadow-sm hover:shadow-md transition-shadow flex flex-col justify-between">
-            <div>
-              <div className="flex items-center justify-between pb-2">
-                <div className="flex items-center gap-2">
-                  <span
-                    className="material-symbols-outlined text-sky-600 text-[22px]"
-                    aria-hidden="true"
-                  >
-                    {'speed'}
-                  </span>
-                  <h3 className="font-headline-sm text-slate-900 font-bold text-lg md:text-[20px] tracking-tight">
-                    {translate({
-                      id: 'site.0a35a4b7aaa5',
-                      message: 'QoS 动态限流 (TTFT / OTPS)',
-                    })}
-                  </h3>
-                </div>
-                <span className="px-2.5 py-1 rounded-full text-xs font-semibold font-code-sm bg-sky-50 text-sky-600 border border-sky-100 uppercase tracking-wide">
-                  {'AUTO-THROTTLE'}
-                </span>
-              </div>
-              <p className="font-body-md text-xs sm:text-sm text-slate-600 leading-relaxed mt-2 mb-4">
-                {translate({
-                  id: 'site.62dacb9461f9',
-                  message:
-                    '\n静态限流无法感知 Prefill 算力饱和引发的排队雪崩。ModelSphere 动态监测首字延迟。当 TTFT 突破阈值时，网关在毫秒级返回携带 Retry-After: 120ms 的智能 429 退避，避免集群被拖死。\n',
-                })}
-              </p>
-            </div>
-            <div className="rounded-xl border border-slate-200 bg-white p-4 flex flex-col justify-between shadow-inner gap-4 font-code-sm text-xs">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 pb-1 border-b border-slate-100">
-                <div className="flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
-                  <span className="font-bold text-slate-800">
-                    {'kimi-k3-nginx-ingress-0'}
-                  </span>
-                </div>
-                <div className="flex items-center gap-3 text-[11px]">
-                  <span className="flex items-center gap-1.5 text-red-600 font-semibold">
-                    <span className="w-2 h-2 rounded-full bg-red-500"></span>
-                    {'TTFT: 68.6s (Degraded)'}
-                  </span>
-                  <span className="flex items-center gap-1.5 text-emerald-600 font-semibold">
-                    <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
-                    {'OTPS: 42.4 tok/s'}
-                  </span>
-                </div>
-              </div>
-              <div className="relative w-full h-36 bg-slate-50/60 rounded-lg p-2.5 flex flex-col justify-between border border-slate-100 overflow-hidden">
-                <div className="flex items-center justify-between z-10 text-[11px]">
-                  <div className="flex items-center gap-3">
-                    <span className="flex items-center gap-1 text-red-600 font-semibold">
-                      <span className="w-3 h-0.5 bg-red-500 inline-block"></span>
-                      {' TTFT (ms)'}
-                    </span>
-                    <span className="flex items-center gap-1 text-emerald-600 font-semibold">
-                      <span className="w-3 h-0.5 border-t border-dashed border-emerald-500 inline-block"></span>
-                      {' OTPS (tok/s)'}
-                    </span>
-                  </div>
-                  <span className="text-slate-400 font-medium">
-                    {'Threshold: 10,000ms'}
-                  </span>
-                </div>
-                <svg
-                  className="absolute inset-0 w-full h-full pointer-events-none p-3 overflow-visible"
-                  preserveAspectRatio="none"
-                  viewBox="0 0 400 120"
-                >
-                  <defs>
-                    <linearGradient id="ttftGlow" x1="0" x2="0" y1="0" y2="1">
-                      <stop
-                        offset="0%"
-                        stopColor="rgb(var(--color-home-source-ef4444-rgb))"
-                        stopOpacity="0.25"
-                      ></stop>
-                      <stop
-                        offset="100%"
-                        stopColor="rgb(var(--color-home-source-ef4444-rgb))"
-                        stopOpacity="0.0"
-                      ></stop>
-                    </linearGradient>
-                  </defs>
-                  <line
-                    stroke="rgb(var(--color-home-source-e2e8f0-rgb))"
-                    strokeDasharray="3,3"
-                    strokeWidth="1"
-                    x1="10"
-                    x2="390"
-                    y1="30"
-                  ></line>
-                  <line
-                    stroke="rgb(var(--color-home-source-e2e8f0-rgb))"
-                    strokeDasharray="3,3"
-                    strokeWidth="1"
-                    x1="10"
-                    x2="390"
-                    y1="65"
-                  ></line>
-                  <line
-                    stroke="rgb(var(--color-home-source-e2e8f0-rgb))"
-                    strokeDasharray="3,3"
-                    strokeWidth="1"
-                    x1="10"
-                    x2="390"
-                    y1="95"
-                  ></line>
-                  <line
-                    stroke="rgb(var(--color-home-source-f59e0b-rgb))"
-                    strokeDasharray="4,3"
-                    strokeWidth="1.5"
-                    x1="10"
-                    x2="390"
-                    y1="55"
-                  ></line>
-                  <text
-                    fill="rgb(var(--color-home-source-d97706-rgb))"
-                    fontFamily="monospace"
-                    fontSize="9"
-                    fontWeight="600"
-                    x="335"
-                    y="51"
-                  >
-                    {'Threshold'}
-                  </text>
-                  <line
-                    stroke="rgb(var(--color-home-source-ef4444-rgb))"
-                    strokeDasharray="3,3"
-                    strokeWidth="1.5"
-                    x1="195"
-                    x2="195"
-                    y1="10"
-                  ></line>
-                  <path
-                    d="M 10 95 Q 120 95, 155 75 T 195 20 Q 235 75, 275 95 T 390 95 L 390 115 L 10 115 Z"
-                    fill="url(#ttftGlow)"
-                  ></path>
-                  <path
-                    d="M 10 95 Q 120 95, 155 75 T 195 20 Q 235 75, 275 95 T 390 95"
-                    fill="none"
-                    stroke="rgb(var(--color-home-source-ef4444-rgb))"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2.5"
-                  ></path>
-                  <circle
-                    cx="195"
-                    cy="20"
-                    fill="rgb(var(--color-home-source-ef4444-rgb))"
-                    r="4.5"
-                  ></circle>
-                  <circle
-                    className="animate-ping"
-                    cx="195"
-                    cy="20"
-                    fill="rgb(var(--color-home-source-ef4444-rgb))"
-                    opacity="0.6"
-                    r="7"
-                  ></circle>
-                  <path
-                    d="M 10 40 Q 110 40, 150 55 T 195 85 Q 240 55, 280 40 T 390 40"
-                    fill="none"
-                    stroke="rgb(var(--color-home-source-10b981-rgb))"
-                    strokeDasharray="5,3"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                  ></path>
-                  <circle
-                    cx="195"
-                    cy="85"
-                    fill="rgb(var(--color-home-source-10b981-rgb))"
-                    r="3.5"
-                  ></circle>
-                </svg>
-                <div className="flex items-center justify-between text-[10px] text-slate-400 z-10 pt-2 border-t border-slate-200/80 mt-auto">
-                  <span>{'00:00:00'}</span>
-                  <span className="px-2 py-0.5 rounded bg-red-50 text-red-700 border border-red-200 font-semibold">
-                    {'429 Dynamic Throttle Event (Triggered at 00:02:15)'}
-                  </span>
-                  <span>{'00:05:00'}</span>
-                </div>
-              </div>
-              <div className="grid grid-cols-3 divide-x divide-slate-100 border border-slate-100 rounded-lg bg-slate-50/70 p-2 text-center text-xs">
-                <div className="flex flex-col">
-                  <span className="text-slate-500 text-[11px]">
-                    {'Mitigation Action'}
-                  </span>
-                  <span className="font-bold text-red-600">
-                    {'429 Auto-Backoff'}
-                  </span>
-                </div>
-                <div className="flex flex-col">
-                  <span className="text-slate-500 text-[11px]">
-                    {'Retry-After'}
-                  </span>
-                  <span className="font-bold text-slate-800">
-                    {'120ms Dynamic'}
-                  </span>
-                </div>
-                <div className="flex flex-col">
-                  <span className="text-slate-500 text-[11px]">
-                    {'Recovery Latency'}
-                  </span>
-                  <span className="font-bold text-emerald-600">
-                    {'< 350ms Stable'}
-                  </span>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="bg-white rounded-2xl border border-slate-200/90 p-6 shadow-sm hover:shadow-md transition-shadow flex flex-col justify-between">
-            <div>
-              <div className="flex items-center justify-between pb-2">
-                <div className="flex items-center gap-2">
-                  <span
-                    className="material-symbols-outlined text-emerald-600 text-[22px]"
-                    aria-hidden="true"
-                  >
-                    {'auto_mode'}
-                  </span>
-                  <h3 className="font-headline-sm text-slate-900 font-bold text-lg md:text-[20px] tracking-tight">
-                    {translate({
-                      id: 'site.7b85ca14caf0',
-                      message: 'SLO 弹性扩缩容 (K8s HPA/EDA)',
-                    })}
-                  </h3>
-                </div>
-                <span className="px-2.5 py-1 rounded-full text-xs font-semibold font-code-sm bg-emerald-50 text-emerald-700 border border-emerald-200/80 uppercase tracking-wide">
-                  {'GPU UTIL 85%+'}
-                </span>
-              </div>
-              <p className="font-body-md text-xs sm:text-sm text-slate-600 leading-relaxed mt-2 mb-4">
-                {translate({
-                  id: 'site.69fb535284fa',
-                  message:
-                    '\n随并发需求毫秒级调整推理 Pod 副本；非高峰期高优模型借用闲置芯片，使集群整体 GPU 利用率从行业平均 45% 大幅跃升至 85% 以上，且缩容时保证就绪请求排空再释放。\n',
-                })}
-              </p>
-            </div>
-            <div className="rounded-xl border border-slate-200 bg-white p-4 flex flex-col justify-between shadow-inner gap-4">
-              <div className="flex items-center justify-between font-code-sm text-xs">
-                <span className="text-slate-800 font-bold">
-                  {'glm-5.2-prod-pool Scale Trace'}
-                </span>
-                <span className="text-emerald-600 font-semibold">
-                  {'Current: 16 Replicas (Active)'}
-                </span>
-              </div>
-              <div className="relative w-full h-36 bg-slate-50/60 rounded-lg p-2 flex flex-col justify-between border border-slate-100 font-code-sm text-[11px] text-slate-500">
-                <div className="flex items-center justify-between">
-                  <span className="font-semibold text-slate-700">
-                    {'16 Pods'}
-                  </span>
-                  <span className="text-emerald-700 font-semibold px-2 py-0.5 rounded bg-emerald-50 border border-emerald-200">
-                    {'Peak Burst: 18,200 QPS'}
-                  </span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span>{'12 Pods'}</span>
-                  <span className="text-slate-400">{'Midday Load'}</span>
-                </div>
-                <div className="flex items-center justify-between border-b border-slate-200 pb-1">
-                  <span>{'8 Pods'}</span>
-                  <span className="text-slate-400">{'Night Idle Base'}</span>
-                </div>
-                <svg
-                  className="absolute inset-0 w-full h-full pointer-events-none p-3 overflow-visible"
-                  preserveAspectRatio="none"
-                  viewBox="0 0 400 120"
-                >
-                  <path
-                    d="M 10 95 L 80 95 L 80 55 L 180 55 L 180 20 L 300 20 L 300 55 L 390 55"
-                    fill="none"
-                    stroke="rgb(var(--color-home-source-007bb9-rgb))"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="3"
-                  ></path>
-                  <circle
-                    cx="80"
-                    cy="55"
-                    fill="rgb(var(--color-home-source-007bb9-rgb))"
-                    r="3.5"
-                  ></circle>
-                  <circle
-                    cx="180"
-                    cy="20"
-                    fill="rgb(var(--color-home-source-007bb9-rgb))"
-                    r="4.5"
-                  ></circle>
-                  <circle
-                    cx="300"
-                    cy="20"
-                    fill="rgb(var(--color-home-source-007bb9-rgb))"
-                    r="3.5"
-                  ></circle>
-                  <circle
-                    cx="300"
-                    cy="55"
-                    fill="rgb(var(--color-home-source-007bb9-rgb))"
-                    r="3.5"
-                  ></circle>
-                </svg>
-              </div>
-              <div className="grid grid-cols-3 divide-x divide-slate-100 border border-slate-100 rounded-lg bg-slate-50/70 p-2 text-center font-code-sm text-xs">
-                <div className="flex flex-col">
-                  <span className="text-slate-500 text-[11px]">
-                    {'Scale-Up'}
-                  </span>
-                  <span className="font-bold text-slate-800">
-                    {'< 1.2s Warm'}
-                  </span>
-                </div>
-                <div className="flex flex-col">
-                  <span className="text-slate-500 text-[11px]">
-                    {'Graceful Drain'}
-                  </span>
-                  <span className="font-bold text-emerald-600">
-                    {'Zero Drop'}
-                  </span>
-                </div>
-                <div className="flex flex-col">
-                  <span className="text-slate-500 text-[11px]">
-                    {'Hardware Sharing'}
-                  </span>
-                  <span className="font-bold text-slate-800">
-                    {translate({
-                      id: 'site.9656f879000d',
-                      message: 'B300 + 昇腾',
-                    })}
-                  </span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-}
+export { FaultTolerance } from './FaultTolerance';
+
+export { QosScaling } from './QosScaling';
+
 export function AutotuneEvolution() {
   const flowRef = React.useRef<HTMLDivElement>(null);
+  const arrowId = React.useId();
+
+  React.useEffect(() => {
+    const flow = flowRef.current;
+    if (!flow) return;
+    const cards = Array.from(
+      flow.querySelectorAll<HTMLElement>('[data-autotune-step]'),
+    );
+    const updateConnectors = () => {
+      const boxes = [1, 2, 3, 4, 5].map((step) => {
+        const card = cards.find(
+          (element) => element.dataset.autotuneStep === String(step),
+        )!;
+        const left = card.offsetLeft;
+        const top = card.offsetTop;
+        return {
+          left,
+          top,
+          right: left + card.offsetWidth,
+          bottom: top + card.offsetHeight,
+          x: left + card.offsetWidth / 2,
+          y: top + card.offsetHeight / 2,
+        };
+      });
+      const [one, , three, four, five] = boxes;
+      const circularPaths = () => {
+        const core = flow.querySelector<HTMLElement>('.home-autotune-core')!;
+        const center = {
+          x: core.offsetLeft + core.offsetWidth / 2,
+          y: core.offsetTop + core.offsetHeight / 2,
+        };
+        const bounds = boxes.map((box) => ({
+          left: box.left - 6,
+          right: box.right + 6,
+          top: box.top - 6,
+          bottom: box.bottom + 6,
+        }));
+        const minimumRadius = Math.max(
+          ...bounds.map((box) =>
+            Math.hypot(
+              Math.max(box.left - center.x, 0, center.x - box.right),
+              Math.max(box.top - center.y, 0, center.y - box.bottom),
+            ),
+          ),
+        );
+        const radius = Math.max(
+          minimumRadius + 2,
+          Math.min(
+            core.offsetWidth * 1.55,
+            Math.min(three.bottom, four.bottom) - center.y - 8,
+          ),
+        );
+        const intervals = bounds.map((box, index) => {
+          const reference = [
+            -Math.PI / 2,
+            0,
+            Math.PI / 2,
+            Math.PI / 2,
+            Math.PI,
+          ][index];
+          const angles: number[] = [];
+          const record = (x: number, y: number) => {
+            if (
+              x < box.left - 0.01 ||
+              x > box.right + 0.01 ||
+              y < box.top - 0.01 ||
+              y > box.bottom + 0.01
+            )
+              return;
+            let angle = Math.atan2(y - center.y, x - center.x);
+            while (angle < reference - Math.PI) angle += 2 * Math.PI;
+            while (angle > reference + Math.PI) angle -= 2 * Math.PI;
+            angles.push(angle);
+          };
+          for (const x of [box.left, box.right]) {
+            const dx = x - center.x;
+            if (Math.abs(dx) > radius) continue;
+            const dy = Math.sqrt(Math.max(0, radius ** 2 - dx ** 2));
+            record(x, center.y - dy);
+            record(x, center.y + dy);
+          }
+          for (const y of [box.top, box.bottom]) {
+            const dy = y - center.y;
+            if (Math.abs(dy) > radius) continue;
+            const dx = Math.sqrt(Math.max(0, radius ** 2 - dy ** 2));
+            record(center.x - dx, y);
+            record(center.x + dx, y);
+          }
+          return { start: Math.min(...angles), end: Math.max(...angles) };
+        });
+        const point = (angle: number) => ({
+          x: center.x + radius * Math.cos(angle),
+          y: center.y + radius * Math.sin(angle),
+        });
+        return intervals.map((interval, index) => {
+          const next = intervals[(index + 1) % intervals.length];
+          const end =
+            index === intervals.length - 1
+              ? next.start + 2 * Math.PI
+              : next.start;
+          let from = point(interval.end);
+          let to = point(end);
+          if (index !== 2) {
+            const source = boxes[index];
+            const target = boxes[(index + 1) % boxes.length];
+            from = {
+              x: Math.max(
+                source.left + 12,
+                Math.min(source.right - 12, from.x),
+              ),
+              y: index < 2 ? source.bottom + 6 : source.top - 6,
+            };
+            to = {
+              x: Math.max(target.left + 12, Math.min(target.right - 12, to.x)),
+              y: index < 2 ? target.top - 6 : target.bottom + 6,
+            };
+          }
+          const chord = Math.hypot(to.x - from.x, to.y - from.y);
+          const arcRadius = Math.max(16, chord * 0.8);
+          return `M ${from.x} ${from.y} A ${arcRadius} ${arcRadius} 0 0 1 ${to.x} ${to.y}`;
+        });
+      };
+      const paths = window.matchMedia('(min-width: 768px)').matches
+        ? circularPaths()
+        : [
+            ...boxes
+              .slice(0, 4)
+              .map(
+                (box, index) =>
+                  `M ${box.x} ${box.bottom + 5} A 14 14 0 0 1 ${boxes[index + 1].x} ${boxes[index + 1].top - 7}`,
+              ),
+            `M ${five.left - 4} ${five.y} H 10 Q 2 ${five.y} 2 ${five.y - 8} V ${one.y + 8} Q 2 ${one.y} 10 ${one.y} H ${one.left - 4}`,
+          ];
+      flow
+        .querySelectorAll<SVGPathElement>('[data-autotune-connector]')
+        .forEach((path, index) => {
+          path.setAttribute('d', paths[index]);
+          const start = path.getPointAtLength(0);
+          const length = path.getTotalLength();
+          const end = path.getPointAtLength(length);
+          const headLength = Math.min(10, length * 0.28);
+          const headWidth = Math.min(14, Math.max(7, headLength * 1.45));
+          // Sweep a uniform-width fill around the existing centerline.
+          const shaftWidth =
+            !window.matchMedia('(min-width: 768px)').matches && index === 4
+              ? 3.2
+              : headWidth * 0.43;
+          const shaftLength = length - headLength;
+          const edges: { x: number; y: number }[][] = [[], []];
+          const frame = (distance: number) => {
+            const point = path.getPointAtLength(distance);
+            const before = path.getPointAtLength(Math.max(0, distance - 0.5));
+            const after = path.getPointAtLength(
+              Math.min(length, distance + 0.5),
+            );
+            const dx = after.x - before.x;
+            const dy = after.y - before.y;
+            const magnitude = Math.hypot(dx, dy);
+            return { point, nx: -dy / magnitude, ny: dx / magnitude };
+          };
+          const samples = Math.max(16, Math.ceil(shaftLength));
+          for (let sample = 0; sample <= samples; sample += 1) {
+            const progress = sample / samples;
+            const { point, nx, ny } = frame(shaftLength * progress);
+            const halfWidth = shaftWidth / 2;
+            edges[0].push({
+              x: point.x + nx * halfWidth,
+              y: point.y + ny * halfWidth,
+            });
+            edges[1].push({
+              x: point.x - nx * halfWidth,
+              y: point.y - ny * halfWidth,
+            });
+          }
+          const headEdges: { x: number; y: number }[][] = [[], []];
+          const headSamples = Math.max(8, Math.ceil(headLength));
+          for (let sample = 0; sample <= headSamples; sample += 1) {
+            const progress = sample / headSamples;
+            const { point, nx, ny } = frame(
+              shaftLength + headLength * progress,
+            );
+            const halfWidth = (headWidth / 2) * (1 - progress);
+            headEdges[0].push({
+              x: point.x + nx * halfWidth,
+              y: point.y + ny * halfWidth,
+            });
+            headEdges[1].push({
+              x: point.x - nx * halfWidth,
+              y: point.y - ny * halfWidth,
+            });
+          }
+          const outline = [
+            ...edges[0],
+            ...headEdges[0],
+            ...headEdges[1].slice(0, -1).reverse(),
+            ...edges[1].reverse(),
+          ];
+          flow
+            .querySelector(
+              `[data-autotune-ribbon="${path.dataset.autotuneConnector}"]`,
+            )!
+            .setAttribute(
+              'd',
+              `${outline.map((point, pointIndex) => `${pointIndex === 0 ? 'M' : 'L'} ${point.x} ${point.y}`).join(' ')} Z`,
+            );
+          const gradient = flow.querySelector(
+            `[data-autotune-gradient="${path.dataset.autotuneConnector}"]`,
+          )!;
+          for (const [name, value] of Object.entries({
+            x1: start.x,
+            y1: start.y,
+            x2: end.x,
+            y2: end.y,
+          }))
+            gradient.setAttribute(name, String(value));
+        });
+    };
+    updateConnectors();
+    if (typeof ResizeObserver === 'undefined') {
+      window.addEventListener('resize', updateConnectors);
+      return () => window.removeEventListener('resize', updateConnectors);
+    }
+    const observer = new ResizeObserver(updateConnectors);
+    observer.observe(flow);
+    cards.forEach((card) => observer.observe(card));
+    return () => observer.disconnect();
+  }, []);
 
   React.useEffect(() => {
     const flow = flowRef.current;
@@ -739,7 +257,7 @@ export function AutotuneEvolution() {
 
   return (
     <section
-      className="w-full py-12 px-margin bg-slate-50/70 border-b border-slate-200/70"
+      className="w-full py-12 px-margin bg-white border-b border-slate-200/70"
       id="autotune-evolution"
       data-home-design=""
       aria-label={translate({
@@ -874,7 +392,52 @@ export function AutotuneEvolution() {
             className="xl:col-span-7 flex flex-col justify-between gap-3 relative z-10 w-full home-autotune-flow"
             ref={flowRef}
           >
-            <div className="flex justify-center w-full">
+            <svg
+              className="home-autotune-connectors"
+              aria-hidden="true"
+              focusable="false"
+            >
+              <defs>
+                {['1-2', '2-3', '3-4', '4-5', '5-1'].map((connection) => (
+                  <linearGradient
+                    key={connection}
+                    id={`${arrowId}-${connection}`}
+                    data-autotune-gradient={connection}
+                    gradientUnits="userSpaceOnUse"
+                  >
+                    <stop
+                      offset="0%"
+                      stopColor="var(--autotune-link-start)"
+                      stopOpacity="0"
+                    />
+                    <stop
+                      offset="48%"
+                      stopColor="var(--autotune-link-middle)"
+                    />
+                    <stop offset="100%" stopColor="var(--autotune-link-end)" />
+                  </linearGradient>
+                ))}
+              </defs>
+              {['1-2', '2-3', '3-4', '4-5', '5-1'].map((connection, index) => (
+                <React.Fragment key={connection}>
+                  <path
+                    className="home-autotune-guide"
+                    data-autotune-connector={connection}
+                  />
+                  <path
+                    className="home-autotune-link"
+                    data-autotune-ribbon={connection}
+                    fill={`url(#${arrowId}-${connection})`}
+                    style={
+                      {
+                        '--autotune-link-delay': `${index * -0.65}s`,
+                      } as React.CSSProperties
+                    }
+                  />
+                </React.Fragment>
+              ))}
+            </svg>
+            <div className="flex justify-center w-full home-autotune-row">
               <div
                 className="w-full max-w-sm bg-white/95 backdrop-blur rounded-xl border border-sky-200 shadow-sm p-2.5 home-autotune-step"
                 data-autotune-step="1"
@@ -941,7 +504,7 @@ export function AutotuneEvolution() {
                 </div>
               </div>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-12 gap-2.5 items-center">
+            <div className="grid grid-cols-1 md:grid-cols-12 gap-2.5 items-center home-autotune-row">
               <div
                 className="md:col-span-4 bg-white/95 backdrop-blur rounded-xl border border-emerald-200/90 shadow-sm p-2.5 home-autotune-step"
                 data-autotune-step="5"
@@ -993,7 +556,7 @@ export function AutotuneEvolution() {
                   </div>
                 </div>
               </div>
-              <div className="md:col-span-4 flex flex-col items-center justify-center text-center py-1">
+              <div className="md:col-span-4 flex flex-col items-center justify-center text-center py-1 home-autotune-core-panel">
                 <div className="relative w-32 h-32 rounded-full bg-gradient-to-b from-sky-100/80 via-white to-sky-50 border border-white shadow-md flex flex-col items-center justify-center p-2 text-center select-none home-autotune-core">
                   <div className="absolute -inset-1 rounded-full border border-dashed border-sky-300 animate-pulse pointer-events-none opacity-60"></div>
                   <div className="w-7 h-7 rounded-full bg-gradient-to-tr from-sky-600 to-cyan-500 text-white flex items-center justify-center shadow-sm mb-1">
@@ -1067,7 +630,7 @@ export function AutotuneEvolution() {
                 </div>
               </div>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5 home-autotune-row home-autotune-bottom-row">
               <div
                 className="bg-white/95 backdrop-blur rounded-xl border border-teal-200/90 shadow-sm p-2.5 home-autotune-step"
                 data-autotune-step="4"
@@ -1195,235 +758,61 @@ export function AutotuneEvolution() {
   );
 }
 export function Benchmarks() {
+  const { siteHref } = useSitePath();
+  const title = translate({
+    id: 'site.7da06f878c58',
+    message: '性能调优模型 Day-0 部署',
+  });
   return (
     <section
-      className="w-full py-space-xl px-margin bg-white border-b border-slate-200/70"
+      className="w-full py-space-xl px-margin bg-slate-50/70 border-b border-slate-200/70"
       id="benchmarks"
       data-home-design=""
-      aria-label={translate({
-        id: 'site.8b7aba25d266',
-        message: '透明可复现的真实实测',
-      })}
-      aria-description={translate({
-        id: 'site.a52a481c1137',
-        message:
-          '按设计稿展示的机制、配置与性能示例，不代表运行时状态、实测证明或服务保证。',
-      })}
+      aria-label={title}
     >
       <div className="max-w-7xl mx-auto flex flex-col gap-space-lg">
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-space-sm">
-          <div className="flex flex-col gap-space-xs max-w-2xl">
-            <span className="font-label-caps text-label-caps text-emerald-600 uppercase tracking-widest font-semibold">
-              {'Empirical Telemetry'}
-            </span>
-            <h2 className="font-headline-lg text-headline-lg text-slate-900 font-bold tracking-tight">
-              {translate({
-                id: 'site.d796c2f55900',
-                message: '\n              透明可复现的真实实测',
-              })}
-            </h2>
-            <p className="font-body-md text-body-md text-slate-600">
-              {translate({
-                id: 'site.c7ad3335dc85',
-                message:
-                  '公开完整的基准输入输出分布、硬件拓扑与权衡代价，每一次调优收益皆可复核。\n            ',
-              })}
-            </p>
-          </div>
-          <div className="flex items-center gap-space-xs text-slate-500 font-code-sm text-code-sm">
-            <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
-            <span>{'Verified on MLPerf & LLMBench harness'}</span>
-          </div>
-        </div>
-        <div className="w-full overflow-x-auto rounded-xl bg-white border border-slate-200 shadow-sm">
-          <table
-            className="w-full text-left font-body-md text-body-md"
-            aria-label={translate({
-              id: 'site.de57ea95aff6',
-              message: '设计稿性能实测对照示例',
+        <div className="flex flex-col gap-space-xs">
+          <span className="font-label-caps text-label-caps text-emerald-600 uppercase tracking-widest font-semibold">
+            {'Day-0 Deployment'}
+          </span>
+          <h2 className="font-headline-lg text-headline-lg text-slate-900 font-bold tracking-tight">
+            {title}
+          </h2>
+          <p className="font-body-md text-body-md text-slate-600">
+            {translate({
+              id: 'home.deployment.description',
+              message:
+                '在模型广场中选择模型与部署变体，使用已调优配置一键部署。',
             })}
-            data-design-example=""
-          >
-            <thead className="bg-slate-50 border-b border-slate-200 font-label-caps text-label-caps text-slate-600 uppercase tracking-wider">
-              <tr>
-                <th className="py-space-md px-space-md">
-                  {translate({
-                    id: 'site.0fb4c5c150d7',
-                    message: '模型与架构',
-                  })}
-                </th>
-                <th className="py-space-md px-space-md">
-                  {translate({ id: 'site.3df1589c059d', message: '硬件环境' })}
-                </th>
-                <th className="py-space-md px-space-md">
-                  {translate({
-                    id: 'site.6f219ec00819',
-                    message: '负载场景 (Prompt+Output)',
-                  })}
-                </th>
-                <th className="py-space-md px-space-md">
-                  {translate({
-                    id: 'site.192d279d8ca7',
-                    message: '吞吐对比 (Default vs Tuned)',
-                  })}
-                </th>
-                <th className="py-space-md px-space-md">
-                  {translate({ id: 'site.84db1df6e46f', message: '性能飞跃' })}
-                </th>
-                <th className="py-space-md px-space-md">
-                  {translate({
-                    id: 'site.616abf2ae0ac',
-                    message: '调优技术与代价说明',
-                  })}
-                </th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-100 font-code-sm text-code-sm text-slate-700">
-              <tr className="hover:bg-slate-50/80 transition-colors">
-                <td className="py-space-md px-space-md font-bold text-slate-900">
-                  {'MiMo-V2.5'}
-                </td>
-                <td className="py-space-md px-space-md text-slate-500">
-                  {'8 × NVIDIA H100'}
-                </td>
-                <td className="py-space-md px-space-md text-slate-600">
-                  {translate({
-                    id: 'site.29891663b1f6',
-                    message: '50k + 1.5k (长上下文)',
-                  })}
-                </td>
-                <td className="py-space-md px-space-md">
-                  <span className="text-slate-400">{'13,900'}</span>
-                  {' → '}
-                  <span className="text-sky-600 font-bold">
-                    {'30,600 tok/s'}
-                  </span>
-                </td>
-                <td className="py-space-md px-space-md">
-                  <span className="px-2 py-1 rounded bg-emerald-100 text-emerald-800 font-bold border border-emerald-200">
-                    {'+119.9%'}
-                  </span>
-                </td>
-                <td className="py-space-md px-space-md text-body-sm text-slate-600">
-                  {translate({
-                    id: 'site.37e08ff4ea29',
-                    message:
-                      '\n                  并发 4→26; TTFT 4.81s→7.66s (符合 SLO ≤ 8s); GPQA 精度微降 3.03% (显式折中)\n                ',
-                  })}
-                </td>
-              </tr>
-              <tr className="bg-slate-50/50 hover:bg-slate-50 transition-colors">
-                <td className="py-space-md px-space-md font-bold text-slate-900">
-                  {'DeepSeek-V4.1-Flash'}
-                </td>
-                <td className="py-space-md px-space-md text-slate-500">
-                  {'8 × NVIDIA H100'}
-                </td>
-                <td className="py-space-md px-space-md text-slate-600">
-                  {'50k + 1.5k / 8k + 1k'}
-                </td>
-                <td className="py-space-md px-space-md">
-                  <span className="text-slate-500 font-medium">
-                    {translate({
-                      id: 'site.b5e1c7101db6',
-                      message: '长文大幅跃升',
-                    })}
-                  </span>
-                  {translate({
-                    id: 'site.d138647f7bbb',
-                    message: ' / 常用平稳\n                ',
-                  })}
-                </td>
-                <td className="py-space-md px-space-md">
-                  <span className="px-2 py-1 rounded bg-emerald-100 text-emerald-800 font-bold border border-emerald-200">
-                    {'+89.5% / +5.0%'}
-                  </span>
-                </td>
-                <td className="py-space-md px-space-md text-body-sm text-slate-600">
-                  {translate({
-                    id: 'site.4f54906de742',
-                    message:
-                      '\n                  客观体现“负载改变收益改变”，Tuning Agent 针对超长上下文自适应调整 Chunk 分块\n                ',
-                  })}
-                </td>
-              </tr>
-              <tr className="hover:bg-slate-50/80 transition-colors">
-                <td className="py-space-md px-space-md font-bold text-slate-900">
-                  {'Qwen3.6-35B-A3B'}
-                </td>
-                <td className="py-space-md px-space-md text-slate-500">
-                  {'2 × NVIDIA H800'}
-                </td>
-                <td className="py-space-md px-space-md text-slate-600">
-                  {translate({
-                    id: 'site.f8ae6c58fa2d',
-                    message: 'Agentic (c=8 并发多轮)',
-                  })}
-                </td>
-                <td className="py-space-md px-space-md">
-                  <span className="text-slate-400">{'6,200'}</span>
-                  {' → '}
-                  <span className="text-sky-600 font-bold">
-                    {'8,016 tok/s'}
-                  </span>
-                </td>
-                <td className="py-space-md px-space-md">
-                  <span className="px-2 py-1 rounded bg-emerald-100 text-emerald-800 font-bold border border-emerald-200">
-                    {'+29.3%'}
-                  </span>
-                </td>
-                <td className="py-space-md px-space-md text-body-sm text-slate-600">
-                  {translate({
-                    id: 'site.0e0c1daadf85',
-                    message:
-                      '\n                  SGLang + FlashAttention-3 + FP8 + Chunked Prefill 32768 + extra_buffer 深度融合\n                ',
-                  })}
-                </td>
-              </tr>
-              <tr className="bg-slate-50/50 hover:bg-slate-50 transition-colors">
-                <td className="py-space-md px-space-md font-bold text-slate-900">
-                  {'GLM-5.3 (NVFP4)'}
-                </td>
-                <td className="py-space-md px-space-md text-slate-500">
-                  {'4 × NVIDIA B300'}
-                </td>
-                <td className="py-space-md px-space-md text-slate-600">
-                  {translate({
-                    id: 'site.7208c864516c',
-                    message: '全量生产仿真混合集',
-                  })}
-                </td>
-                <td className="py-space-md px-space-md">
-                  <span className="text-slate-500">
-                    {translate({
-                      id: 'site.2c837b9b1232',
-                      message: '基线对比',
-                    })}
-                  </span>
-                  {' → '}
-                  <span className="text-sky-600 font-bold">
-                    {translate({
-                      id: 'site.f517c4451237',
-                      message: '最高峰值',
-                    })}
-                  </span>
-                </td>
-                <td className="py-space-md px-space-md">
-                  <span className="px-2 py-1 rounded bg-sky-100 text-sky-800 font-bold border border-sky-200">
-                    {'+195.3%'}
-                  </span>
-                </td>
-                <td className="py-space-md px-space-md text-body-sm text-slate-600">
-                  {translate({
-                    id: 'site.e459da12b0aa',
-                    message:
-                      '\n                  Tuning Agent 搜索至最优 TP4 单节点拓扑，集成 modelopt_fp4 极致内核\n                ',
-                  })}
-                </td>
-              </tr>
-            </tbody>
-          </table>
+          </p>
         </div>
+        <figure className="home-console-preview">
+          <div
+            className="home-console-scroller"
+            role="region"
+            aria-label={translate({
+              id: 'home.deployment.previewRegion',
+              message: '模型广场截图，可横向滚动查看',
+            })}
+            tabIndex={0}
+          >
+            <div className="home-console-frame">
+              <img
+                className="home-console-screenshot"
+                src={siteHref('/screenshots/console-model-catalog.png')}
+                alt={translate({
+                  id: 'home.deployment.screenshotAlt',
+                  message:
+                    'ModelSphere Console 模型库：按提升排序，浏览模型、部署变体与调优收益标签。',
+                })}
+                width={2566}
+                height={1522}
+                loading="lazy"
+                decoding="async"
+              />
+            </div>
+          </div>
+        </figure>
       </div>
     </section>
   );
@@ -1469,7 +858,7 @@ export function GetStarted() {
               })}
             </p>
           </div>
-          <div className="flex flex-wrap items-center justify-center gap-4 mb-8">
+          <div className="flex flex-wrap items-center justify-center gap-4">
             <a
               href={siteHref(
                 String(siteConfig.customFields?.docsQuickstartHref ?? '/docs'),
@@ -1487,7 +876,7 @@ export function GetStarted() {
               </svg>
             </a>
             <a
-              href="#home-community"
+              href={siteHref('/community#community-wechat-group')}
               className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-white/20 hover:bg-white/30 backdrop-blur-md border border-white/30 text-white transition-all font-semibold text-base shadow-sm hover:shadow-md"
             >
               <svg
@@ -1507,19 +896,6 @@ export function GetStarted() {
                 })}
               </span>
             </a>
-          </div>
-          <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-white/80 font-code-sm text-xs sm:text-sm">
-            <span className="inline-flex items-center gap-1.5">
-              {'✓ Apache-2.0 Open Source'}
-            </span>
-            <span className="opacity-60">{'•'}</span>
-            <span className="inline-flex items-center gap-1.5">
-              {'✓ Helm Chart 1-Click Ready'}
-            </span>
-            <span className="opacity-60">{'•'}</span>
-            <span className="inline-flex items-center gap-1.5">
-              {'✓ Zero Cloud Lock-in'}
-            </span>
           </div>
         </div>
       </div>

@@ -5,12 +5,14 @@ const sectionIds = [
   'comparison',
   'fault-tolerance',
   'qos-scaling',
+  'dynamic-scaling',
   'autotune-evolution',
   'get-started',
 ] as const;
 const mechanismIds = [
   'fault-tolerance',
   'qos-scaling',
+  'dynamic-scaling',
   'autotune-evolution',
 ] as const;
 const home = 'main[data-home-page]#main-content';
@@ -485,7 +487,7 @@ async function expectReadableHome(page: Page): Promise<void> {
   );
   for (const id of sectionIds)
     await expect(page.locator(`${home} section#${id}`)).toBeVisible();
-  await expect(page.locator(`${home} #benchmarks table`)).toHaveCount(1);
+  await expect(page.locator(`${home} #benchmarks img`)).toHaveCount(1);
   await expect(page.locator(reveal)).not.toHaveCount(0);
   expect(
     await page.locator(reveal).evaluateAll((elements) =>
@@ -869,7 +871,21 @@ test('returning from the docs with browser history does not replay the hero entr
     .filter({ hasText: '快速开始 Quickstart' })
     .first()
     .click();
-  await expect(page).toHaveURL(/\/docs\/?$/);
+  await expect(page).toHaveURL(
+    process.env.TEST_DOCS_MODE === 'none'
+      ? /\/docs\/?$/
+      : /\/docs\/quickstart$/,
+  );
+  if (process.env.TEST_DOCS_MODE !== 'none')
+    await expect(
+      page.getByRole('heading', {
+        name:
+          process.env.TEST_DOCS_MODE === 'content'
+            ? '快速开始'
+            : '快速开始（示例）',
+        exact: true,
+      }),
+    ).toBeVisible();
   await expect(page.locator(home)).toHaveCount(0);
   await page.goBack();
   await expect(page).toHaveURL(/\/$/);
@@ -906,7 +922,7 @@ for (const width of [390, 1440]) {
     );
     await page.evaluate(() => document.fonts.ready);
     const headings = page.locator(intro);
-    await expect(headings).toHaveCount(6);
+    await expect(headings).toHaveCount(7);
     await headings.first().evaluate((element) =>
       window.scrollTo({
         top:
@@ -927,7 +943,7 @@ for (const width of [390, 1440]) {
       await page.evaluate(() => (window as MotionWindow).__homeIntroRuns),
     ).toEqual([]);
     await expect(headings.first()).toHaveCSS('opacity', '0');
-    for (let index = 0; index < 6; index++) {
+    for (let index = 0; index < 7; index++) {
       await headings.nth(index).evaluate((element) =>
         window.scrollTo({
           top:
@@ -954,7 +970,7 @@ for (const width of [390, 1440]) {
       body: Buffer.from(JSON.stringify(runs, null, 2)),
       contentType: 'application/json',
     });
-    expect(runs).toHaveLength(6);
+    expect(runs).toHaveLength(7);
     expect([...new Set(runs.map((run) => run.section))]).toEqual(
       sectionIds.slice(1),
     );
@@ -982,13 +998,13 @@ for (const width of [390, 1440]) {
       ).toBe(true);
       expect(run.overflowed).toBe(false);
     }
-    for (const index of [0, 5, 1, 4])
+    for (const index of [0, 6, 1, 5])
       await headings.nth(index).scrollIntoViewIfNeeded();
     expect(
       await page.evaluate(
         () => (window as MotionWindow).__homeIntroRuns!.length,
       ),
-    ).toBe(6);
+    ).toBe(7);
     await expect(page.locator(`${intro}[data-home-pending]`)).toHaveCount(0);
   });
 }
@@ -1131,7 +1147,7 @@ for (const width of [390, 768, 1024, 1440]) {
     const runs = await page.evaluate(
       () => (window as MotionWindow).__homeRevealRuns!,
     );
-    expect(runs).toHaveLength(11);
+    expect(runs).toHaveLength(13);
     for (const id of ['comparison', ...mechanismIds]) {
       const cards = runs.filter((run) => run.section === id);
       expect(cards.map((run) => run.childIndex).sort()).toEqual(
@@ -1141,7 +1157,8 @@ for (const width of [390, 768, 1024, 1440]) {
     for (const run of runs) {
       const horizontal =
         width >= 768 &&
-        (['comparison', 'qos-scaling'].includes(run.section) ||
+        (run.section === 'comparison' ||
+          (width >= 1024 && run.section === 'qos-scaling') ||
           (width >= 1280 &&
             mechanismIds.includes(
               run.section as (typeof mechanismIds)[number],
@@ -1199,7 +1216,7 @@ for (const width of [390, 768, 1024, 1440]) {
       await page.evaluate(
         () => (window as MotionWindow).__homeRevealRuns!.length,
       ),
-    ).toBe(11);
+    ).toBe(13);
   });
 }
 
@@ -1433,7 +1450,7 @@ test('319px waiting blocks stay blank before entry, including background and lay
   );
   const targets = page.locator('[data-home-pair] > *');
   const expectBlank = async () => {
-    await expect(targets).toHaveCount(10);
+    await expect(targets).toHaveCount(12);
     for (const target of await targets.all()) {
       await expect(target).toHaveAttribute('data-home-pending', '');
       await expect(target).toHaveCSS('opacity', '0');
@@ -1787,7 +1804,11 @@ test('hero mechanism links preserve native hashes and move keyboard focus below 
   page,
 }) => {
   await page.emulateMedia({ reducedMotion: 'no-preference' });
-  for (const id of mechanismIds) {
+  for (const id of [
+    'fault-tolerance',
+    'dynamic-scaling',
+    'autotune-evolution',
+  ]) {
     await page.goto('/');
     await expect(page.locator('html')).toHaveAttribute(
       'data-has-hydrated',
@@ -1857,9 +1878,9 @@ test('enlarged text and unavailable fonts preserve home reading and controls', a
       () => document.documentElement.scrollWidth <= innerWidth + 1,
     ),
   ).toBe(true);
-  const link = page.locator('#hero a[href="#qos-scaling"]');
+  const link = page.locator('#hero a[href="#dynamic-scaling"]');
   await link.focus();
   await page.keyboard.press('Enter');
-  await expectAnchorClearOfHeader(page, 'qos-scaling');
-  await expect(page.locator('#qos-scaling')).toBeFocused();
+  await expectAnchorClearOfHeader(page, 'dynamic-scaling');
+  await expect(page.locator('#dynamic-scaling')).toBeFocused();
 });

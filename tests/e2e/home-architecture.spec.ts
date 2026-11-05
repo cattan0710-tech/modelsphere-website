@@ -15,11 +15,8 @@ for (const width of [390, 1440]) {
       const diagram = page.locator('[data-home-diagram="architecture"]');
       await diagram.scrollIntoViewIfNeeded();
       await expect(diagram).toBeVisible();
-      await expect(diagram.getByRole('heading', { level: 2 })).toHaveText(
-        english
-          ? 'ModelSphere: connecting applications and AI accelerators'
-          : 'ModelSphere：连接应用与异构算力的推理平台',
-      );
+      await expect(diagram.locator('figcaption')).toHaveCount(0);
+      await expect(diagram.getByRole('heading', { level: 2 })).toHaveCount(0);
 
       const capabilities = diagram.locator(
         '[data-architecture-capabilities] > li',
@@ -65,6 +62,11 @@ for (const width of [390, 1440]) {
           .toBe(true);
       }
       const platform = diagram.locator('[data-architecture-platform]');
+      await expect(platform.locator('header p')).toHaveText(
+        english
+          ? 'Open source platform for production deployment and inference optimization'
+          : '生产级算力部署与推理优化开源平台',
+      );
       await expect(
         platform.locator('[data-architecture-engines]'),
       ).toContainText('vLLM');

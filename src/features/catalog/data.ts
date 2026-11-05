@@ -146,9 +146,10 @@ export const sourceUrl = (v: Variant) =>
   v.commit
     ? `${config.repository}/blob/${v.commit}/${encodedPath(v.path)}`
     : fileUrl(v.path);
-export const reportUrl = (r: Recipe, t = r.tuning[0]) =>
+export const reportUrl = (r: Recipe, t = r.tuning[0], language = 'en') =>
   t?.report && r.model.reports.includes(t.report)
-    ? fileUrl(`models/${r.model.name}/${t.report}`) + '#en'
+    ? fileUrl(`models/${r.model.name}/${t.report}`) +
+      `#${encodeURIComponent(language)}`
     : null;
 export async function requestText(
   url: string,

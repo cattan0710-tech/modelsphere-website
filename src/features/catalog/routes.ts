@@ -3,7 +3,6 @@ import type { Recipe } from './data';
 export const recipeTabs = [
   { id: 'deployment', label: '部署配置' },
   { id: 'performance', label: '性能对照' },
-  { id: 'history', label: '版本历史' },
 ] as const;
 export type RecipeTab = (typeof recipeTabs)[number]['id'];
 

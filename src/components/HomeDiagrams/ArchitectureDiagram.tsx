@@ -137,21 +137,6 @@ export default function ArchitectureDiagram() {
       data-home-diagram="architecture"
       data-home-architecture
     >
-      <figcaption className={styles.caption}>
-        <h2>
-          {translate({
-            id: 'home.architecture.title',
-            message: 'ModelSphere：连接应用与异构算力的推理平台',
-          })}
-        </h2>
-        <p>
-          {translate({
-            id: 'home.architecture.subtitle',
-            message: '上接应用生态，下接多元算力，统一推理调度与性能优化',
-          })}
-        </p>
-      </figcaption>
-
       <div className={styles.ecosystem}>
         <h3 className={styles.rowTitle}>
           {translate({
@@ -204,7 +189,7 @@ export default function ArchitectureDiagram() {
           <p>
             {translate({
               id: 'home.architecture.core',
-              message: '推理调度与性能优化核心',
+              message: '生产级算力部署与推理优化开源平台',
             })}
           </p>
         </header>

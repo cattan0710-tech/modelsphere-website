@@ -1,5 +1,6 @@
 import { translateCopy } from '@site/src/lib/translate-copy';
 import Translate, { translate } from '@docusaurus/Translate';
+import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import React from 'react';
 import Link from '@docusaurus/Link';
 import {
@@ -35,6 +36,9 @@ export default function RecipeOverview({
   version: string;
   returnTo: string;
 }) {
+  const {
+    i18n: { currentLocale },
+  } = useDocusaurusContext();
   const { model, variant } = recipe;
   const badge = role(recipe);
   const image = variant.image;
@@ -143,7 +147,11 @@ export default function RecipeOverview({
         const baseline = recipes.find(
           (r) => r.variant.id === tuning.baseline.split('@')[0],
         );
-        const report = reportUrl(recipe, tuning);
+        const report = reportUrl(
+          recipe,
+          tuning,
+          currentLocale === 'en' ? 'en' : 'zh',
+        );
         const rows = tuning.workloads.length
           ? tuning.workloads
           : tuning.uplift == null

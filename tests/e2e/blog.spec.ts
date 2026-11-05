@@ -1,7 +1,12 @@
 import { test, expect, devices } from '@playwright/test';
-const release = process.env.TEST_DOCS_MODE === 'none';
+import {
+  readBlogExpectations,
+  expectedBlogList,
+} from '../helpers/blog-expectations';
+const blog = readBlogExpectations();
+const mock = blog.source === 'mock';
 const title = '从请求到 Token：理解大模型推理的基础设施协作';
-test('blog navigation, empty release state and real 404 responses', async ({
+test('blog navigation, published listing and real 404 responses', async ({
   page,
   request,
 }) => {
@@ -17,37 +22,50 @@ test('blog navigation, empty release state and real 404 responses', async ({
   await expect(
     page
       .getByRole('contentinfo')
-      .getByRole('link', { name: '架构演进内幕', exact: true }),
+      .getByRole('navigation', { name: '页脚导航' })
+      .getByRole('link', { name: '博客', exact: true }),
   ).toHaveAttribute('href', '/blog');
-  await expect(
-    page
-      .getByRole('contentinfo')
-      .getByRole('link', { name: '量化实战案例', exact: true }),
-  ).toHaveAttribute('href', '/blog');
-  if (release) {
+  if (blog.posts.length === 0) {
     await expect(
       page.getByRole('heading', { name: '尚无公开文章' }),
     ).toBeVisible();
     await expect(page.getByRole('searchbox')).toHaveCount(0);
     await expect(page.locator('[data-post-id]')).toHaveCount(0);
   } else {
-    await expect(
-      page.locator('#featured').getByRole('heading', { level: 2 }),
-    ).toHaveText(title);
-    await expect(page.locator('#posts [data-post-id]')).toHaveCount(7);
+    const featured = blog.posts.find((post) => post.id === blog.featuredId);
+    if (featured)
+      await expect(
+        page.locator('#featured').getByRole('heading', { level: 2 }),
+      ).toHaveText(featured.title);
+    else await expect(page.locator('#featured')).toHaveCount(0);
+    const ids = expectedBlogList(blog).posts.map((post) => post.id);
+    await expect(page.locator('#posts [data-post-id]')).toHaveCount(ids.length);
+    expect(
+      await page
+        .locator('#posts [data-post-id]')
+        .evaluateAll((nodes) =>
+          nodes.map((node) => node.getAttribute('data-post-id')),
+        ),
+    ).toEqual(ids);
+    if (mock) expect(ids).toHaveLength(7);
   }
   await expect(
     page.getByRole('complementary', { name: '社区交流渠道' }),
-  ).toHaveCount(0);
+  ).toHaveCount(blog.channels.length ? 1 : 0);
   expect((await request.get('/blog/unknown-article')).status()).toBe(404);
-  expect((await request.get('/blog/example-blog-external')).status()).toBe(404);
-  if (release)
-    expect((await request.get('/blog/example-blog-platform')).status()).toBe(
+  for (const post of [
+    ...blog.posts.filter((post) => post.kind === 'external'),
+    ...blog.excluded,
+  ])
+    expect((await request.get(`/blog/${post.slug ?? post.id}`)).status()).toBe(
       404,
     );
 });
 test.describe('mock blog interaction and reading', () => {
-  test.skip(release, 'Fixtures are intentionally absent from release');
+  test.skip(
+    !mock,
+    'Fixed samples run against the Mock build; content has its own source-based acceptance.',
+  );
   test('hovering card padding highlights its title and animates the reading cue', async ({
     page,
   }, testInfo) => {
@@ -76,6 +94,9 @@ test.describe('mock blog interaction and reading', () => {
       });
       await page.mouse.move(0, 0);
       await expect(titleLink).toHaveCSS('color', originalColor);
+      await expect(card).toHaveCSS('transform', 'none');
+      await titleLink.focus();
+      await expect(titleLink).toHaveCSS('color', accentColor);
       await expect(card).toHaveCSS('transform', 'none');
       await card.getByRole('link', { name: /^阅读：/ }).focus();
       await expect(titleLink).toHaveCSS('color', accentColor);
@@ -362,6 +383,7 @@ test.describe('mock blog interaction and reading', () => {
     const context = await browser.newContext({
       ...devices['iPhone 13'],
       baseURL,
+      locale: 'zh-CN',
     });
     const page = await context.newPage();
     await page.goto('/blog');

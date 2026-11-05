@@ -86,7 +86,7 @@ for (const width of [320, 1440])
       });
       await page.goto(href);
       await expect(
-        page.getByText('原始 YAML · SHA-256 校验通过'),
+        page.getByRole('tabpanel', { name: '部署配置' }).locator('pre'),
       ).toBeVisible();
       await expect(
         overview(page).getByText('默认配方', { exact: true }),
@@ -130,7 +130,7 @@ for (const width of [320, 1440])
       expect(target.searchParams.get('dataVersion')).toBe(baseline.commit);
       await expect(
         comparison.getByRole('link', { name: '完整对照报告 ↗' }),
-      ).toHaveAttribute('href', /glm5\.3-1\.0\.3-b300-report\.html#en$/);
+      ).toHaveAttribute('href', /glm5\.3-1\.0\.3-b300-report\.html#zh$/);
       expect(reportRequests).toBe(0);
       const meterAppearance = async (meter: ReturnType<Page['locator']>) =>
         meter.evaluate((element) => ({
@@ -246,7 +246,9 @@ test('historical YAML does not replace current recipe metadata or measured compa
 }) => {
   await mount(page);
   await page.goto(href + '&version=0.9.0');
-  await expect(page.getByText('原始 YAML · SHA-256 校验通过')).toBeVisible();
+  await expect(
+    page.getByRole('tabpanel', { name: '部署配置' }).locator('pre'),
+  ).toBeVisible();
   await expect(
     page.getByRole('tabpanel', { name: '部署配置' }).locator('pre').first(),
   ).toHaveText(oldYaml);

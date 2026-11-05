@@ -1,15 +1,6 @@
 import { expect, test } from '@playwright/test';
 import source from '../../docs/design/sources/stitch-community.json';
 
-// User deferred the official account until certification; retain the source snapshot.
-const deferredAccountCopy = new Set([
-  '权威发布',
-  '官方微信公众号',
-  '公众号:「模域 ModelSphere」',
-  '第一时间获取最新版本发布动态、深度内核架构长文推送及线下沙龙活动一手资讯。',
-  '微信扫码关注公众号',
-  '双周刊载 ｜ 深度技术沉淀',
-]);
 const removedPlaceholderCopy = new Set([
   'GitHub Stars',
   '14.8k',
@@ -18,17 +9,23 @@ const removedPlaceholderCopy = new Set([
   'NODE_CLUSTER: READY',
   'TELEMETRY: P99 22ms',
 ]);
+const removedPartnerCopy = new Set([
+  'Enterprise AI Infrastructure',
+  'Cloud-Native AI Middleware',
+  '作为社区联合发起方，负责提供工业级异构算力集群底座验证支持、海量信创芯片软硬件适配数据沉淀，以及企业级生产落地场景的持续拓展与规范制定。',
+  '作为社区联合发起方，主导核心推理中间件研发、Tuning Agent 调优搜索算法、Kubernetes 云原生推理算子设计，以及面向极端并发的智能路由网关工程演进。',
+]);
 
-test('community preserves approved copy, empty activities and the five-section order', async ({
+test('community preserves approved copy and the four-section order without the calendar', async ({
   page,
 }) => {
   await page.goto('/community');
-  await expect(page.locator('main section')).toHaveCount(5);
+  await expect(page.locator('main section')).toHaveCount(4);
   expect(
     await page
       .locator('main section')
       .evaluateAll((sections) => sections.map((section) => section.id)),
-  ).toEqual(source.sectionIds);
+  ).toEqual(source.sectionIds.filter((id) => id !== 'community-calendar'));
   for (const [index, id] of source.sectionIds.entries()) {
     if (id === 'community-calendar' || id === 'community-maintainers') continue;
     const text = (await page.locator(`#${id}`).textContent())!
@@ -37,7 +34,7 @@ test('community preserves approved copy, empty activities and the five-section o
     for (const copy of source.sectionCopy[index].filter(
       (copy) =>
         !removedPlaceholderCopy.has(copy) &&
-        (id !== 'community-channels' || !deferredAccountCopy.has(copy)),
+        (id !== 'community-partners' || !removedPartnerCopy.has(copy)),
     ))
       expect(text, `${id}: ${copy}`).toContain(copy);
   }
@@ -60,10 +57,47 @@ test('community preserves approved copy, empty activities and the five-section o
     .textContent())!
     .replace(/\s+/g, ' ')
     .trim();
-  for (const fragment of source.footerCopy.filter(
-    (copy) => !removedPlaceholderCopy.has(copy),
-  ))
+  for (const fragment of [
+    ...source.footerCopy.slice(0, 3),
+    source.footerCopy.find((copy) => copy.startsWith('©'))!,
+  ])
     expect(footerText).toContain(fragment);
+  const footer = page.locator('footer[data-community-design]');
+  const footerLinks = footer
+    .getByRole('navigation', { name: '页脚导航' })
+    .getByRole('link');
+  await expect(footer.locator('a')).toHaveCount(8);
+  await expect(footer.getByRole('heading')).toHaveText([
+    '浏览网站',
+    '文档与上手',
+    '社区参与',
+  ]);
+  await expect(footerLinks).toHaveText([
+    '首页',
+    '模型目录',
+    '博客',
+    '文档指南',
+    '快速开始',
+    '社区生态',
+    'GitHub',
+    '技术交流群',
+  ]);
+  expect(
+    await footerLinks.evaluateAll((links) =>
+      links.map((link) => link.getAttribute('href')),
+    ),
+  ).toEqual([
+    '/',
+    '/models',
+    '/blog',
+    '/docs',
+    process.env.TEST_DOCS_MODE === 'none' ? '/docs' : '/docs/quickstart',
+    '/community',
+    'https://github.com/modelsphere',
+    '/community#community-channels',
+  ]);
+  for (const copy of removedPartnerCopy)
+    await expect(page.locator('#community-partners')).not.toContainText(copy);
   for (const copy of removedPlaceholderCopy)
     await expect(page.locator('body')).not.toContainText(copy);
   for (const handle of [
@@ -120,10 +154,53 @@ test('community preserves approved copy, empty activities and the five-section o
   }
   const channels = page.locator('#community-channels');
   await expect(channels.getByRole('heading', { level: 3 })).toHaveText([
+    '官方微信公众号',
     '微信技术交流群',
     'GitHub 开源社区',
+    '知乎专栏',
   ]);
-  await expect(channels).not.toContainText('公众号');
+  const zhihu = channels.getByRole('link', {
+    name: '前往知乎专栏（新窗口打开）',
+    exact: true,
+  });
+  await expect(zhihu).toHaveAttribute(
+    'href',
+    'https://www.zhihu.com/column/c_2101327451146150340',
+  );
+  await expect(zhihu).toHaveAttribute('target', '_blank');
+  await expect(zhihu.getByRole('img')).toHaveAttribute(
+    'src',
+    '/community/zhihu.png',
+  );
+  await expect
+    .poll(() =>
+      zhihu
+        .getByRole('img')
+        .evaluate((image) => (image as HTMLImageElement).naturalWidth),
+    )
+    .toBe(240);
+  await expect(channels).toContainText(
+    '探索社区硬核技术分享内容，了解社区技术发展近况。',
+  );
+  const officialQr = channels.getByRole('img', {
+    name: '模域 ModelSphere 微信公众号二维码',
+    exact: true,
+  });
+  await expect(officialQr).toHaveAttribute(
+    'src',
+    '/community/wechat-official-account-qr.png',
+  );
+  await expect
+    .poll(() =>
+      officialQr.evaluate((image) => (image as HTMLImageElement).naturalWidth),
+    )
+    .toBe(1280);
+  await expect(
+    channels.getByRole('link', {
+      name: '模域 ModelSphere 微信公众号二维码',
+      exact: true,
+    }),
+  ).toHaveAttribute('href', '/community/wechat-official-account-qr.png');
   await expect(channels).toContainText('Apache-2.0');
   await expect(
     channels.getByRole('link', { name: '前往 GitHub 组织', exact: true }),
@@ -136,19 +213,39 @@ test('community preserves approved copy, empty activities and the five-section o
   await expect(
     channels.getByRole('link', { name: '扫码加入技术交流微信群', exact: true }),
   ).toHaveAttribute('href', '/community/wechat-group-qr.png');
+  const join = page.getByRole('link', {
+    name: '申请加入生态共建',
+    exact: true,
+  });
+  await expect(join).toHaveAttribute('href', '/community/wechat-group-qr.png');
+  await join.click();
+  const dialog = page.getByRole('dialog', {
+    name: '微信技术交流群',
+    exact: true,
+  });
+  await expect(dialog).toBeVisible();
+  await expect(dialog.getByRole('img')).toHaveAttribute(
+    'src',
+    '/community/wechat-group-qr.png',
+  );
   await expect(
-    page.getByRole('link', { name: '申请加入生态共建', exact: true }),
-  ).toHaveAttribute('href', 'mailto:contact@modelsphere.org');
+    dialog.getByRole('button', { name: '关闭二维码' }),
+  ).toBeFocused();
+  await page.keyboard.press('Escape');
+  await expect(dialog).toBeHidden();
+  await expect(join).toBeFocused();
+  await join.click();
+  await dialog.getByRole('button', { name: '关闭二维码' }).click();
+  await expect(dialog).toBeHidden();
+  await join.click();
+  await page.mouse.click(4, 4);
+  await expect(dialog).toBeHidden();
   await expect(page.locator('[data-event-id]')).toHaveCount(0);
-  const empty = page.locator('[data-community-empty]');
-  await expect(
-    empty.getByRole('heading', { name: '暂无活动', exact: true }),
-  ).toBeVisible();
-  await expect(
-    empty.getByRole('link', { name: '加入技术交流群', exact: true }),
-  ).toHaveAttribute('href', '#community-channels');
-  await expect(page.locator('#community-calendar')).not.toContainText(
-    '829-411-903',
+  await expect(page.locator('#community-calendar')).toHaveCount(0);
+  await expect(page.locator('[data-community-empty]')).toHaveCount(0);
+  await expect(page.locator('a[href*="#community-calendar"]')).toHaveCount(0);
+  await expect(page.locator('body')).not.toContainText(
+    '线上技术分享与社区例会日历',
   );
   await expect(page.getByRole('button', { name: /预约.*提醒/ })).toHaveCount(0);
 });
@@ -260,12 +357,33 @@ test('community stays readable on mobile, tablet and desktop in both themes', as
             (grid) =>
               getComputedStyle(grid).gridTemplateColumns.split(' ').length,
           ),
-      ).toBe(width >= 768 ? 2 : 1);
-      if (width === 390 || width === 1280)
+      ).toBe(width >= 1280 ? 4 : width >= 768 ? 2 : 1);
+      if (width === 320) {
+        await page
+          .getByRole('link', { name: '申请加入生态共建', exact: true })
+          .click();
+        const dialog = page.getByRole('dialog', {
+          name: '微信技术交流群',
+          exact: true,
+        });
+        await expect(dialog).toBeVisible();
+        const bounds = await dialog.boundingBox();
+        expect(bounds!.x).toBeGreaterThanOrEqual(0);
+        expect(bounds!.x + bounds!.width).toBeLessThanOrEqual(width);
+        await page.screenshot({
+          path: testInfo.outputPath(`community-qr-${width}-${theme}.png`),
+        });
+        await dialog.getByRole('button', { name: '关闭二维码' }).click();
+      }
+      if (width === 390 || width === 1280) {
         await page.screenshot({
           path: testInfo.outputPath(`community-${width}-${theme}.png`),
           fullPage: true,
         });
+        await page.locator('footer.community-footer').screenshot({
+          path: testInfo.outputPath(`footer-${width}-${theme}.png`),
+        });
+      }
     }
   }
 });

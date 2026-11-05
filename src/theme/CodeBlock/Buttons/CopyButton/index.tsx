@@ -32,6 +32,17 @@ export default function CopyButton({ className }: Props) {
       if (current === generation.current) setStatus('failed');
     }
   }
+  const label =
+    status === 'done'
+      ? translate({ id: 'site.8f6f8d979c98', message: '已复制' })
+      : status === 'copying'
+        ? translate({ id: 'site.35b9d1632e80', message: '复制中' })
+        : status === 'failed'
+          ? translate({
+              id: 'site.bc31718db91d',
+              message: '复制失败，请手动选择代码',
+            })
+          : translate({ id: 'site.420c20dd9fcc', message: '复制代码' });
   return (
     <span className="copy-control js-control">
       <button
@@ -40,12 +51,33 @@ export default function CopyButton({ className }: Props) {
         disabled={status === 'copying'}
         onClick={copy}
         aria-label={translate({ id: 'site.420c20dd9fcc', message: '复制代码' })}
+        title={label}
       >
-        {status === 'done'
-          ? translate({ id: 'site.8f6f8d979c98', message: '已复制' })
-          : status === 'copying'
-            ? translate({ id: 'site.35b9d1632e80', message: '复制中' })
-            : translate({ id: 'site.420c20dd9fcc', message: '复制代码' })}
+        <svg
+          width="18"
+          height="18"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.6"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          aria-hidden="true"
+        >
+          {status === 'done' ? (
+            <path d="m5 12 4 4L19 6" />
+          ) : status === 'failed' ? (
+            <>
+              <circle cx="12" cy="12" r="9" />
+              <path d="M12 8v4m0 4h.01" />
+            </>
+          ) : (
+            <>
+              <rect x="8" y="8" width="12" height="12" rx="2" />
+              <path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3" />
+            </>
+          )}
+        </svg>
       </button>
       <span
         role="status"

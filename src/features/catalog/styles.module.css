@@ -459,7 +459,7 @@
   padding: 2px 6px;
   overflow-wrap: anywhere;
 }
-.chips > span:nth-child(2) {
+.chips > .engineChip {
   background: var(--color-feedback-info-background);
   color: var(--color-brand-primary);
 }
@@ -497,6 +497,33 @@
   margin: 0;
   min-width: 0;
   overflow-wrap: anywhere;
+}
+.recipeHardware {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin: 0 0 12px;
+  color: var(--color-text-muted);
+  font: 400 12px/1.7 var(--font-body);
+  overflow-wrap: anywhere;
+}
+.recipeHardware svg {
+  flex: 0 0 14px;
+  width: 14px;
+  height: 14px;
+  margin-top: 3px;
+}
+.recipeHardware span {
+  min-width: 0;
+}
+.recipeName {
+  margin-bottom: 6px;
+}
+.recipeName dd a {
+  color: var(--color-text-muted);
+}
+.recipeName dd a:hover {
+  color: var(--color-brand-primary);
 }
 .modelTuningFacts {
   margin: 0;
@@ -931,12 +958,36 @@
   gap: 18px;
   font-size: 13px;
 }
+.codeBlock {
+  position: relative;
+}
+.codeBlock > .copyWrap {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 1;
+}
+.codeBlock .copy {
+  min-width: 30px;
+  min-height: 30px;
+  padding: 0;
+}
+.codeBlock .copy svg {
+  width: 15px;
+  height: 15px;
+}
+.codeBlock .copyTooltip,
+.codeBlock .copyStatus {
+  top: calc(100% + 5px);
+  bottom: auto;
+}
 .code {
   background: var(--color-background-code);
   color: var(--color-text-primary);
   border: 1px solid var(--color-border-default);
   border-radius: 5px;
-  padding: 16px;
+  padding: 48px 16px 16px;
+  margin: 0;
   max-height: 620px;
   overflow: auto;
   font: 12px/1.9 var(--font-code);
@@ -1182,6 +1233,91 @@
   align-items: center;
   padding: 24px 0 20px;
   font-family: var(--font-body);
+}
+.detailSkeleton {
+  padding: 28px 32px;
+  background: var(--color-background-surface);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-card);
+}
+.skeletonStatus {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+.skeletonBlock {
+  display: block;
+  min-width: 0;
+  height: 16px;
+  border-radius: 4px;
+  background: var(--color-border-default);
+  animation: detailSkeletonPulse 1.6s ease-in-out infinite alternate;
+}
+.skeletonHeading {
+  display: grid;
+  gap: 16px;
+}
+.skeletonTitle {
+  width: 65%;
+  max-width: 480px;
+  height: 32px;
+}
+.skeletonSubtitle {
+  width: 45%;
+}
+.skeletonFacts {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+  margin: 32px 0;
+}
+.skeletonFacts > span {
+  height: 64px;
+}
+.skeletonPanel {
+  display: grid;
+  align-content: start;
+  gap: 20px;
+  min-height: 240px;
+  padding: 24px;
+  border: 1px solid var(--color-border-default);
+  border-radius: 6px;
+}
+@keyframes detailSkeletonPulse {
+  from {
+    opacity: 0.45;
+  }
+  to {
+    opacity: 0.85;
+  }
+}
+@media (max-width: 767px) {
+  .detailSkeleton {
+    padding: 20px 16px;
+  }
+  .skeletonFacts {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .skeletonPanel {
+    padding: 20px 16px;
+  }
+  .skeletonTitle {
+    width: 85%;
+  }
+  .skeletonSubtitle {
+    width: 65%;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .skeletonBlock {
+    animation: none;
+  }
 }
 .recipeOverview {
   margin-top: 0;
@@ -1714,8 +1850,8 @@
 .catalog .filters {
   grid-column: 1;
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  max-width: 800px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  max-width: 400px;
 }
 .catalog .toolbar [role='combobox'] {
   height: var(--catalog-control-height);
@@ -1980,7 +2116,7 @@
   font-size: 10px;
   padding: 1px 5px;
 }
-.catalog .chips > span:nth-child(2) {
+.catalog .chips > .engineChip {
   border-color: color-mix(in srgb, var(--color-brand-primary) 18%, transparent);
   background: color-mix(
     in srgb,

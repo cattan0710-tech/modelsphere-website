@@ -11,14 +11,33 @@ test('community preserves source layout and local navigation under the Pages pre
   await page.evaluate(() => document.fonts.ready);
   await expect(
     page.locator('#community-channels [data-home-pair] > [data-home-pending]'),
-  ).toHaveCount(2);
+  ).toHaveCount(4);
   await expect(
     page.getByRole('img', { name: '微信技术交流群入群二维码' }),
   ).toHaveAttribute('src', `${prefix}community/wechat-group-qr.png`);
   await expect(
     page.getByRole('link', { name: '扫码加入技术交流微信群', exact: true }),
   ).toHaveAttribute('href', `${prefix}community/wechat-group-qr.png`);
-  await expect(page.locator('#community-channels')).not.toContainText('公众号');
+  await expect(
+    page.getByRole('img', {
+      name: '模域 ModelSphere 微信公众号二维码',
+      exact: true,
+    }),
+  ).toHaveAttribute('src', `${prefix}community/wechat-official-account-qr.png`);
+  await expect(
+    page.getByRole('link', {
+      name: '模域 ModelSphere 微信公众号二维码',
+      exact: true,
+    }),
+  ).toHaveAttribute(
+    'href',
+    `${prefix}community/wechat-official-account-qr.png`,
+  );
+  await expect(
+    page
+      .getByRole('link', { name: '前往知乎专栏（新窗口打开）', exact: true })
+      .getByRole('img'),
+  ).toHaveAttribute('src', `${prefix}community/zhihu.png`);
   for (const [name, file] of [
     ['范式智能 PHANCY Logo', 'phancy-logo.png'],
     ['睿思智联 RiseUnion Logo', 'riseunion-logo.svg'],
@@ -45,7 +64,29 @@ test('community preserves source layout and local navigation under the Pages pre
   const localLinks = await page
     .locator('[data-community-design] a[href^="/"]')
     .evaluateAll((links) => links.map((link) => link.getAttribute('href')!));
-  expect(localLinks.length).toBeGreaterThan(10);
+  const footerNavigation = page.getByRole('navigation', { name: '页脚导航' });
+  await expect(footerNavigation.getByRole('link')).toHaveCount(8);
+  await expect(
+    footerNavigation.getByRole('link', { name: '技术交流群', exact: true }),
+  ).toHaveAttribute('href', `${prefix}community#community-channels`);
+  await expect(
+    footerNavigation.getByRole('link', { name: '快速开始', exact: true }),
+  ).toHaveAttribute(
+    'href',
+    process.env.TEST_DOCS_MODE === 'none'
+      ? `${prefix}docs`
+      : `${prefix}docs/quickstart`,
+  );
+  expect(localLinks).toEqual(
+    expect.arrayContaining([
+      prefix,
+      `${prefix}models`,
+      `${prefix}docs`,
+      `${prefix}blog`,
+      `${prefix}community`,
+      `${prefix}community/wechat-group-qr.png`,
+    ]),
+  );
   for (const href of localLinks) expect(href.startsWith(prefix)).toBe(true);
   const loadedFonts = await page.evaluate(
     async () =>
@@ -61,7 +102,7 @@ test('community preserves source layout and local navigation under the Pages pre
       document.fonts.check('700 44px "ModelSphere Community Space Grotesk"'),
     ),
   ).toBe(true);
-  await page.getByRole('link', { name: '社区维护者治理', exact: true }).click();
+  await page.goto('community#community-maintainers');
   await expect(page).toHaveURL(
     (url) =>
       url.pathname === `${prefix}community` &&
@@ -71,9 +112,11 @@ test('community preserves source layout and local navigation under the Pages pre
     page.getByRole('heading', { name: '社区维护者', exact: true }),
   ).toBeInViewport();
   await page.reload();
-  await expect(page.locator('main section')).toHaveCount(5);
+  await expect(page.locator('main section')).toHaveCount(4);
+  await expect(page.locator('#community-calendar')).toHaveCount(0);
+  await expect(page.locator('a[href*="#community-calendar"]')).toHaveCount(0);
   await page
-    .getByRole('navigation', { name: 'Breadcrumb' })
+    .getByRole('navigation', { name: '页脚导航' })
     .getByRole('link', { name: '首页', exact: true })
     .click();
   await expect(page).toHaveURL((url) => url.pathname === prefix);

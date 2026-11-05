@@ -2,7 +2,7 @@
 
 博客正式加载目录为网站仓库中的 `content/blog/<id>/index.md`，分类、标签和推荐配置为 `content/pages/blog.json`。开发、预览和正式构建默认读取这两个位置。`tests/fixtures/blog/` 保留为固定回归样本，只有显式设置 `BLOG_SOURCE_MODE=mock` 才读取，不再作为正式站点的默认内容源。
 
-当前正式目录保留 7 篇站内文章与 1 条站外阅读示例，沿用原 id、slug、图片及示例说明。`pnpm build` 默认启用 `SITE_PUBLISH_EXAMPLES=true`，因此继续发布这些示例；`SITE_PUBLISH_EXAMPLES=false pnpm build` 排除 `example: true` 的文章，并清除指向这些文章的推荐位。普通文章不需要这个开关；`draft: true` 始终排除。不得通过删除示例标记把演示内容冒充真实事实。
+原有 7 篇站内文章与 1 条站外阅读示例作为 `tests/fixtures/blog/` 的固定回归样本保留。正式目录中的旧示例文件不删除，继续保留 `example: true`；`pnpm build` 默认使用 `SITE_PUBLISH_EXAMPLES=false`，排除这些示例并清除指向它们的推荐位。真实文章不标记 `example`，`draft: true` 始终排除。不得通过删除示例标记把演示内容冒充真实事实。
 
 博客采用现有 Docusaurus、React、TypeScript、CSS Modules 与双主题变量。列表依据 Stitch 项目 `3601238558355976464` 顶层的“博客洞见-更新” `3023474615820510674`；详情按本次用户确认的既有阅读契约实现，不继承旧稿结构。Header 和 Footer 沿用网站已确认的独立配置。
 
@@ -94,6 +94,6 @@ BLOG_SOURCE_MODE=mock pnpm blog:check
 SITE_ORIGIN=https://实际域名 pnpm build
 ```
 
-CI 分别构建显式 mock 预览和正式目录 release，检查来源切换、草稿与示例开关、完整无脚本摘要和列表无正文导入，并在仓库指定的 Nginx 1.28.0 镜像上运行浏览器验收，同时覆盖根路径与 GitHub Pages 子路径。单测包含 25 篇文章的推荐分页边界和 5,000 篇合成摘要容量；这些是测试输入，不是实际业务规模或性能成绩。
+CI 分别构建显式 mock 预览和正式目录 release，检查来源切换、草稿与示例开关、完整无脚本摘要和列表无正文导入，并在仓库指定的 Nginx 1.28.0 镜像上运行浏览器验收，同时覆盖根路径与 GitHub Pages 子路径。浏览器验收显式传入 `TEST_BLOG_SOURCE=mock|content` 并核对候选构建的来源清单：Mock 保留固定数量和完整交互断言，正式内容从文章源独立计算文章 ID、排序、分页、筛选及正文路由，不调用页面的筛选实现。正式内容覆盖无封面卡片的键盘焦点、无脚本与脚本失败回退，新增文章不需要修改固定样本或写死的计数。单测包含 25 篇文章的推荐分页边界和 5,000 篇合成摘要容量；这些是测试输入，不是实际业务规模或性能成绩。
 
 每次提交以对应 PR 的最终提交 SHA 和远程 Actions 结果为验证依据；本地通过不代表已发布。手机覆盖为 Chromium 设备模拟，未完成实体手机与辅助技术的完整矩阵。
