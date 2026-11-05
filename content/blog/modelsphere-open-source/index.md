@@ -116,7 +116,7 @@ ModelSphere 的初衷，是把系统工程上的积累，沉淀成行业可分�
 
 开发者、企业用户、硬件厂商、生态伙伴都欢迎你来提 issue 与 PR，与我们分享真实负载下的调优案例，提出异构适配建议。
 
-源码与快速上手：[https://github.com/modelsphere/modelsphere](https://github.com/modelsphere/modelsphere)
+源码与快速上手：[https://github.com/modelsphere/modelsphere](https://github.com/modelsphere/modelsphere)\
 了解更多：[https://modelsphere.tech/](https://modelsphere.tech/)
 
 欢迎你打开上面的仓库，按文档跑一次最小安装；或者丢一个你卡过的 issue，写清环境、芯片、模型和报错原文；或者是进到项目里，给我们点一个大大的Star\~

@@ -97,7 +97,7 @@ ModelSphere's original intention is to turn accumulated systems engineering expe
 
 Developers, enterprise users, hardware vendors, and ecosystem partners are all welcome to submit issues and PRs, share tuning cases from real workloads, and suggest adaptations for heterogeneous hardware.
 
-Source and quick start: [https://github.com/modelsphere/modelsphere](https://github.com/modelsphere/modelsphere)
+Source and quick start: [https://github.com/modelsphere/modelsphere](https://github.com/modelsphere/modelsphere)\
 Learn more: [https://modelsphere.tech/](https://modelsphere.tech/)
 
 Open the repository above and follow the documentation for a minimal installation; submit an issue about a problem you have encountered, specifying the environment, chip, model, and original error message; or visit the project and give us a big Star~
