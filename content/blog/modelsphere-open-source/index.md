@@ -5,7 +5,7 @@ summary: 演示环境里，一张卡、一个引擎、一条 curl，常常就够
 kind: internal
 slug: modelsphere-open-source
 publishedAt: 2026-11-04
-updatedAt: 2026-11-05T10:35:08+08:00
+updatedAt: 2026-11-05T10:54:24+08:00
 evidenceIds: []
 categoryId: release
 tagIds:
@@ -120,3 +120,14 @@ ModelSphere 的初衷，是把系统工程上的积累，沉淀成行业可分�
 了解更多：[https://modelsphere.tech/](https://modelsphere.tech/)
 
 欢迎你打开上面的仓库，按文档跑一次最小安装；或者丢一个你卡过的 issue，写清环境、芯片、模型和报错原文；或者是进到项目里，给我们点一个大大的Star\~
+
+:::follow
+
+欢迎关注模域ModelSphere，以下内容不要错过：
+
+- 模域 ModelSphere 的部署与调优实践，真实方法与实战经验分享
+- 新模型、新引擎、新芯片出来时，从推理优化和基础设施视角的深度解读
+- 可验证的性能案例，硬件、模型、SLO 给你写清楚
+- 直播、Meetup、行业大会的预告与回顾，我们线上线下见
+
+:::

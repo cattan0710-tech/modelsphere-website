@@ -13,6 +13,12 @@ import {
 import path from 'node:path';
 import { tmpdir } from 'node:os';
 import { stringify } from 'yaml';
+import { unified } from 'unified';
+import remarkParse from 'remark-parse';
+import remarkDirective from 'remark-directive';
+import { toString } from 'mdast-util-to-string';
+import type { Root } from 'mdast';
+import remarkFollowCard from '../../plugins/blog/remark-follow-card';
 import {
   inspectMarkdown,
   parseArticle,
@@ -189,8 +195,32 @@ describe('blog publication boundary', () => {
     '##### Too deep',
     ':::custom\ntext\n:::',
     ':::note{style="color:red"}\ntext\n:::',
+    ':::follow{onclick="alert(1)"}\ntext\n:::',
   ])('rejects active or unsupported Markdown: %s', (body) => {
     expect(() => inspectMarkdown(body)).toThrow();
+  });
+  it('renders a follow card with fixed markup and preserves its Markdown content', () => {
+    const body =
+      ':::follow\n\nFollow ModelSphere\n\n- Deployment\n- Tuning\n\n:::';
+    expect(() => inspectMarkdown(body)).not.toThrow();
+    const processor = unified()
+      .use(remarkParse)
+      .use(remarkDirective)
+      .use(remarkFollowCard);
+    const tree = processor.runSync(processor.parse(body)) as Root;
+    expect(tree.children[0].data).toEqual({
+      hName: 'aside',
+      hProperties: {
+        className: ['blog-follow-card'],
+        'aria-label': 'Follow ModelSphere',
+      },
+    });
+    expect(toString(tree)).toBe('Follow ModelSphereDeploymentTuning');
+    expect(() =>
+      processor.runSync(
+        processor.parse(':::follow{class="override"}\ntext\n:::'),
+      ),
+    ).toThrow('关注卡片不允许自定义属性');
   });
   it('preserves code fences while checking ordinary headings and reference images', () => {
     const parsed = inspectMarkdown(

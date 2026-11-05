@@ -59,6 +59,8 @@ tagIds: []
 
 正文从 h2 开始，允许 h2–h4、段落、列表、表格、引用、链接、图片、代码，以及 note/info/warning 提示块。拒绝原始 HTML、JSX、import、执行表达式与自定义属性。站内文章必须有正文；外部文章使用 `kind: external` 和 HTTPS `href`，不填 slug 或正文。
 
+文末关注卡片使用 `:::follow` 容器，内部首段为卡片标题，随后使用普通 Markdown 列表，最后以 `:::` 结束。卡片保留正文文本，自动适配浅色、深色与手机布局，不接受自定义属性，也不自动添加关注链接或二维码；英文文章需同步翻译卡片内容。
+
 可选字段包括 `author`、`categoryId`、`technicalKeywords`、`pullRequestRefs`、`cover`、`relatedIds`（最多三篇）和 `resources`。阅读时长必须同时提供 `readingMinutes` 与作者标注的 HTTPS `readingTimeSource`，不自动估算。`draft: true` 始终不进入公开产物；正式构建中的 `example: true` 由 `SITE_PUBLISH_EXAMPLES` 控制，开发与预览可读取示例。发布日期不能为空或晚于构建日期；首期不支持定时发布。
 
 分类、标签、推荐 id、社区渠道和来源记录在 `content/pages/blog.json` 维护（`categories`、`tags`、可选 `featuredId`、`channels`、`sources`）。id 与显示名称分离；错误引用会阻止构建。推荐区只在无筛选的第一页出现；推荐文章仍按普通文章的发布日期参与列表排序、计数和分页。搜索、分类和标签筛选均在全部已发布文章中进行。

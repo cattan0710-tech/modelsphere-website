@@ -323,4 +323,88 @@ test.describe('published blog content acceptance', () => {
       }
     });
   }
+
+  if (blog.posts.some((post) => post.id === 'modelsphere-open-source')) {
+    test('follow card retains the approved copy at the end in both languages and themes', async ({
+      page,
+      browser,
+      baseURL,
+    }, testInfo) => {
+      const versions = [
+        {
+          locale: 'zh-CN',
+          route: '/blog/modelsphere-open-source',
+          title: '欢迎关注模域ModelSphere，以下内容不要错过：',
+          items: [
+            '模域 ModelSphere 的部署与调优实践，真实方法与实战经验分享',
+            '新模型、新引擎、新芯片出来时，从推理优化和基础设施视角的深度解读',
+            '可验证的性能案例，硬件、模型、SLO 给你写清楚',
+            '直播、Meetup、行业大会的预告与回顾，我们线上线下见',
+          ],
+        },
+        {
+          locale: 'en',
+          route: '/en/blog/modelsphere-open-source',
+          title: "Follow ModelSphere so you don't miss:",
+          items: [
+            'ModelSphere deployment and tuning practices, sharing real methods and hands-on experience',
+            'In-depth perspectives on new models, engines, and chips through the lens of inference optimization and infrastructure',
+            'Verifiable performance case studies, with hardware, models, and SLOs clearly documented',
+            'Previews and recaps of livestreams, Meetups, and industry conferences—see you online and in person',
+          ],
+        },
+      ];
+      const fallback = await browser.newContext({ javaScriptEnabled: false });
+      try {
+        const staticPage = await fallback.newPage();
+        for (const version of versions) {
+          await staticPage.goto(`${baseURL}${version.route}`);
+          await expect(
+            staticPage.getByRole('complementary', { name: version.title }),
+          ).toBeVisible();
+          await page.goto(version.route);
+          const card = page.getByRole('complementary', { name: version.title });
+          await expect(card.locator('li')).toHaveText(version.items);
+          expect(
+            await card.evaluate(
+              (node) => node.parentElement?.lastElementChild === node,
+            ),
+          ).toBe(true);
+          await expect(
+            page.getByText('设计一个卡片形式放到文章最后'),
+          ).toHaveCount(0);
+          for (const colorScheme of ['light', 'dark'] as const) {
+            await page.emulateMedia({ colorScheme });
+            for (const width of [320, 390, 1440]) {
+              await page.setViewportSize({ width, height: 1000 });
+              await card.scrollIntoViewIfNeeded();
+              await expect(card).toBeVisible();
+              expect(
+                await card
+                  .locator('ul')
+                  .evaluate(
+                    (node) =>
+                      getComputedStyle(node).gridTemplateColumns.split(' ')
+                        .length,
+                  ),
+              ).toBe(width < 768 ? 1 : 2);
+              expect(
+                await page.evaluate(
+                  () => document.documentElement.scrollWidth <= innerWidth + 1,
+                ),
+              ).toBe(true);
+              if (width !== 390)
+                await card.screenshot({
+                  path: testInfo.outputPath(
+                    `follow-${version.locale}-${colorScheme}-${width}.png`,
+                  ),
+                });
+            }
+          }
+        }
+      } finally {
+        await fallback.close();
+      }
+    });
+  }
 });

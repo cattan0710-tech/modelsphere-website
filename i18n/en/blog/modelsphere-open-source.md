@@ -101,3 +101,14 @@ Source and quick start: [https://github.com/modelsphere/modelsphere](https://git
 Learn more: [https://modelsphere.tech/](https://modelsphere.tech/)
 
 Open the repository above and follow the documentation for a minimal installation; submit an issue about a problem you have encountered, specifying the environment, chip, model, and original error message; or visit the project and give us a big Star~
+
+:::follow
+
+Follow ModelSphere so you don't miss:
+
+- ModelSphere deployment and tuning practices, sharing real methods and hands-on experience
+- In-depth perspectives on new models, engines, and chips through the lens of inference optimization and infrastructure
+- Verifiable performance case studies, with hardware, models, and SLOs clearly documented
+- Previews and recaps of livestreams, Meetups, and industry conferences—see you online and in person
+
+:::
