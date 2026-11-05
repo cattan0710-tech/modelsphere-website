@@ -1,6 +1,6 @@
 ---
 title: 'From “it runs” to “production-ready”: ModelSphere open-sources its production-grade inference infrastructure'
-summary: 'In a demo environment, one accelerator, one engine, and one curl command are often enough. Once traffic enters production, the checklist changes: heterogeneous chips need support, Kubernetes needs setup, routing, rate limiting, and scaling need integration, and generation must continue even when a node fails. Many teams get stuck here—the model can answer, but keeping the service reliably on duty is difficult.'
+summary: 'ModelSphere has open-sourced its platform for production LLM inference, bringing model deployment, heterogeneous compute management, autoscaling, and automated tuning together to help teams reduce setup and operational work, launch services faster, and keep them running reliably.'
 ---
 
 In a demo environment, one accelerator, one engine, and one curl command are often enough. Once traffic enters production, the checklist changes: heterogeneous chips need support, Kubernetes needs setup, routing, rate limiting, and scaling need integration, and generation must continue even when a node fails. Many teams get stuck here—the model can answer, but keeping the service reliably on duty is difficult.

@@ -280,12 +280,12 @@
     "description": "海光 DCU"
   },
   "site.bddd611f1f17": {
-    "message": "Model and certification design examples. Check the model catalog for actual compatibility.",
-    "description": "按设计稿展示的模型与认证示例，实际适配范围请查看模型调优库。"
+    "message": "Model and certification examples from the design; see the Model Catalog for actual compatibility.",
+    "description": "按设计稿展示的模型与认证示例，实际适配范围请查看模型目录。"
   },
   "site.5a4f0d74e965": {
-    "message": "Day-one model certification",
-    "description": "即日认证模型库"
+    "message": "Day-zero certified model catalog",
+    "description": "即日认证模型目录"
   },
   "site.a05020f5efc2": {
     "message": "100% official compatibility",
@@ -384,8 +384,8 @@
     "description": "、全维可观测性、"
   },
   "site.93ef299c39a9": {
-    "message": "recovery from hangs within seconds",
-    "description": "挂起故障秒级自愈"
+    "message": "failover and response continuation",
+    "description": "故障切换及断流续写"
   },
   "site.de1d5dd076fb": {
     "message": " and ",
@@ -413,7 +413,7 @@
   },
   "site.97a2d37af57d": {
     "message": "Model Catalog",
-    "description": "模型调优库 (Model Catalog)"
+    "description": "模型目录"
   },
   "site.fc64e7e591f9": {
     "message": "Four core technologies",
@@ -2044,16 +2044,16 @@
     "description": "夜间低峰期并发搜索更优推理超参"
   },
   "home.deployment.description": {
-    "message": "Choose a model and deployment variant in the model catalog, then deploy a tuned configuration with one click.",
-    "description": "在模型广场中选择模型与部署变体，使用已调优配置一键部署。"
+    "message": "Select a model and deployment variant in the Console Model Library, then deploy with a tuned configuration.",
+    "description": "在 Console 模型库中选择模型与部署变体，使用已调优配置一键部署。"
   },
   "home.deployment.previewRegion": {
-    "message": "Console model catalog screenshot, scroll horizontally to explore",
-    "description": "模型广场截图，可横向滚动查看"
+    "message": "Console Model Library screenshot; scroll horizontally to explore",
+    "description": "Console 模型库截图，可横向滚动查看"
   },
   "home.deployment.screenshotAlt": {
-    "message": "ModelSphere Console model library: sorted by improvement, browse models, deployment variants, and tuning gains.",
-    "description": "ModelSphere Console 模型库：按提升排序，浏览模型、部署变体与调优收益标签。"
+    "message": "Console Model Library: browse models, deployment variants, and tuning gains, sorted by improvement.",
+    "description": "Console 模型库：按提升排序，浏览模型、部署变体与调优收益标签。"
   },
   "site.0fb4c5c150d7": {
     "message": "Model and architecture",
@@ -2165,7 +2165,7 @@
   },
   "site.1be2b13bec98": {
     "message": "Model Catalog",
-    "description": "Model Catalog 模型库"
+    "description": "模型目录"
   },
   "site.87e8f72399c9": {
     "message": "Blog insights",
@@ -2671,40 +2671,40 @@
     "description": "异构算力"
   },
   "home.continuation.detect": {
-    "message": "Detect anomalies immediately",
-    "description": "第一时间识别异常"
+    "message": "Automatic anomaly detection",
+    "description": "自动识别异常"
   },
   "home.continuation.detectDetail": {
-    "message": "Millisecond heartbeat detection proactively prevents single-GPU cascading failures",
-    "description": "心跳毫秒探测，主动拦截单卡雪崩"
+    "message": "Detect unhealthy nodes through heartbeats and trigger failover",
+    "description": "通过心跳探测发现异常节点，触发故障切换"
   },
   "home.continuation.detectBadge": {
-    "message": "Millisecond detection",
-    "description": "毫秒级感知"
+    "message": "Anomaly detection",
+    "description": "异常检测"
   },
   "home.continuation.switch": {
     "message": "Automatically switch to another cluster machine",
     "description": "自动切换集群其他机器"
   },
   "home.continuation.switchDetail": {
-    "message": "Health-aware topology scheduling moves requests to idle nodes in seconds",
-    "description": "拓扑健康调度，秒级迁往空闲节点"
+    "message": "Automatically route requests to available, healthy nodes",
+    "description": "根据节点健康状态，自动调度至可用节点"
   },
   "home.continuation.switchBadge": {
-    "message": "Seamless load optimization",
-    "description": "无缝负载调优"
+    "message": "Healthy-node routing",
+    "description": "健康节点调度"
   },
   "home.continuation.resume": {
-    "message": "Continue the existing answer",
-    "description": "已回答内容继续回复"
+    "message": "Continue the existing response",
+    "description": "接续已有回答"
   },
   "home.continuation.resumeDetail": {
-    "message": "Synchronize and migrate cached history for a coherent continuation",
-    "description": "历史缓存同步热迁，语义连贯无割裂"
+    "message": "Use the existing context to continue generating the response",
+    "description": "结合已有上下文，接续生成后续内容"
   },
   "home.continuation.resumeBadge": {
-    "message": "No repeated tokens",
-    "description": "零重复吐字"
+    "message": "Context-aware continuation",
+    "description": "上下文续写"
   },
   "home.continuation.machineA": {
     "message": "Machine A",
@@ -2743,16 +2743,16 @@
     "description": "机器 B"
   },
   "home.continuation.scheduling": {
-    "message": "Scheduled takeover in seconds",
-    "description": "秒级调度接入"
+    "message": "Route to a healthy node",
+    "description": "调度健康节点"
   },
   "home.continuation.latency": {
-    "message": "Latency <18ms",
-    "description": "耗时 <18ms"
+    "message": "Automatic failover",
+    "description": "自动切换"
   },
   "home.continuation.loss": {
-    "message": "Zero loss",
-    "description": "0 丢失"
+    "message": "Resume with context",
+    "description": "接续上下文"
   },
   "home.continuation.resumedMachine": {
     "message": "Machine B",
@@ -2767,32 +2767,32 @@
     "description": "恢复输出"
   },
   "home.continuation.coherence": {
-    "message": "100% coherent",
-    "description": "100% 连贯"
+    "message": "Response continuation",
+    "description": "接续回答"
   },
   "home.continuation.badge": {
-    "message": "Cluster-wide service quality protection",
-    "description": "集群级服务质量兜底"
+    "message": "Cluster-level recovery",
+    "description": "集群级故障恢复"
   },
   "home.continuation.title": {
     "message": "Stream resumption:",
     "description": "断流续写："
   },
   "home.continuation.subtitle": {
-    "message": "Uninterrupted answers when a machine hangs or crashes",
-    "description": "单机卡死宕机，用户回答零中断"
+    "message": "Continue responses across the cluster when a node fails",
+    "description": "单机故障，集群接力续写"
   },
   "home.continuation.description": {
-    "message": "Use the resources of the entire compute cluster to protect model service quality for every user. No need to ask again, no error interruptions.",
-    "description": "利用整个算力集群的整体资源，保障每一位用户的模型服务质量。无需重新提问，绝无报错中断。"
+    "message": "When a node failure interrupts a response, automatically switch to a healthy node and continue generation with the existing context, reducing the impact on the conversation.",
+    "description": "当节点异常导致回答中断时，自动切换至健康节点，结合已有上下文继续生成，减少故障对用户对话的影响。"
   },
   "home.continuation.userGuarantee": {
-    "message": "Invisible to end users",
-    "description": "终端用户 0 感知"
+    "message": "Reduce conversation interruptions",
+    "description": "减少对话中断"
   },
   "home.continuation.machineGuarantee": {
-    "message": "100% protection from service interruptions caused by single-machine failures",
-    "description": "100% 屏蔽单机故障导致的服务中断"
+    "message": "Reduce the impact of node failures",
+    "description": "降低单机故障影响"
   },
   "home.continuation.chat": {
     "message": "AI chat",
@@ -2803,8 +2803,8 @@
     "description": "连接正常 · 实时响应"
   },
   "home.continuation.invisible": {
-    "message": "Seamless for users",
-    "description": "用户无感"
+    "message": "Automatic continuation",
+    "description": "自动接续"
   },
   "home.continuation.prompt": {
     "message": "Please analyze the core principles and best practices for building enterprise LLM compute clusters in 2025.",
@@ -2839,12 +2839,12 @@
     "description": "。在实际生产高并发场景下，单节点显存波动、网卡瞬断或硬件死机在所难免。"
   },
   "home.continuation.handover": {
-    "message": "Automatic background handover complete",
-    "description": "后台无感自动接力完成"
+    "message": "Automatic handover completed",
+    "description": "后台自动接力完成"
   },
   "home.continuation.handoverDetail": {
-    "message": "(Switch time <18ms · 0 lost tokens)",
-    "description": "(切换耗时 <18ms · 0 丢失 Token)"
+    "message": "(Switch to a healthy node · Continue with existing context)",
+    "description": "(切换健康节点 · 接续已有上下文)"
   },
   "home.continuation.answerB": {
     "message": "Cluster machine B continues the previous machine’s answer",
@@ -2855,20 +2855,20 @@
     "description": "生成完成 100%"
   },
   "home.continuation.answerContinuation": {
-    "message": "The system must therefore support intelligent live context migration, automatically allocating healthy compute to continue the analysis without client retries, protecting core production workloads from hardware instability.",
-    "description": "因此系统必须具备智能上下文热迁移能力，无需客户端重试，自动分配健康算力平滑输出后续分析，确保核心业务生产不受任何硬件抖动影响。"
+    "message": "The system can use the existing context to hand the request to a healthy node and continue the response, reducing the impact of hardware failures.",
+    "description": "因此系统需要结合已有上下文，将请求转交健康节点并接续输出，降低硬件故障对业务的影响。"
   },
   "home.continuation.technology": {
     "message": "Stream resumption technology",
     "description": "断流续写技术"
   },
   "home.continuation.pipeline": {
-    "message": "Cluster background handover in seconds",
-    "description": "集群后台秒级接力链路"
+    "message": "Automatic cluster handover flow",
+    "description": "集群后台自动接力链路"
   },
   "home.continuation.available": {
-    "message": "Real-time handover available",
-    "description": "实时接力可用"
+    "message": "Automatic handover",
+    "description": "自动接力"
   },
   "home.qos.rateTitle": {
     "message": "Dynamic rate limiting",
@@ -2983,12 +2983,12 @@
     "description": "告别平台工程师繁琐的人工压测与反复设参，多模型混部场景下自主适应吞吐基线并持续自我进化。"
   },
   "home.qos.allDayTrend": {
-    "message": "24-hour workload distribution (combined share = 100%)",
-    "description": "24小时全天候负载流转趋势 (两者占比之和 = 100%)"
+    "message": "24-hour compute allocation (shares total 100%)",
+    "description": "24小时算力分配趋势 (两者分配比例之和 = 100%)"
   },
   "home.qos.dynamicUtilization": {
-    "message": "Dynamic compute utilization: 100%",
-    "description": "动态算力利用率: 100%"
+    "message": "Total compute allocation: 100%",
+    "description": "算力分配比例合计: 100%"
   },
   "home.qos.glmCoverage": {
     "message": "GLM 5.3 compute allocation ↑",
@@ -3035,8 +3035,8 @@
     "description": "夜间任务流量大"
   },
   "home.qos.scalingPill": {
-    "message": "Smart compute scheduling · Eliminate idle resources",
-    "description": "智能算力调度 · 告别资源闲置"
+    "message": "Smart compute scheduling · Reduce idle resources",
+    "description": "智能算力调度 · 减少资源闲置"
   },
   "home.qos.scalingTitle": {
     "message": "Dynamic compute scaling:",
@@ -3047,8 +3047,8 @@
     "description": "按模型流量实时分配"
   },
   "home.qos.scalingTitleEnd": {
-    "message": "Keep compute fully utilized, 24/7",
-    "description": "算力24小时满负荷"
+    "message": "Reduce idle compute",
+    "description": "减少算力闲置"
   },
   "home.qos.scalingDescription": {
     "message": "Overcome the limits of binding models to fixed compute: wasted resources off-peak and insufficient capacity at peak demand.",
@@ -3063,16 +3063,16 @@
     "description": "算力随流量自动扩缩"
   },
   "home.qos.eliminateIdle": {
-    "message": "Eliminate waste from idle compute",
-    "description": "消灭低使用率闲置浪费"
+    "message": "Reduce waste from underused resources",
+    "description": "减少低使用率资源浪费"
   },
   "home.qos.noStutter": {
-    "message": "Keep popular models responsive",
-    "description": "热门模型不卡顿"
+    "message": "Handle demand peaks for popular models",
+    "description": "应对热门模型高峰"
   },
   "home.qos.zeroIdle": {
-    "message": "Zero idle compute resources",
-    "description": "算力资源 0 闲置"
+    "message": "Improve resource utilization",
+    "description": "提升资源利用率"
   },
   "home.qos.fixedMode": {
     "message": "Traditional fixed allocation",
@@ -3087,8 +3087,8 @@
     "description": "ModelSphere 动态调配"
   },
   "home.qos.dynamicModeDetail": {
-    "message": "Compute follows traffic, keeping the cluster 100% utilized",
-    "description": "算力随流量流动，集群 100% 满载"
+    "message": "Allocate compute with traffic to reduce idle capacity",
+    "description": "算力随流量调配，减少集群闲置"
   },
   "home.qos.glmWorkload": {
     "message": "Office / analysis",
@@ -3119,12 +3119,12 @@
     "description": "扩缩容"
   },
   "home.qos.summaryStart": {
-    "message": "Compute scales with model traffic in real time, with the combined allocation always at ",
-    "description": "算力随模型流量大小实时增减，两者资源占比之和始终保持 "
+    "message": "Adjust compute allocation with model traffic; the two allocation shares shown total ",
+    "description": "按模型流量调整算力分配，图中两者分配比例合计为 "
   },
   "home.qos.summaryEnd": {
-    "message": ", eliminating idle compute",
-    "description": "，彻底消除算力闲置"
+    "message": ", with dynamic allocation reducing idle capacity",
+    "description": "，通过动态调配减少闲置"
   },
   "home.qos.glm2": {
     "message": "GLM 20% (2 GPUs)",
@@ -3151,8 +3151,8 @@
     "description": "并发上限随实时处理能力动态调整的曲线"
   },
   "home.qos.scalingChart": {
-    "message": "Complementary GLM 5.3 and MiniMax M3 compute allocation over 24 hours, totaling 100%",
-    "description": "全天 GLM 5.3 与 MiniMax M3 算力占比互补，总和为 100%"
+    "message": "Complementary GLM 5.3 and MiniMax M3 compute allocation shares over 24 hours, totaling 100%",
+    "description": "全天 GLM 5.3 与 MiniMax M3 算力分配比例互补，总和为 100%"
   },
   "home.qos.minimax4": {
     "message": "MiniMax 40% (4 GPUs)",

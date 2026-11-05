@@ -319,11 +319,18 @@ test('restored modules contain narrow layouts and preserve working section links
     }
   }
   await page.setViewportSize({ width: 390, height: 900 });
-  const community = page.getByRole('link', {
-    name: '推理性能优化社区',
+  await expect(
+    page.getByRole('link', {
+      name: '推理性能优化社区',
+      exact: true,
+    }),
+  ).toHaveCount(0);
+  await expect(page.locator('#comparison')).toContainText('推理性能优化社区');
+  const deployment = page.locator('#comparison').getByRole('link', {
+    name: '性能调优模型 Day-0 部署',
     exact: true,
   });
-  await community.focus();
+  await deployment.focus();
   await page.keyboard.press('Enter');
   await expect(page).toHaveURL(/#benchmarks$/);
   await expect(page.locator('#benchmarks')).toBeFocused();

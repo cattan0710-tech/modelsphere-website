@@ -762,7 +762,7 @@ export function CommunityContent() {
                     </span>
                   </div>
                 </div>
-                <div className="pt-5 border-t border-slate-100 mt-4">
+                <div className="community-channel-footer pt-5 border-t border-slate-100 mt-4">
                   <div className="font-code-sm text-xs text-center text-slate-500">
                     {translate({
                       id: 'community.officialAccountCadence',
@@ -841,7 +841,7 @@ export function CommunityContent() {
                     </span>
                   </div>
                 </div>
-                <div className="pt-5 border-t border-slate-100 mt-4">
+                <div className="community-channel-footer pt-5 border-t border-slate-100 mt-4">
                   <a
                     className="w-full py-2 px-3 rounded-xl bg-slate-50 border border-slate-200 text-slate-700 hover:text-sky-700 hover:bg-sky-50 font-body-sm text-xs font-semibold flex items-center justify-center gap-1 transition-all"
                     href={groupQr}
@@ -915,7 +915,7 @@ export function CommunityContent() {
                     </div>
                   </div>
                 </div>
-                <div className="pt-5 border-t border-slate-100 mt-4">
+                <div className="community-channel-footer pt-5 border-t border-slate-100 mt-4">
                   <a
                     className="w-full inline-flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl bg-sky-600 text-white hover:bg-sky-700 transition-all font-body-sm text-xs font-semibold shadow-sm"
                     href="https://github.com/modelsphere"
@@ -973,7 +973,7 @@ export function CommunityContent() {
                     })}
                   </p>
                 </div>
-                <div className="pt-5 border-t border-slate-100 mt-4">
+                <div className="community-channel-footer pt-5 border-t border-slate-100 mt-4">
                   <a
                     className="w-full inline-flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl bg-sky-600 text-white hover:bg-sky-700 transition-all font-body-sm text-xs font-semibold shadow-sm"
                     href="https://www.zhihu.com/column/c_2101327451146150340"

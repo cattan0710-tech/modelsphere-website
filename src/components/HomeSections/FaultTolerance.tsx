@@ -70,15 +70,15 @@ export function FaultTolerance() {
       icon: 'radar',
       title: translate({
         id: 'home.continuation.detect',
-        message: '第一时间识别异常',
+        message: '自动识别异常',
       }),
       description: translate({
         id: 'home.continuation.detectDetail',
-        message: '心跳毫秒探测，主动拦截单卡雪崩',
+        message: '通过心跳探测发现异常节点，触发故障切换',
       }),
       badge: translate({
         id: 'home.continuation.detectBadge',
-        message: '毫秒级感知',
+        message: '异常检测',
       }),
     },
     {
@@ -89,26 +89,26 @@ export function FaultTolerance() {
       }),
       description: translate({
         id: 'home.continuation.switchDetail',
-        message: '拓扑健康调度，秒级迁往空闲节点',
+        message: '根据节点健康状态，自动调度至可用节点',
       }),
       badge: translate({
         id: 'home.continuation.switchBadge',
-        message: '无缝负载调优',
+        message: '健康节点调度',
       }),
     },
     {
       icon: 'sync_saved_locally',
       title: translate({
         id: 'home.continuation.resume',
-        message: '已回答内容继续回复',
+        message: '接续已有回答',
       }),
       description: translate({
         id: 'home.continuation.resumeDetail',
-        message: '历史缓存同步热迁，语义连贯无割裂',
+        message: '结合已有上下文，接续生成后续内容',
       }),
       badge: translate({
         id: 'home.continuation.resumeBadge',
-        message: '零重复吐字',
+        message: '上下文续写',
       }),
     },
   ];
@@ -153,13 +153,16 @@ export function FaultTolerance() {
       }),
       title: translate({
         id: 'home.continuation.scheduling',
-        message: '秒级调度接入',
+        message: '调度健康节点',
       }),
       metric: translate({
         id: 'home.continuation.latency',
-        message: '耗时 <18ms',
+        message: '自动切换',
       }),
-      status: translate({ id: 'home.continuation.loss', message: '0 丢失' }),
+      status: translate({
+        id: 'home.continuation.loss',
+        message: '接续上下文',
+      }),
     },
     {
       icon: 'task_alt',
@@ -177,7 +180,7 @@ export function FaultTolerance() {
       }),
       status: translate({
         id: 'home.continuation.coherence',
-        message: '100% 连贯',
+        message: '接续回答',
       }),
     },
   ];
@@ -211,7 +214,7 @@ export function FaultTolerance() {
               <ContinuationIcon name="verified_user" filled />
               {translate({
                 id: 'home.continuation.badge',
-                message: '集群级服务质量兜底',
+                message: '集群级故障恢复',
               })}
             </div>
             <div data-home-intro="">
@@ -229,7 +232,7 @@ export function FaultTolerance() {
                 <span>
                   {translate({
                     id: 'home.continuation.subtitle',
-                    message: '单机卡死宕机，用户回答零中断',
+                    message: '单机故障，集群接力续写',
                   })}
                 </span>
               </h2>
@@ -237,7 +240,7 @@ export function FaultTolerance() {
                 {translate({
                   id: 'home.continuation.description',
                   message:
-                    '利用整个算力集群的整体资源，保障每一位用户的模型服务质量。无需重新提问，绝无报错中断。',
+                    '当节点异常导致回答中断时，自动切换至健康节点，结合已有上下文继续生成，减少故障对用户对话的影响。',
                 })}
               </p>
             </div>
@@ -266,14 +269,14 @@ export function FaultTolerance() {
               <ContinuationIcon name="security" filled />
               {translate({
                 id: 'home.continuation.userGuarantee',
-                message: '终端用户 0 感知',
+                message: '减少对话中断',
               })}
             </span>
             <span className="continuation-pill">
               <ContinuationIcon name="bolt" filled />
               {translate({
                 id: 'home.continuation.machineGuarantee',
-                message: '100% 屏蔽单机故障导致的服务中断',
+                message: '降低单机故障影响',
               })}
             </span>
           </div>
@@ -306,7 +309,7 @@ export function FaultTolerance() {
                 <ContinuationIcon name="check_circle" />
                 {translate({
                   id: 'home.continuation.invisible',
-                  message: '用户无感',
+                  message: '自动接续',
                 })}
               </span>
             </div>
@@ -387,13 +390,13 @@ export function FaultTolerance() {
                           <ContinuationIcon name="bolt" />
                           {translate({
                             id: 'home.continuation.handover',
-                            message: '后台无感自动接力完成',
+                            message: '后台自动接力完成',
                           })}
                         </strong>
                         <span>
                           {translate({
                             id: 'home.continuation.handoverDetail',
-                            message: '(切换耗时 <18ms · 0 丢失 Token)',
+                            message: '(切换健康节点 · 接续已有上下文)',
                           })}
                         </span>
                       </div>
@@ -418,7 +421,7 @@ export function FaultTolerance() {
                         {translate({
                           id: 'home.continuation.answerContinuation',
                           message:
-                            '因此系统必须具备智能上下文热迁移能力，无需客户端重试，自动分配健康算力平滑输出后续分析，确保核心业务生产不受任何硬件抖动影响。',
+                            '因此系统需要结合已有上下文，将请求转交健康节点并接续输出，降低硬件故障对业务的影响。',
                         })}
                       </p>
                     </div>
@@ -440,7 +443,7 @@ export function FaultTolerance() {
                 <span>
                   {translate({
                     id: 'home.continuation.pipeline',
-                    message: '集群后台秒级接力链路',
+                    message: '集群后台自动接力链路',
                   })}
                 </span>
               </div>
@@ -448,7 +451,7 @@ export function FaultTolerance() {
                 <i className="continuation-dot" />
                 {translate({
                   id: 'home.continuation.available',
-                  message: '实时接力可用',
+                  message: '自动接力',
                 })}
               </span>
             </div>

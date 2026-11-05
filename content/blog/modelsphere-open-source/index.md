@@ -1,7 +1,7 @@
 ---
 id: modelsphere-open-source
 title: 从「能跑」到「生产好用」：模域 ModelSphere 把生产级推理基建开源了
-summary: 演示环境里，一张卡、一个引擎、一条 curl，常常就够看了。可流量一进生产，事就变成另一张清单：异构芯片要适配，Kubernetes 要搭，路由、限流、扩缩容要接上，节点挂了还得接着吐字。很多团队卡在这里——模型能答，服务却很难稳着值班。
+summary: 模域 ModelSphere 开源了面向生产环境的大模型推理平台，整合模型部署、异构算力管理、弹性扩缩容与自动调优，帮助团队减少重复搭建和运维工作，让模型服务更快上线、稳定运行。
 kind: internal
 slug: modelsphere-open-source
 publishedAt: 2026-11-04

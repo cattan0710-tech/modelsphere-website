@@ -92,7 +92,7 @@ Catalog 的目录、详情、配方历史和报告绑定其数据版本；门户
 | 7 `autotune-evolution` | 线上服务、流量收集、空闲算力调优、配置验证、自动上线的五步闭环 | SectionHeading、DiagramFrame、步骤说明 | 条件：有对应实现资料；标明适用范围，不把调优闭环当作请求执行流程 |
 | 8 `get-started` | 居中接入邀请与社区入口，手机纵排操作组 | CtaBlock | 必填邀请；真实快速开始就绪后使用 `docsQuickstartHref`，否则显示准备说明和 `/community` |
 
-Hero 只展示新版单张完整系统架构图，浅深主题表达相同信息并保持同一框尺寸；不预置监控标签、双 Tab、隐藏面板、Live UI 或轮播。核心特性首项使用用户提供的 Console 模型库截图，资源位于 `static/screenshots/console-model-catalog.png`；原图自带“按提升”标签，页面不再叠加排序文字，通过圆角容器裁切隐藏截图外侧阴影，原始 PNG 保持不变。首页不再设置独立 `features` 四项 Tab、`request-flow`、`audiences` 或推荐文章区块；架构页及其他页面的既定功能保留。
+Hero 只展示新版单张完整系统架构图，浅深主题表达相同信息并保持同一框尺寸；不预置监控标签、双 Tab、隐藏面板、Live UI 或轮播。核心特性首项使用用户提供的 Console 模型库截图：中文首页使用 `static/screenshots/console-model-catalog.png`，英文首页使用 `static/screenshots/console-model-catalog-en.png`。截图自带提升排序选项，页面不再叠加排序文字；两种语言共用圆角容器裁切，隐藏截图外侧阴影，原始 PNG 保持不变。首页不再设置独立 `features` 四项 Tab、`request-flow`、`audiences` 或推荐文章区块；架构页及其他页面的既定功能保留。
 
 首页核心内容背景依次为能力概览白、Day-0 部署灰、断流续写白、QoS/SLO 灰、Tuning Agent 白，浅深主题使用对应语义色。
 
@@ -217,7 +217,7 @@ Catalog 模型详情的身份参数为 `modelId`，配方页为 `modelId` 和 `r
 
 | 顺序与 id | 内容与布局 | 实现要求 |
 | --- | --- | --- |
-| 1 `community-hero` | 面包屑、生态标签、主标题与说明 | 原稿 44px 桌面标题、浅紫底色和天蓝强调；不补回已删除的三张生态卡片 |
+| 1 `community-hero` | 面包屑、生态标签、主标题与说明 | 原稿 44px 桌面标题、浅紫底色和天蓝强调；深色模式复用首页接入邀请区域的深色渐变与青色光晕；不补回已删除的三张生态卡片 |
 | 2 `community-maintainers` | 五位维护者、单位、GitHub 账号；桌面三列 | 姓名使用 GitHub 公开 Name，有值显示姓名、无值或仅空白时显示账号 ID；在 `src/features/community/components.tsx` 的 `maintainerNames` 中维护；原稿的“第四范式 (Paradigm)”统一显示为“范式智能（Phancy）”，链接与显示账号对应；不添加头像或维护者 |
 | 3 `community-partners` | 两家发起单位与共建横幅 | 卡片只保留联合发起单位标记、Logo 与名称，移除英文副标题与合作介绍；“申请加入生态共建”弹出已有微信群二维码，支持关闭按钮、Esc、点击遮罩关闭，禁用脚本时直接打开二维码原图；不使用未核实邮箱 |
 | 4 `community-channels` | 公众号、微信群、GitHub、知乎四张卡片 | 公众号和微信群使用用户提供的原始二维码，可打开原图；知乎图标跳转专栏；桌面四列一行（渠道区最大宽度 1440px）、平板两列、手机纵排 |

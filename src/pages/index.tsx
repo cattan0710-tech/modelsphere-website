@@ -162,7 +162,7 @@ const capabilities: {
       id: 'site.bec8fb7e48fd',
       message: '开箱即用，面向生产',
     }),
-    tag: 'Day One Ready',
+    tag: 'Production Ready',
     tone: 'blue',
     description: translate({
       id: 'site.d510f1d10ada',
@@ -259,13 +259,15 @@ function CapabilityDetail({ id }: { id: string }) {
         className={styles.catalogDetail}
         aria-description={translate({
           id: 'site.bddd611f1f17',
-          message:
-            '按设计稿展示的模型与认证示例，实际适配范围请查看模型调优库。',
+          message: '按设计稿展示的模型与认证示例，实际适配范围请查看模型目录。',
         })}
       >
         <div>
           <span>
-            {translate({ id: 'site.5a4f0d74e965', message: '即日认证模型库' })}
+            {translate({
+              id: 'site.5a4f0d74e965',
+              message: '即日认证模型目录',
+            })}
           </span>
           <strong>
             {translate({
@@ -346,16 +348,7 @@ function CapabilityDescription({
         id: 'site.23fb2722b771',
         message: '紧跟快速演进的模型生态，通过我们的',
       })}
-      <a
-        className={styles.communityLink}
-        href="#benchmarks"
-        aria-label={translate({
-          id: 'site.7299f3782e6c',
-          message: '推理性能优化社区',
-        })}
-      >
-        {translate({ id: 'site.7299f3782e6c', message: '推理性能优化社区' })}
-      </a>
+      {translate({ id: 'site.7299f3782e6c', message: '推理性能优化社区' })}
       {translate({
         id: 'site.39ed49ab3194',
         message:
@@ -454,7 +447,7 @@ export default function Home() {
                 <a href="#fault-tolerance">
                   {translate({
                     id: 'site.93ef299c39a9',
-                    message: '挂起故障秒级自愈',
+                    message: '故障切换及断流续写',
                   })}
                 </a>
                 {translate({ id: 'site.de1d5dd076fb', message: '与' })}{' '}
@@ -504,7 +497,7 @@ export default function Home() {
                 <Icon name="tune" />
                 {translate({
                   id: 'site.97a2d37af57d',
-                  message: '模型调优库 (Model Catalog)',
+                  message: '模型目录',
                 })}
               </Link>
             </div>

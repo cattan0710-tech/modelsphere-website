@@ -2309,6 +2309,15 @@ html[data-theme='dark'] [data-community-design] [class*='bg-gradient-to-r'] {
     var(--color-background-surface)
   );
 }
+html[data-theme='dark'] [data-community-design] #community-hero {
+  background-image: var(--color-home-source-cta-gradient);
+}
+html[data-theme='dark']
+  [data-community-design]
+  #community-hero
+  > .bg-sky-200\/30 {
+  background-color: rgb(var(--color-home-source-38bdf8-rgb) / 0.2);
+}
 @media (prefers-reduced-motion: reduce) {
   [data-community-design] *,
   [data-community-design] *::before,
@@ -2370,6 +2379,17 @@ html[data-theme='dark'] [data-community-design] [class*='bg-gradient-to-r'] {
 }
 #community-channels > .max-w-6xl {
   max-width: 90rem;
+}
+[data-community-design] .community-channel-footer {
+  display: flex;
+  flex-shrink: 0;
+}
+[data-community-design] .community-channel-footer > * {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 36px;
 }
 [data-community-design] .community-zhihu-icon {
   display: inline-flex;

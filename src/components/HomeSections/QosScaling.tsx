@@ -558,13 +558,13 @@ function ScalingChart() {
         <span>
           {translate({
             id: 'home.qos.allDayTrend',
-            message: '24小时全天候负载流转趋势 (两者占比之和 = 100%)',
+            message: '24小时算力分配趋势 (两者分配比例之和 = 100%)',
           })}
         </span>
         <strong>
           {translate({
             id: 'home.qos.dynamicUtilization',
-            message: '动态算力利用率: 100%',
+            message: '算力分配比例合计: 100%',
           })}
         </strong>
       </div>
@@ -576,7 +576,7 @@ function ScalingChart() {
           role="img"
           aria-label={translate({
             id: 'home.qos.scalingChart',
-            message: '全天 GLM 5.3 与 MiniMax M3 算力占比互补，总和为 100%',
+            message: '全天 GLM 5.3 与 MiniMax M3 算力分配比例互补，总和为 100%',
           })}
         >
           <defs>
@@ -786,7 +786,7 @@ function DynamicScaling() {
               <i className="animate-pulse" />
               {translate({
                 id: 'home.qos.scalingPill',
-                message: '智能算力调度 · 告别资源闲置',
+                message: '智能算力调度 · 减少资源闲置',
               })}
             </p>
             <h2 id="dynamic-scaling-title" className={styles.title}>
@@ -804,7 +804,7 @@ function DynamicScaling() {
               <br />
               {translate({
                 id: 'home.qos.scalingTitleEnd',
-                message: '算力24小时满负荷',
+                message: '减少算力闲置',
               })}
             </h2>
             <p className={styles.scalingDescription}>
@@ -845,7 +845,7 @@ function DynamicScaling() {
               <h3>
                 {translate({
                   id: 'home.qos.eliminateIdle',
-                  message: '消灭低使用率闲置浪费',
+                  message: '减少低使用率资源浪费',
                 })}
               </h3>
             </div>
@@ -855,14 +855,14 @@ function DynamicScaling() {
               <Symbol name="bolt" />
               {translate({
                 id: 'home.qos.noStutter',
-                message: '热门模型不卡顿',
+                message: '应对热门模型高峰',
               })}
             </span>
             <span>
               <Symbol name="shield" />
               {translate({
                 id: 'home.qos.zeroIdle',
-                message: '算力资源 0 闲置',
+                message: '提升资源利用率',
               })}
             </span>
           </div>
@@ -898,7 +898,7 @@ function DynamicScaling() {
                 <p>
                   {translate({
                     id: 'home.qos.dynamicModeDetail',
-                    message: '算力随流量流动，集群 100% 满载',
+                    message: '算力随流量调配，减少集群闲置',
                   })}
                 </p>
               </div>
@@ -1018,13 +1018,12 @@ function DynamicScaling() {
             <span>
               {translate({
                 id: 'home.qos.summaryStart',
-                message:
-                  '算力随模型流量大小实时增减，两者资源占比之和始终保持 ',
+                message: '按模型流量调整算力分配，图中两者分配比例合计为 ',
               })}
               <strong>100%</strong>
               {translate({
                 id: 'home.qos.summaryEnd',
-                message: '，彻底消除算力闲置',
+                message: '，通过动态调配减少闲置',
               })}
             </span>
           </p>

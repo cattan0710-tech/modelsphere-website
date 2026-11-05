@@ -9,7 +9,7 @@ const tags = [
 const lead =
   '让大模型推理从“能跑”到“生产好用”，让每张 GPU 化身高效 Token 产线。';
 const description =
-  '基于 Kubernetes 构建，将模型部署、缓存感知路由、按 SLO 弹性伸缩、全维可观测性、挂起故障秒级自愈与 Tuning Agent 闭环组织成一套工业级推理调度系统，帮助开发者在复杂异构算力上稳定承载大规模生产流量。';
+  '基于 Kubernetes 构建，将模型部署、缓存感知路由、按 SLO 弹性伸缩、全维可观测性、故障切换及断流续写与 Tuning Agent 闭环组织成一套工业级推理调度系统，帮助开发者在复杂异构算力上稳定承载大规模生产流量。';
 
 test('home restores the selected Stitch screen copy, gradient and desktop proportions', async ({
   page,
@@ -41,8 +41,8 @@ test('home restores the selected Stitch screen copy, gradient and desktop propor
     'href',
     process.env.TEST_DOCS_MODE === 'none' ? '/docs' : '/docs/quickstart',
   );
-  const catalogLink = page.getByRole('link', {
-    name: '模型调优库 (Model Catalog)',
+  const catalogLink = page.locator('#hero').getByRole('link', {
+    name: '模型目录',
     exact: true,
   });
   await expect(catalogLink).toBeVisible();

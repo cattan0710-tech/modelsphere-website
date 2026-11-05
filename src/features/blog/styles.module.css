@@ -245,10 +245,6 @@
   border-radius: var(--radius-control);
   overflow-wrap: anywhere;
 }
-.articleTags > :nth-child(even) {
-  color: var(--color-feedback-success-foreground);
-  background: var(--color-feedback-success-background);
-}
 .primary,
 .searchSubmit {
   position: relative;
@@ -499,12 +495,6 @@
 .tags button::before {
   inset-block: 8px;
   background: var(--color-feedback-info-background);
-}
-.tags button:nth-of-type(3n) {
-  color: var(--color-feedback-success-foreground);
-}
-.tags button:nth-of-type(3n)::before {
-  background: var(--color-feedback-success-background);
 }
 .tags button[aria-pressed='true']::before {
   border-color: currentColor;

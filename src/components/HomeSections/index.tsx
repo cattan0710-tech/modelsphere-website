@@ -759,6 +759,9 @@ export function AutotuneEvolution() {
 }
 export function Benchmarks() {
   const { siteHref } = useSitePath();
+  const {
+    i18n: { currentLocale },
+  } = useDocusaurusContext();
   const title = translate({
     id: 'site.7da06f878c58',
     message: '性能调优模型 Day-0 部署',
@@ -782,7 +785,7 @@ export function Benchmarks() {
             {translate({
               id: 'home.deployment.description',
               message:
-                '在模型广场中选择模型与部署变体，使用已调优配置一键部署。',
+                '在 Console 模型库中选择模型与部署变体，使用已调优配置一键部署。',
             })}
           </p>
         </div>
@@ -792,18 +795,22 @@ export function Benchmarks() {
             role="region"
             aria-label={translate({
               id: 'home.deployment.previewRegion',
-              message: '模型广场截图，可横向滚动查看',
+              message: 'Console 模型库截图，可横向滚动查看',
             })}
             tabIndex={0}
           >
             <div className="home-console-frame">
               <img
                 className="home-console-screenshot"
-                src={siteHref('/screenshots/console-model-catalog.png')}
+                src={siteHref(
+                  currentLocale === 'en'
+                    ? '/screenshots/console-model-catalog-en.png'
+                    : '/screenshots/console-model-catalog.png',
+                )}
                 alt={translate({
                   id: 'home.deployment.screenshotAlt',
                   message:
-                    'ModelSphere Console 模型库：按提升排序，浏览模型、部署变体与调优收益标签。',
+                    'Console 模型库：按提升排序，浏览模型、部署变体与调优收益标签。',
                 })}
                 width={2566}
                 height={1522}
@@ -973,7 +980,7 @@ export function HomeFooter() {
                 <a href={siteHref('/models')}>
                   {translate({
                     id: 'site.1be2b13bec98',
-                    message: 'Model Catalog 模型库',
+                    message: '模型目录',
                   })}
                 </a>
               </li>

@@ -41,7 +41,7 @@ test('four capability cards restore the selected Stitch copy, icons, colors and 
   for (const text of ['华为昇腾', '天数智芯', '摩尔线程', '海光 DCU', '...'])
     await expect(cards.nth(2).getByText(text, { exact: true })).toBeVisible();
   for (const text of [
-    '即日认证模型库',
+    '即日认证模型目录',
     '100% 官方适配通过',
     'DeepSeek-V4-Pro',
     'DeepSeek-V4-Flash-0731',
@@ -62,7 +62,8 @@ test('four capability cards restore the selected Stitch copy, icons, colors and 
     await expect(cards.nth(3).getByText(text, { exact: true })).toBeVisible();
   await expect(
     cards.nth(0).getByRole('link', { name: '推理性能优化社区' }),
-  ).toHaveAttribute('href', '#benchmarks');
+  ).toHaveCount(0);
+  await expect(cards.nth(0)).toContainText('推理性能优化社区');
   const measured = await cards.evaluateAll((elements) =>
     elements.map((card) => {
       const glyph = card.querySelector<HTMLElement>('[aria-hidden="true"]')!;
