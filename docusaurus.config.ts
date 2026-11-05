@@ -5,6 +5,7 @@ import { assertPrepared } from './src/lib/prepared-input';
 import { assertPreparedBlog } from './src/lib/prepared-blog';
 import { mkdir } from 'node:fs/promises';
 import { readDocumentation } from './scripts/check-docs';
+import remarkFollowCard from './plugins/blog/remark-follow-card';
 const prismTheme = {
   plain: {
     color: 'var(--color-text-primary)',
@@ -105,6 +106,7 @@ export default async function config(): Promise<Config> {
           postsPerPage: 'ALL',
           archiveBasePath: null,
           showReadingTime: false,
+          remarkPlugins: [remarkFollowCard],
           feedOptions: { type: null },
           onInlineAuthors: 'ignore',
           onUntruncatedBlogPosts: 'ignore',

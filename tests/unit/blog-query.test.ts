@@ -40,21 +40,31 @@ function collection(count = 25): BlogIndex {
 }
 const empty = { q: '', category: '', tag: '', page: 1 };
 describe('blog query contract', () => {
-  it('25 posts with one featured post produce two disjoint 12-item pages', () => {
+  it('keeps all 25 posts in three disjoint pages when one is featured', () => {
     const index = collection();
     const first = queryPosts(index, empty);
     const second = queryPosts(index, { ...empty, page: 2 });
+    const third = queryPosts(index, { ...empty, page: 3 });
     expect(first.featured?.id).toBe('post-000');
     expect(second.featured).toBeUndefined();
-    expect(first.total).toBe(24);
+    expect(third.featured).toBeUndefined();
+    expect(first.total).toBe(25);
+    expect(first.pages).toBe(3);
     expect(first.posts).toHaveLength(12);
     expect(second.posts).toHaveLength(12);
-    expect(
-      new Set([...first.posts, ...second.posts].map((post) => post.id)).size,
-    ).toBe(24);
-    expect(
-      [...first.posts, ...second.posts].some((post) => post.id === 'post-000'),
-    ).toBe(false);
+    expect(third.posts).toHaveLength(1);
+    const listed = [...first.posts, ...second.posts, ...third.posts];
+    expect(new Set(listed.map((post) => post.id)).size).toBe(25);
+    expect(listed.filter((post) => post.id === 'post-000')).toHaveLength(1);
+  });
+  it('keeps a featured article in its normal list position on later pages', () => {
+    const index = { ...collection(), featuredId: 'post-024' };
+    const first = queryPosts(index, empty);
+    const third = queryPosts(index, { ...empty, page: 3 });
+    expect(first.featured?.id).toBe('post-024');
+    expect(first.posts.map((post) => post.id)).not.toContain('post-024');
+    expect(third.featured).toBeUndefined();
+    expect(third.posts.map((post) => post.id)).toEqual(['post-024']);
   });
   it('a filter searches the whole collection and can return the featured post', () => {
     const index = collection();
@@ -127,7 +137,7 @@ describe('blog query contract', () => {
     expect(queryHref(parsed.query)).toBe('/blog?q=first');
     for (const page of ['0', '-1', '1.5', '1e2', '9007199254740992', '01'])
       expect(parseQuery(`?page=${page}`, index).query.page).toBe(1);
-    expect(parseQuery('?page=999', index).query.page).toBe(2);
+    expect(parseQuery('?page=999', index).query.page).toBe(3);
     expect(
       queryHref({ ...empty, q: '缓存 & C++', tag: 'cache', page: 2 }),
     ).toBe('/blog?q=%E7%BC%93%E5%AD%98+%26+C%2B%2B&tag=cache&page=2');
@@ -141,7 +151,10 @@ describe('blog query contract', () => {
     expect(
       queryPosts({ ...collection(0), featuredId: undefined }, empty).pages,
     ).toBe(1);
-    expect(queryPosts(collection(1), empty).total).toBe(0);
+    const onlyFeatured = queryPosts(collection(1), empty);
+    expect(onlyFeatured.total).toBe(1);
+    expect(onlyFeatured.featured?.id).toBe('post-000');
+    expect(onlyFeatured.posts.map((post) => post.id)).toEqual(['post-000']);
     expect(
       queryPosts({ ...collection(25), featuredId: undefined }, empty).total,
     ).toBe(25);
@@ -152,8 +165,8 @@ describe('blog query contract', () => {
       2 * 1024 * 1024,
     );
     const result = queryPosts(index, { ...empty, page: 417 });
-    expect(result.total).toBe(4999);
-    expect(result.posts).toHaveLength(7);
+    expect(result.total).toBe(5000);
+    expect(result.posts).toHaveLength(8);
     expect(result.posts.at(-1)?.id).toBe('post-999');
   });
 });

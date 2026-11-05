@@ -82,9 +82,7 @@ export function expectedBlogList(
   blog: BlogExpectations,
   query: { category?: string; tag?: string; q?: string; page?: number } = {},
 ) {
-  const filtered = Boolean(query.category || query.tag || query.q);
   const matches = blog.posts.filter((post) => {
-    if (!filtered && post.id === blog.featuredId) return false;
     if (query.category && post.categoryId !== query.category) return false;
     if (query.tag && !post.tagIds.includes(query.tag)) return false;
     if (!query.q) return true;

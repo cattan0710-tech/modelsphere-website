@@ -91,6 +91,7 @@ for (const [id, expected] of Object.entries(modules)) {
       const screenshot = section.getByRole('img');
       await screenshot.scrollIntoViewIfNeeded();
       await expect(screenshot).toBeVisible();
+      await expect(section.locator('.home-console-sort-label')).toHaveCount(0);
       await expect(screenshot).toHaveAttribute(
         'src',
         '/screenshots/console-model-catalog.png',

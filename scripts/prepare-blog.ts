@@ -230,7 +230,7 @@ export function inspectMarkdown(body: string) {
     }
     if (
       node.type === 'containerDirective' &&
-      (!['note', 'info', 'warning'].includes(node.name) ||
+      (!['note', 'info', 'warning', 'follow'].includes(node.name) ||
         Object.keys(node.attributes ?? {}).length)
     )
       throw new Error('不允许自定义提示块或属性');

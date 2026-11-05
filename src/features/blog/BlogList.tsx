@@ -130,9 +130,7 @@ export default function BlogList() {
     event.preventDefault();
     commit({ ...query, page }, true);
   }
-  const posts = browser
-    ? results.posts
-    : sortedPosts(index.posts).filter((post) => post.id !== index.featuredId);
+  const posts = browser ? results.posts : sortedPosts(index.posts);
   const featured = browser
     ? results.featured
     : index.posts.find((post) => post.id === index.featuredId);
@@ -444,15 +442,10 @@ export default function BlogList() {
                           id: 'site.88251ea8f5bf',
                           message: '尚无公开文章',
                         })
-                      : featured
-                        ? translate({
-                            id: 'site.4e2c695ab835',
-                            message: '暂无其他文章',
-                          })
-                        : translate({
-                            id: 'site.04069b9f5e16',
-                            message: '未找到匹配内容',
-                          })}
+                      : translate({
+                          id: 'site.04069b9f5e16',
+                          message: '未找到匹配内容',
+                        })}
                   </h3>
                   <p>
                     {!index.posts.length
@@ -460,15 +453,10 @@ export default function BlogList() {
                           id: 'site.e1cdea003fa1',
                           message: '技术文章与项目动态将在这里发布。',
                         })
-                      : featured
-                        ? translate({
-                            id: 'site.fef24a7b6d42',
-                            message: '先从上方的推荐文章开始阅读。',
-                          })
-                        : translate({
-                            id: 'site.5973f418dd0e',
-                            message: '试试其他关键词，或清除筛选查看全部文章。',
-                          })}
+                      : translate({
+                          id: 'site.5973f418dd0e',
+                          message: '试试其他关键词，或清除筛选查看全部文章。',
+                        })}
                   </p>
                   {!index.posts.length && (
                     <a href="https://github.com/modelsphere">
