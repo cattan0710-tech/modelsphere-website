@@ -96,8 +96,8 @@
     "description": "明确区分来源记录、规则解释与源数据缺失信息。"
   },
   "site.43434840d163": {
-    "message": "← Model catalog",
-    "description": "← 模型目录"
+    "message": "← Models & Tuning",
+    "description": "← 模型与调优"
   },
   "site.82054d3b1ba3": {
     "message": "“Sourced” means a record can be traced to a public source. It does not mean this site has independently tested it or certified it for production. Current source:",
@@ -280,12 +280,12 @@
     "description": "海光 DCU"
   },
   "site.bddd611f1f17": {
-    "message": "Model and certification examples from the design; see the Model Catalog for actual compatibility.",
-    "description": "按设计稿展示的模型与认证示例，实际适配范围请查看模型目录。"
+    "message": "Model and certification examples from the design; see Models & Tuning for actual compatibility.",
+    "description": "按设计稿展示的模型与认证示例，实际适配范围请查看模型与调优。"
   },
   "site.5a4f0d74e965": {
-    "message": "Day-zero certified model catalog",
-    "description": "即日认证模型目录"
+    "message": "Models & Tuning",
+    "description": "模型与调优"
   },
   "site.a05020f5efc2": {
     "message": "100% official compatibility",
@@ -412,8 +412,8 @@
     "description": "（新窗口打开）"
   },
   "site.97a2d37af57d": {
-    "message": "Model Catalog",
-    "description": "模型目录"
+    "message": "Models & Tuning",
+    "description": "模型与调优"
   },
   "site.fc64e7e591f9": {
     "message": "Four core technologies",
@@ -460,8 +460,8 @@
     "description": "首页"
   },
   "site.34b3cac2a496": {
-    "message": "Model Catalog",
-    "description": "模型目录"
+    "message": "Models & Tuning",
+    "description": "模型与调优"
   },
   "site.fda4566fda7d": {
     "message": "Documentation",
@@ -1368,8 +1368,8 @@
     "description": "打开配方详情"
   },
   "site.2b89357b9abf": {
-    "message": "Back to model catalog",
-    "description": "返回模型目录"
+    "message": "Back to Models & Tuning",
+    "description": "返回模型与调优"
   },
   "site.9d6b32790955": {
     "message": "Best gain from a tuned recipe",
@@ -1592,8 +1592,8 @@
     "description": "浏览 ModelSphere 模型部署配方、硬件要求与源性能报告。"
   },
   "site.5246cfab3d47": {
-    "message": "Model Catalog",
-    "description": "模型目录（Model Catalog）"
+    "message": "Models & Tuning",
+    "description": "模型与调优"
   },
   "site.cf8de3c1a445": {
     "message": "Model deployment recipes and tuning reports",
@@ -1604,8 +1604,8 @@
     "description": "查阅模型的推理引擎、容器镜像、启动参数、GPU 硬件要求与基线 / 调优报告。"
   },
   "site.2cd026674d25": {
-    "message": "Search model catalog",
-    "description": "搜索模型目录"
+    "message": "Search Models & Tuning",
+    "description": "搜索模型与调优"
   },
   "site.6e086a60c3f6": {
     "message": "Search recipes, models, images, hardware…",
@@ -2164,8 +2164,8 @@
     "description": "GitHub 仓库"
   },
   "site.1be2b13bec98": {
-    "message": "Model Catalog",
-    "description": "模型目录"
+    "message": "Models & Tuning",
+    "description": "模型与调优"
   },
   "site.87e8f72399c9": {
     "message": "Blog insights",

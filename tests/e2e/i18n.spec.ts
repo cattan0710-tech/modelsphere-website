@@ -137,7 +137,7 @@ test('switches languages on the same catalog URL and preserves filters', async (
     new RegExp(`${site('en/models')}\\?view=recipes&engine=vllm#catalog$`),
   );
   await expect(
-    page.getByRole('heading', { name: 'Model Catalog' }),
+    page.getByRole('heading', { name: 'Models & Tuning' }),
   ).toBeVisible();
   await chooseLanguage(page, '简体中文');
   await expect(page.locator('html')).toHaveAttribute('lang', 'zh-CN');
@@ -255,7 +255,7 @@ test('language switch is accessible on mobile and English pages render without s
   ]);
   await expect(footerNavigation.getByRole('link')).toHaveText([
     'Home',
-    'Model Catalog',
+    'Models & Tuning',
     'Blog',
     'Documentation',
     'Quickstart',
@@ -264,7 +264,10 @@ test('language switch is accessible on mobile and English pages render without s
     'Technical group',
   ]);
   await expect(
-    footerNavigation.getByRole('link', { name: 'Model Catalog', exact: true }),
+    footerNavigation.getByRole('link', {
+      name: 'Models & Tuning',
+      exact: true,
+    }),
   ).toHaveAttribute('href', site('en/models'));
   await expect(
     footerNavigation.getByRole('link', { name: 'Quickstart', exact: true }),

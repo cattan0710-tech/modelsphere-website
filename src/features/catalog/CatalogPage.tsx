@@ -149,7 +149,7 @@ export default function CatalogPage() {
   );
   return (
     <Layout
-      title={translate({ id: 'site.34b3cac2a496', message: '模型目录' })}
+      title={translate({ id: 'site.34b3cac2a496', message: '模型与调优' })}
       description={translate({
         id: 'site.d4db040011ae',
         message: '浏览 ModelSphere 模型部署配方、硬件要求与源性能报告。',
@@ -176,7 +176,7 @@ export default function CatalogPage() {
               <span>
                 {translate({
                   id: 'site.5246cfab3d47',
-                  message: '模型目录（Model Catalog）',
+                  message: '模型与调优',
                 })}
               </span>
             </nav>
@@ -188,7 +188,7 @@ export default function CatalogPage() {
               MODEL DEPLOYMENT RECIPES
             </span>
             <h1>
-              Model Catalog
+              {translate({ id: 'site.34b3cac2a496', message: '模型与调优' })}
               <span>
                 {translate({
                   id: 'site.cf8de3c1a445',
@@ -237,14 +237,14 @@ export default function CatalogPage() {
                   <span className="sr-only">
                     {translate({
                       id: 'site.2cd026674d25',
-                      message: '搜索模型目录',
+                      message: '搜索模型与调优',
                     })}
                   </span>
                   <input
                     ref={search}
                     aria-label={translate({
                       id: 'site.2cd026674d25',
-                      message: '搜索模型目录',
+                      message: '搜索模型与调优',
                     })}
                     value={draft}
                     placeholder={translate({
@@ -636,7 +636,7 @@ export default function CatalogPage() {
                     <caption>
                       {translate({
                         id: 'site.34b3cac2a496',
-                        message: '模型目录',
+                        message: '模型与调优',
                       })}
                     </caption>
                     <thead>

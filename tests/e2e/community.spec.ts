@@ -42,7 +42,7 @@ test('community preserves approved copy and the four-section order without the c
   await expect(header).toBeVisible();
   await expect(header.locator('.desktop-nav .site-nav-link')).toHaveText([
     '首页',
-    '模型目录',
+    '模型与调优',
     '文档指南',
     '博客',
     '社区生态',
@@ -74,7 +74,7 @@ test('community preserves approved copy and the four-section order without the c
   ]);
   await expect(footerLinks).toHaveText([
     '首页',
-    '模型目录',
+    '模型与调优',
     '博客',
     '文档指南',
     '快速开始',

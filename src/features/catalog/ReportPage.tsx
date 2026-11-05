@@ -52,7 +52,10 @@ export default function ReportPage() {
           <Link to={browser ? target : '/models'}>
             {browser
               ? translate({ id: 'site.8e1ba57d2cb6', message: '打开配方详情' })
-              : translate({ id: 'site.2b89357b9abf', message: '返回模型目录' })}
+              : translate({
+                  id: 'site.2b89357b9abf',
+                  message: '返回模型与调优',
+                })}
           </Link>
         </div>
       </main>

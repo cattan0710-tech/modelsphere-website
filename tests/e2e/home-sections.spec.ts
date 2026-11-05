@@ -46,7 +46,7 @@ for (const [id, expected] of Object.entries(modules)) {
       await expect(footer.locator('a')).toHaveCount(8);
       await expect(links).toHaveText([
         '首页',
-        '模型目录',
+        '模型与调优',
         '博客',
         '文档指南',
         '快速开始',

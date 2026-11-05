@@ -42,7 +42,7 @@ test('home restores the selected Stitch screen copy, gradient and desktop propor
     process.env.TEST_DOCS_MODE === 'none' ? '/docs' : '/docs/quickstart',
   );
   const catalogLink = page.locator('#hero').getByRole('link', {
-    name: '模型目录',
+    name: '模型与调优',
     exact: true,
   });
   await expect(catalogLink).toBeVisible();

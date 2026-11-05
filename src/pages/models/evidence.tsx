@@ -20,7 +20,7 @@ export default function Evidence() {
         <div className={styles.container}>
           <div className={styles.topbar}>
             <Link to="/models">
-              {translate({ id: 'site.43434840d163', message: '← 模型目录' })}
+              {translate({ id: 'site.43434840d163', message: '← 模型与调优' })}
             </Link>
           </div>
           <h1>

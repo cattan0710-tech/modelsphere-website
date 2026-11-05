@@ -87,7 +87,7 @@ test('header keeps full navigation and a compact theme control across layouts', 
   const nav = page.getByRole('navigation', { name: '主导航', exact: true });
   await expect(nav.locator('.site-nav-link')).toHaveText([
     '首页',
-    '模型目录',
+    '模型与调优',
     '文档指南',
     '博客',
     '社区生态',

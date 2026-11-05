@@ -41,7 +41,7 @@ test('four capability cards restore the selected Stitch copy, icons, colors and 
   for (const text of ['华为昇腾', '天数智芯', '摩尔线程', '海光 DCU', '...'])
     await expect(cards.nth(2).getByText(text, { exact: true })).toBeVisible();
   for (const text of [
-    '即日认证模型目录',
+    '模型与调优',
     '100% 官方适配通过',
     'DeepSeek-V4-Pro',
     'DeepSeek-V4-Flash-0731',

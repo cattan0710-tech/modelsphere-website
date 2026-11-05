@@ -11,7 +11,7 @@ import SiteSearch from '@site/src/features/search/SiteSearch';
 const items = [
   { label: translate({ id: 'site.203c08e0d44a', message: '首页' }), href: '/' },
   {
-    label: translate({ id: 'site.34b3cac2a496', message: '模型目录' }),
+    label: translate({ id: 'site.34b3cac2a496', message: '模型与调优' }),
     href: '/models',
   },
   {

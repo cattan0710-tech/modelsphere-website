@@ -117,7 +117,7 @@ test('catalog filters, recipe tabs, legacy redirects and return links preserve t
 }) => {
   await page.goto('models?q=mimo-v2.5&sort=name-asc');
   await expect(page.locator('[data-catalog-enhanced="true"]')).toBeVisible();
-  const input = page.getByRole('textbox', { name: '搜索模型目录' });
+  const input = page.getByRole('textbox', { name: '搜索模型与调优' });
   await input.fill('mimo-v2.5');
   await page.getByRole('button', { name: '搜索', exact: true }).click();
   await expect(page).toHaveURL(

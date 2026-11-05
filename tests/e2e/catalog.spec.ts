@@ -162,7 +162,7 @@ test('source-backed list, dynamic filters, shareable queries, model/table views 
     'B300',
   );
   await page.getByRole('button', { name: '重置筛选' }).click();
-  await page.getByRole('textbox', { name: '搜索模型目录' }).fill('mimo-v2.5');
+  await page.getByRole('textbox', { name: '搜索模型与调优' }).fill('mimo-v2.5');
   await page.getByRole('button', { name: '搜索', exact: true }).click();
   await expect(page.locator('[data-recipe-id]')).toHaveCount(2);
   await page.getByRole('button', { name: '表格视图' }).click();
@@ -384,7 +384,7 @@ for (const width of [320, 390, 768, 1280, 1440])
         .boundingBox())!.height;
       expect(hardwareHeight).toBe(width < 768 ? 44 : 32);
       const searchHeight = await page
-        .getByRole('textbox', { name: '搜索模型目录' })
+        .getByRole('textbox', { name: '搜索模型与调优' })
         .evaluate(
           (element) => element.parentElement!.getBoundingClientRect().height,
         );
@@ -532,7 +532,7 @@ test('model pagination and recipe filters keep complete model summaries', async 
   await expect(card.getByRole('listitem')).toHaveCount(0);
   await expect(card).toContainText('+12.5%');
   await page.getByRole('button', { name: '表格视图', exact: true }).click();
-  const table = page.getByRole('table', { name: '模型目录', exact: true });
+  const table = page.getByRole('table', { name: '模型与调优', exact: true });
   await expect(table.locator('tbody tr')).toHaveCount(1);
   await expect(table).toContainText('+12.5%');
   await expect(table.getByRole('listitem')).toHaveCount(4);
@@ -876,14 +876,16 @@ for (const layout of ['cards', 'table'])
       page.getByRole('tab', { name: '性能对照', selected: true }),
     ).toBeVisible();
     await expect(reportBody(page)).toContainText('119.9%');
-    await page.getByRole('link', { name: '返回模型目录', exact: true }).click();
+    await page
+      .getByRole('link', { name: '返回模型与调优', exact: true })
+      .click();
     expect(new URL(page.url()).pathname + new URL(page.url()).search).toBe(
       catalog,
     );
     await expect(page.locator('#benchmark')).toHaveCount(0);
-    await expect(page.getByLabel('搜索模型目录', { exact: true })).toHaveValue(
-      'mimo-v2.5',
-    );
+    await expect(
+      page.getByLabel('搜索模型与调优', { exact: true }),
+    ).toHaveValue('mimo-v2.5');
     await page.goBack();
     await expect(page).toHaveURL(/\/models\/recipe\?.*tab=performance/);
   });
@@ -911,7 +913,7 @@ test('model recipe entries and performance gains lead into the same recipe detai
   await expect(page.locator('#benchmark')).toBeHidden();
   await page.getByRole('tab', { name: '性能对照' }).click();
   await expect(reportBody(page)).toContainText('119.9%');
-  await page.getByRole('link', { name: '返回模型目录', exact: true }).click();
+  await page.getByRole('link', { name: '返回模型与调优', exact: true }).click();
   expect(new URL(page.url()).pathname + new URL(page.url()).search).toBe(
     catalog,
   );
@@ -930,7 +932,7 @@ test('returning from a report restores pagination and hardware filters', async (
     .first()
     .click();
   await expect(page).toHaveURL(/\/models\/recipe\?.*tab=performance/);
-  await page.getByRole('link', { name: '返回模型目录', exact: true }).click();
+  await page.getByRole('link', { name: '返回模型与调优', exact: true }).click();
   expect(new URL(page.url()).pathname + new URL(page.url()).search).toBe(
     catalog,
   );
@@ -1300,7 +1302,7 @@ test('history opens the exact configuration and keeps reports bound to their mea
   await expect(
     page.getByRole('tabpanel', { name: '部署配置' }).locator('pre').first(),
   ).toHaveText(oldYaml);
-  await page.getByRole('link', { name: '返回模型目录', exact: true }).click();
+  await page.getByRole('link', { name: '返回模型与调优', exact: true }).click();
   expect(new URL(page.url()).pathname + new URL(page.url()).search).toBe(
     returnTo,
   );
@@ -1392,7 +1394,7 @@ test('a report keeps its marked baseline when the catalog is offline and rejects
   ).toBeVisible();
   await expect(reportBody(page)).toContainText('119.9%');
   await expect(
-    page.getByRole('link', { name: '返回模型目录', exact: true }),
+    page.getByRole('link', { name: '返回模型与调优', exact: true }),
   ).toHaveAttribute('href', '/models');
 });
 

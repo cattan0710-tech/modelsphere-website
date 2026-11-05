@@ -980,7 +980,7 @@ export function HomeFooter() {
                 <a href={siteHref('/models')}>
                   {translate({
                     id: 'site.1be2b13bec98',
-                    message: '模型目录',
+                    message: '模型与调优',
                   })}
                 </a>
               </li>

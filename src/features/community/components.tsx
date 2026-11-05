@@ -66,7 +66,7 @@ export function CommunityHeader() {
             className="px-3 py-1.5 rounded-lg text-slate-600 hover:bg-slate-100 hover:text-slate-900 font-body-md text-sm transition-all"
             to="/models"
           >
-            {translate({ id: 'site.34b3cac2a496', message: '模型目录' })}
+            {translate({ id: 'site.34b3cac2a496', message: '模型与调优' })}
           </Link>
           <Link
             className="px-3 py-1.5 rounded-lg text-slate-600 hover:bg-slate-100 hover:text-slate-900 font-body-md text-sm transition-all"
@@ -164,7 +164,7 @@ export function CommunityHeader() {
               className="px-3 py-1.5 rounded-lg text-slate-600 hover:bg-slate-100 hover:text-slate-900 font-body-md text-sm transition-all"
               to="/models"
             >
-              {translate({ id: 'site.34b3cac2a496', message: '模型目录' })}
+              {translate({ id: 'site.34b3cac2a496', message: '模型与调优' })}
             </Link>
             <Link
               className="px-3 py-1.5 rounded-lg text-slate-600 hover:bg-slate-100 hover:text-slate-900 font-body-md text-sm transition-all"
@@ -1112,7 +1112,7 @@ export function CommunityFooter() {
                 {translate({ id: 'site.203c08e0d44a', message: '首页' })}
               </Link>
               <Link to="/models">
-                {translate({ id: 'site.34b3cac2a496', message: '模型目录' })}
+                {translate({ id: 'site.34b3cac2a496', message: '模型与调优' })}
               </Link>
               <Link to="/blog">
                 {translate({ id: 'site.7855e5e9727e', message: '博客' })}

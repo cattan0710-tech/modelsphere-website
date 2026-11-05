@@ -229,7 +229,7 @@ function DetailContent({ kind }: { kind: 'model' | 'recipe' }) {
               })}
             >
               <Link to={returnTo}>
-                {translate({ id: 'site.34b3cac2a496', message: '模型目录' })}
+                {translate({ id: 'site.34b3cac2a496', message: '模型与调优' })}
               </Link>
               <span>/</span>
               {kind === 'recipe' && model && !state.unavailable && (
@@ -328,7 +328,7 @@ function DetailContent({ kind }: { kind: 'model' | 'recipe' }) {
               <Link to={returnTo}>
                 {translate({
                   id: 'site.2b89357b9abf',
-                  message: '返回模型目录',
+                  message: '返回模型与调优',
                 })}
               </Link>
             </div>
@@ -379,7 +379,7 @@ function DetailContent({ kind }: { kind: 'model' | 'recipe' }) {
               <Link to={returnTo}>
                 {translate({
                   id: 'site.2b89357b9abf',
-                  message: '返回模型目录',
+                  message: '返回模型与调优',
                 })}
               </Link>
             </div>
@@ -626,7 +626,7 @@ function DetailContent({ kind }: { kind: 'model' | 'recipe' }) {
                         <Link to={returnTo}>
                           {translate({
                             id: 'site.2b89357b9abf',
-                            message: '返回模型目录',
+                            message: '返回模型与调优',
                           })}
                         </Link>
                       </div>

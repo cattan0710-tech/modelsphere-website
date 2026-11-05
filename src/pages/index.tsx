@@ -259,14 +259,15 @@ function CapabilityDetail({ id }: { id: string }) {
         className={styles.catalogDetail}
         aria-description={translate({
           id: 'site.bddd611f1f17',
-          message: '按设计稿展示的模型与认证示例，实际适配范围请查看模型目录。',
+          message:
+            '按设计稿展示的模型与认证示例，实际适配范围请查看模型与调优。',
         })}
       >
         <div>
           <span>
             {translate({
               id: 'site.5a4f0d74e965',
-              message: '即日认证模型目录',
+              message: '模型与调优',
             })}
           </span>
           <strong>
@@ -497,7 +498,7 @@ export default function Home() {
                 <Icon name="tune" />
                 {translate({
                   id: 'site.97a2d37af57d',
-                  message: '模型目录',
+                  message: '模型与调优',
                 })}
               </Link>
             </div>
