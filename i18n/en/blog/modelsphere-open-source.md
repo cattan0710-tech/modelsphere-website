@@ -1,100 +1,103 @@
 ---
-title: 'From running a model to running a service: ModelSphere open-sources its production inference infrastructure'
-summary: A model that can answer is only the starting point. Built on Kubernetes, ModelSphere brings model deployment, cache-aware routing, SLO-based scaling, observability, and interrupted-stream recovery into one serving stack, with a Tuning Agent that explores configurations for real workloads.
+title: 'From “it runs” to “production-ready”: ModelSphere open-sources its production-grade inference infrastructure'
+summary: 'In a demo environment, one accelerator, one engine, and one curl command are often enough. Once traffic enters production, the checklist changes: heterogeneous chips need support, Kubernetes needs setup, routing, rate limiting, and scaling need integration, and generation must continue even when a node fails. Many teams get stuck here—the model can answer, but keeping the service reliably on duty is difficult.'
 ---
 
-## From a demo to production
+In a demo environment, one accelerator, one engine, and one curl command are often enough. Once traffic enters production, the checklist changes: heterogeneous chips need support, Kubernetes needs setup, routing, rate limiting, and scaling need integration, and generation must continue even when a node fails. Many teams get stuck here—the model can answer, but keeping the service reliably on duty is difficult.
 
-In a demo, one GPU, one engine, and a `curl` request may be enough. Production brings a longer checklist: accelerator support, Kubernetes, routing, rate limiting, scaling, and keeping generation going when a node fails. Many teams reach the same point: the model can answer, but operating the service reliably takes much more work.
+vLLM and SGLang have already pushed single-machine throughput a long way forward. But production needs more than a faster engine: it needs the whole fleet to run reliably and economically during peaks. What really consumes people's time is often the scheduling and governance layer outside the engine.
 
-vLLM and SGLang have advanced single-instance throughput. Production also requires a fleet that can handle peak traffic efficiently. Much of the remaining work sits in scheduling and service management around the engine.
-
-That is why we open-sourced ModelSphere. Built on Kubernetes, it brings model deployment, cache-aware routing, SLO-based scaling, observability, interrupted-stream recovery, and workload-driven configuration exploration into one inference serving stack.
+That is why ModelSphere is open-sourcing its platform. It is an open-source platform for production-grade large-model inference. Built on Kubernetes, it brings model deployment, cache-aware routing, SLO-based elastic scaling, observability, interrupted-stream recovery, and a Tuning Agent that keeps looking for better configurations against real workloads into one production-ready inference scheduling system.
 
 ## Who we are
 
-ModelSphere aims to help enterprises and developers turn raw compute into secure, stable, operable model services with less infrastructure work from scratch. Our goal is to let teams bring compute while the platform handles more of the deployment, scheduling, scaling, monitoring, and alerting.
+ModelSphere wants to help enterprises and developers build less from scratch and turn raw compute into safer, more stable, production-ready model services. The goal: compute comes in, services come out; leave as much of the assembly, scheduling, scaling, monitoring, and alerting in between as possible to the platform.
 
-Inference engines handle computation within an instance. ModelSphere handles deployment and service management across the cluster. Together, they support scaling and, for supported scenarios, continuing generation after an interruption.
+It does not aim to replace vLLM or SGLang—the inference engine continues to make each instance compute efficiently; ModelSphere makes it manageable and scalable across the cluster, and able to reconnect when something fails.
 
-![Screenshot of the ModelSphere open-source repository with code and documentation entry points](repository.webp)
+![ZeQnjrln.webp](repository.webp)
 
-Source and quick start: [modelsphere/modelsphere](https://github.com/modelsphere/modelsphere).
+ModelSphere GitHub address:
+
+https://github.com/modelsphere/modelsphere
 
 ## What we do
 
-### From manual instance configuration to cluster management
+### **Break the constraints of conventional inference engines, moving from “manual per-instance configuration” to “automated cluster coordination”**
 
-Think of vLLM and SGLang as high-performance engines, and ModelSphere as fleet scheduling and management: putting those engines into service together.
+If mainstream inference engines such as vLLM and SGLang are high-performance “engines,” ModelSphere is the enterprise “fleet scheduling and management system”—it does not replace the engines, but puts them into vehicles, organizes the fleet, and brings it into production.
 
-Going to production traditionally involves accelerator drivers, Kubernetes setup, traffic gateways, and scaling scripts. ModelSphere turns more of this work into reusable automation:
+Traditionally, going to production means a great deal of manual work: adapting heterogeneous chip drivers, setting up K8s, connecting traffic gateways, and writing scaling scripts. A mistake in any part can bring down the system under high concurrency.
 
-- **Cluster management:** Route requests and scale replicas across nodes as concurrency changes.
-- **Heterogeneous resources:** Provide a common serving stack for environments including NVIDIA GPUs, Huawei Ascend, and Iluvatar accelerators. Check the deployment recipe and environment requirements for each accelerator, driver, model, and engine combination.
-- **Service management:** Connect service quality, recovery, and observability signals to deployment and operations, reducing repeated infrastructure work.
+ModelSphere turns these manual operations into automated capabilities:
 
-![ModelSphere architecture showing application integration, platform capabilities, inference engines, and heterogeneous compute](architecture.png)
+- From “single-instance optimization” to “cluster coordination”: conventional inference engines address single-node computational efficiency; ModelSphere manages multi-node clusters, using request routing and elastic scaling to ensure business availability under high concurrency.
 
-### One platform for different teams
+- From “difficult adaptation” to “unified management”: when inference engines are used in isolation, chip-driver adaptation requires manual work; ModelSphere natively supports heterogeneous compute including Ascend, Iluvatar, Hygon DCU, and Moore Threads, pooling resources and scheduling them centrally so a heterogeneous K8s cluster can be managed like a single resource.
 
-- **Platform and infrastructure teams:** Manage model deployment, routing, and operating policies together, with less duplicated service infrastructure.
-- **Application and model teams:** Use a model catalog, visual configuration, and a standard serving entry point to spend more time on models and applications.
-- **Operations and SRE teams:** Use health checks, service metrics, graceful draining, rate limiting, and scaling to handle traffic changes and maintenance.
+In one sentence: vLLM and SGLang make a single machine run fast; ModelSphere makes the whole inference cluster run reliably, cost less to manage, and reach production faster.
 
-## What the platform offers
+![image.png](architecture.png)
 
-### Connect deployment and service operations
+### **One platform, greater efficiency for AI teams in multiple dimensions**
 
-After preparing a Kubernetes cluster, `kubectl`, Helm, Helmfile, and `helm-diff`, and configuring and registering the `mycluster` environment as described in the [quick start](https://github.com/modelsphere/modelsphere/blob/d5c892d2c1747b9411b423dae5c776d0c84a8003/README.zh-CN.md#快速开始), install the serving stack with:
+Whether you are a professional AI R&D team building a large model portfolio or a small compute owner exploring AI-driven business transformation, as long as you have compute—regardless of the hardware vendor—you can use ModelSphere to move efficiently from hardware to services.
+
+- For platform and infrastructure teams: global multi-model deployment, intelligent routing, and runtime management strategies greatly reduce repeated service-layer infrastructure work and improve overall cluster resource utilization.
+
+- For application and algorithm R&D teams: a clear model catalog and visual deployment configuration, with a standardized, unified model-service entry point, let algorithm engineers focus 100% of their attention on model fine-tuning, optimization, and business application innovation.
+
+- For operations and SRE teams: comprehensive health checks, service-metric monitoring, graceful draining, and highly configurable rate limiting, circuit breaking, and scaling mechanisms make it easier to handle sudden traffic surges and everyday operational challenges.
+
+## What our strengths are
+
+### **| Ready to use, straight into production the same day**
+
+With ModelSphere, developers can leave behind hundreds of lines of cumbersome environment configuration and build an inference hub for real business scenarios in minutes with just one command.
 
 ```bash
 make helm-apply ENV=mycluster
 ```
 
-Model deployment is a separate next step, using a Helm recipe or the graphical control platform. Installation time depends on the cluster, network, images, and model preparation.
+ModelSphere natively includes enterprise operational capabilities such as automatic elastic scaling, PD-disaggregated deployment, a three-tier KV cache architecture, service-quality-based dynamic rate limiting, and automatic recovery of interrupted streams, ensuring exceptional efficiency and stability for inference services in demanding enterprise environments.
 
-The platform brings scaling, Prefill/Decode disaggregation, hierarchical KV caching, and service-quality-based rate limiting into the same deployment and operating workflow. For [supported requests and model/engine combinations](https://github.com/modelsphere/continuation_gateway), the continuation gateway can use generated output as a prefix to resume an interrupted stream. Enable each capability according to its component configuration and limits.
+The platform also provides an intuitive, clean graphical control panel, making the management of large, complex heterogeneous K8s clusters as straightforward as ordering takeout.
 
-![Model service management in the ModelSphere graphical control platform](console.webp)
+![LPB6EcgQ.webp](console.webp)
 
-### Explore better configurations with real workloads
+### **| Continuous automated tuning, multiplying performance**
 
-ModelSphere's [workload-driven automatic tuning is currently in preview](https://github.com/modelsphere/llm-autotune). The Tuning Agent explores serving configurations for real workloads, seeking suitable parameters within throughput and time-to-first-token constraints.
+ModelSphere has continuously evolving low-level performance optimization capabilities. Users can turn low-level optimizations directly into lower inference costs and a more stable production service experience without writing complex tuning code.
 
-For **B300 + Kimi K3 in mxfp4 precision**, the published report compares a baseline recipe with an optimized configuration under an SLO of **TTFT p50 ≤ 8,000 ms and per-request generation speed ≥ 15 tok/s**. Each configuration is evaluated at its best concurrency within the SLO. Throughput normalized to eight GPUs is:
+Through its built-in AutoTune intelligent model scheduling strategy and hardware-accelerated, adaptive load-balancing scheduling, ModelSphere can deliver several-fold improvements in maximum throughput (Tokens/sec) and time to first response, making full use of every bit of compute and greatly reducing inference cost per token.
 
-| Workload                                     |    Baseline |    Optimized | Improvement |
-| -------------------------------------------- | ----------: | -----------: | ----------: |
-| Agent long context (50k input + 1.5k output) | 7,850 tok/s | 12,368 tok/s |       57.6% |
-| Document QA (8k input + 1k output)           | 8,394 tok/s | 10,189 tok/s |       21.4% |
+![q4TA6pHQ.webp](throughput.webp)
 
-![Kimi K3 throughput on B300 within the SLO: 57.6% improvement for Agent long context and 21.4% for Document QA](throughput.webp)
+Taking B300 + Kimi K3 (mixed precision) as an example, the experiment compared baseline and optimized configurations under SLO constraints of TTFT p50 ≤ 8,000 ms and per-request generation speed ≥ 15 tok/s. Throughput normalized to eight accelerators was: (1) Agent long-context scenario: from 7,850 tok/s to 12,368 tok/s, an improvement of 57.6%; (2) Document QA scenario: from 8,394 tok/s to 10,189 tok/s, an improvement of 21.4%.
 
-These results apply to the hardware, precision, engine configurations, and workloads in the report. They are not a general performance guarantee. The [full report](https://github.com/modelsphere/model-catalog/blob/5b668ff2bfd5459ff01d3be6e26cdeac1b037f60/models/kimi-k3/kimi-k3-1.0.4-b300-report.html) includes configurations, concurrency sweeps, and metric records.
+This means that for real production workloads such as Agent long-context tasks and document question answering, ModelSphere can not only “get running” but also “run faster over time” through continuous optimization.
 
-### Manage heterogeneous compute through a common stack
+### **| Command heterogeneous compute and break down hardware barriers**
 
-Enterprise compute often spans hardware vendors. ModelSphere uses a common Kubernetes serving stack and deployment configurations to bring heterogeneous accelerators into service management, reducing repeated work on surrounding infrastructure.
+The platform deeply integrates the powerful EngineX inference engine, providing native support and in-depth optimization for a variety of heterogeneous accelerators on the market.
 
-Hardware integration still requires matching drivers, device plugins, inference engines, and model configurations. Check the installation guide and recipe for the target environment before deployment; unified management does not remove compatibility requirements.
+Whether Huawei Ascend, Iluvatar, Moore Threads, or Hygon DCU, these domestic compute chips can be managed together and scheduled across ModelSphere. Users do not need to rewrite a single line of low-level logic for different chips, giving enterprises “compute freedom” and supply-chain security.
 
-### Keep up with models and inference engines
+### **| Rapid integration and optimization of mainstream large models with “zero delay”**
 
-As models and engines evolve, deployment knowledge needs to evolve with them. The [model catalog](https://modelsphere.github.io/model-catalog/) brings together models and deployment recipes, including DeepSeek, Qwen, Kimi, MiniMax, and GLM families, for selection by hardware, engine, and workload.
+Keeping pace with leading global open-source communities, the ModelSphere team can complete low-level adaptation and performance tuning for the latest mainstream large models as soon as they become available.
 
-Recipes, versions, and test results form the basis for deployment decisions. Refer to specific catalog records for the status of model integration and optimization.
+The platform is already perfectly adapted by default to popular foundation models including DeepSeek-V4/V4-Flash, Qwen, Kimi, MiniMax, and GLM. Once a model is released, it can go straight into production: “take what you need and deploy immediately.”
 
-![Animated demonstration of the ModelSphere model catalog and deployment workflow](model-deployment.gif)
+![BlG63S9T.gif](model-deployment.gif)
 
 ## Join us
 
-ModelSphere turns systems engineering experience into a public resource that others can fork, inspect, and improve. A contribution or tuning result can help teams beyond a single organization.
+ModelSphere's original intention is to turn accumulated systems engineering experience into a public asset that the industry can fork, review, and build together. A contribution or tuning improvement can serve more than one company, crossing hardware barriers to help more users.
 
-We welcome developers, enterprise users, hardware vendors, and ecosystem partners:
+Developers, enterprise users, hardware vendors, and ecosystem partners are all welcome to submit issues and PRs, share tuning cases from real workloads, and suggest adaptations for heterogeneous hardware.
 
-- Run a minimal installation using the [repository quick start](https://github.com/modelsphere/modelsphere).
-- File an [Issue](https://github.com/modelsphere/modelsphere/issues) with your environment, accelerator, model, and original error message.
-- Share tuning results from real workloads, suggest accelerator adaptations, or contribute improvements through a PR.
-- If the project helps you, consider giving it a Star on GitHub.
+Source and quick start: [https://github.com/modelsphere/modelsphere](https://github.com/modelsphere/modelsphere)
+Learn more: [https://modelsphere.tech/](https://modelsphere.tech/)
 
-Learn more on the [ModelSphere website](https://modelsphere.tech/).
+Open the repository above and follow the documentation for a minimal installation; submit an issue about a problem you have encountered, specifying the environment, chip, model, and original error message; or visit the project and give us a big Star~
