@@ -139,7 +139,9 @@ test('catalog filters, recipe tabs, legacy redirects and return links preserve t
     page.getByRole('tab', { name: '部署配置', selected: true }),
   ).toBeVisible();
   await page.reload();
-  await expect(page.getByRole('heading', { level: 1 })).toHaveText(recipe.id);
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText(
+    model.displayName?.trim() || model.name,
+  );
   await expect(page.getByRole('tab')).toHaveCount(2);
   await expect(page.getByRole('tab', { name: '版本历史' })).toHaveCount(0);
   await page.getByRole('tab', { name: '性能对照' }).click();

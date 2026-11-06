@@ -9,6 +9,7 @@ import useIsBrowser from '@docusaurus/useIsBrowser';
 import { useHistory, useLocation } from '@docusaurus/router';
 import {
   config,
+  hardwareText,
   loadHistory,
   loadYaml,
   modelHref,
@@ -202,7 +203,9 @@ function DetailContent({ kind }: { kind: 'model' | 'recipe' }) {
         kind === 'recipe' && recipe
           ? translate(
               { id: 'site.fc599ecea048', message: '{v0} · 配方详情' },
-              { v0: recipe.variant.id },
+              {
+                v0: `${recipe.model.displayName?.trim() || recipe.model.name} · ${translateCopy(hardwareText(recipe.variant))}`,
+              },
             )
           : (model?.displayName ??
             translate({ id: 'site.f7121092ad68', message: '模型与配方详情' }))

@@ -147,7 +147,7 @@ Catalog 卡片桌面最多 4 列、平板 2 列、手机 1 列；硬件使用 ch
 - `sort` 默认 `improvement-desc`，本期只比较已明确标注的源记录最佳负载百分比，保留条件和测量版本，不解释为统一吞吐性能排名；另支持 name-asc/name-desc/updated-desc。无值置后，同值按稳定 id。模型视图按“调优配方最佳提升”排序并展示对应 baseline、负载和版本，模型卡片仅显示可用配方数量，完整配方在模型详情和表格中展示，不复用默认配方卡片。
 - 配方卡片：模型名称为主标题并进入模型详情，下方依次显示配方名称、算力卡型号和数量；后两项使用相同的小字号与弱化颜色，配方名称进入配方详情，禁止从配方名称推断硬件配置。
 - `page`：默认 1，每页 12 条；先过滤再排序和分页。初始 HTML 提供完整精简列表与原生详情链接，增强成功后接管交互。
-- 配方页：`tab` 为 deployment / performance，缺省、旧 history 或未知值显示部署配置。切换保留配方身份、`version`、`dataVersion` 与 `returnTo`，支持分享、刷新及前进后退；方向键和 Home/End 移动 Tab 焦点，Enter/Space 激活。
+- 配方页：主标题显示模型名称（缺失时回退模型 ID），紧随其后突出目录提供的硬件型号与数量；配方自定义名称和当前版本降为辅助信息，浏览器标题同步包含模型与硬件，不从配方名称推断显卡配置。`tab` 为 deployment / performance，缺省、旧 history 或未知值显示部署配置。切换保留配方身份、`version`、`dataVersion` 与 `returnTo`，支持分享、刷新及前进后退；方向键和 Home/End 移动 Tab 焦点，Enter/Space 激活。
 - 性能 Tab：`modelId`、`recipeId` 定位优化配方，`dataVersion` 固定目录提交；展示该目录中配方最新测量版本关联的首份报告，不支持任意配方比较或历史报告选择。参数不完整、记录不存在、无关联报告和目录版本不可用分别提示，不替换为其他记录。
 - `returnTo`：模型、配方和报告页传递原目录查询，仅允许站内 `/models` 地址，保留搜索、筛选、视图、排序及页码；缺省或无效时返回 `/models`。报告的 `dataVersion` 不写回原目录查询。
 - 旧 `/models/report?…`、`/models?benchmark={modelId}/{recipeId}…#benchmark` 和 `/models/recipe?…#benchmark` 链接以 history.replace 转入配方性能 Tab；移除返回地址中的旧 benchmark，避免返回循环。

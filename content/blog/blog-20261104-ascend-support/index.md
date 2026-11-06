@@ -5,7 +5,6 @@ summary: ModelSphere 模型目录新增昇腾部署方案。本文以 GLM-5.3-Fl
 kind: internal
 slug: ascend-support
 publishedAt: 2026-11-06
-draft: true
 updatedAt: 2026-11-06T17:19:00+08:00
 evidenceIds: []
 categoryId: performance

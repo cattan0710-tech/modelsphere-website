@@ -88,12 +88,51 @@ for (const width of [320, 1440])
       await expect(
         page.getByRole('tabpanel', { name: '部署配置' }).locator('pre'),
       ).toBeVisible();
+      const title = overview(page).getByRole('heading', { level: 1 });
+      const hardware = overview(page)
+        .getByRole('group', { name: '硬件', exact: true })
+        .locator('strong');
+      const recipeName = overview(page)
+        .locator('p')
+        .filter({ hasText: '当前配方版本' });
+      await expect(title).toHaveText('GLM 5.3 (NVFP4)');
+      await expect(hardware).toHaveText('4 × B300');
+      await expect(recipeName).toContainText(id);
+      await expect(recipeName).toContainText('1.0.4');
+      await expect(page).toHaveTitle(
+        /GLM 5\.3 \(NVFP4\) · 4 × B300 · 配方详情/,
+      );
+      const fontSize = (element: ReturnType<Page['locator']>) =>
+        element.evaluate((node) => parseFloat(getComputedStyle(node).fontSize));
+      expect(await fontSize(title)).toBeGreaterThan(await fontSize(hardware));
+      expect(await fontSize(hardware)).toBeGreaterThan(
+        await fontSize(recipeName),
+      );
+      expect((await hardware.boundingBox())!.y).toBeGreaterThan(
+        (await title.boundingBox())!.y,
+      );
+      expect((await recipeName.boundingBox())!.y).toBeGreaterThan(
+        (await hardware.boundingBox())!.y,
+      );
       await expect(
         overview(page).getByText('默认配方', { exact: true }),
       ).toBeVisible();
       await expect(
         overview(page).getByText('已调优', { exact: true }),
       ).toBeVisible();
+      const titleBox = (await title.boundingBox())!;
+      const hardwareBox = (await hardware.boundingBox())!;
+      for (const label of ['默认配方', '已调优']) {
+        const badgeBox = (await overview(page)
+          .getByText(label, { exact: true })
+          .boundingBox())!;
+        expect(badgeBox.y + badgeBox.height).toBeLessThan(hardwareBox.y);
+        if (width >= 768) {
+          expect(badgeBox.x).toBeGreaterThan(titleBox.x + titleBox.width);
+          expect(badgeBox.y).toBeLessThan(titleBox.y + titleBox.height);
+          expect(badgeBox.y + badgeBox.height).toBeGreaterThan(titleBox.y);
+        }
+      }
       await expect(fact(page, '版本')).toContainText('1.0.4');
       await expect(fact(page, '版本')).toContainText('2026-10-12');
       await expect(fact(page, '引擎')).toHaveText('sglang');
@@ -161,8 +200,16 @@ for (const width of [320, 1440])
       });
       await baselineLink.click();
       await expect(page.getByRole('heading', { level: 1 })).toHaveText(
-        'sglang-tp8-b300-baseline',
+        'GLM 5.3 (NVFP4)',
       );
+      await expect(
+        overview(page)
+          .getByRole('group', { name: '硬件', exact: true })
+          .locator('strong'),
+      ).toHaveText('8 × B300');
+      await expect(overview(page).locator('p')).toContainText([
+        'sglang-tp8-b300-baseline',
+      ]);
       await expect(
         overview(page).getByText('基线', { exact: true }),
       ).toBeVisible();
@@ -189,6 +236,8 @@ test('missing fields stay missing and a measured zero or regression is preserved
   const catalog = parseCatalog(baseline);
   const model = catalog.models.find((m) => m.name === 'glm5.3')!;
   const recipe = model.variants.find((v) => v.id === id)!;
+  delete model.displayName;
+  recipe.requires = { gpuProduct: [] };
   delete recipe.releaseDate;
   delete recipe.image;
   delete recipe.servedName;
@@ -205,6 +254,16 @@ test('missing fields stay missing and a measured zero or regression is preserved
   ];
   await mount(page, catalog);
   await page.goto(href);
+  await expect(overview(page).getByRole('heading', { level: 1 })).toHaveText(
+    'glm5.3',
+  );
+  await expect(
+    overview(page)
+      .getByRole('group', { name: '硬件', exact: true })
+      .locator('strong'),
+  ).toHaveText('GPU 未指定');
+  await expect(fact(page, '硬件')).toHaveText('GPU 未指定');
+  await expect(page).toHaveTitle(/glm5\.3 · GPU 未指定 · 配方详情/);
   await expect(fact(page, '版本')).toContainText('日期未提供');
   for (const label of ['镜像', '服务名称', 'Chart'])
     await expect(fact(page, label)).toHaveText('未提供');

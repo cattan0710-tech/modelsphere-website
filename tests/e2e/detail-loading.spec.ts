@@ -111,7 +111,7 @@ for (const kind of ['model', 'recipe'] as const)
             );
             await expect(loading(page)).toHaveCount(0);
             await expect(page.getByRole('heading', { level: 1 })).toHaveText(
-              kind === 'model' ? (model.displayName ?? model.name) : recipe.id,
+              model.displayName?.trim() || model.name,
             );
             expect(await page.locator('main').innerText()).not.toContain(
               'JavaScript',

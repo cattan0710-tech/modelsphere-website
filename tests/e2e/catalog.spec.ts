@@ -846,7 +846,7 @@ for (const layout of ['cards', 'table'])
       baseline.commit,
     );
     await expect(page.getByRole('heading', { level: 1 })).toHaveText(
-      variant.id,
+      m.displayName?.trim() || m.name,
     );
     if (layout === 'cards') {
       await expect(

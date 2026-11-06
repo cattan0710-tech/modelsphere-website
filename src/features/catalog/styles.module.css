@@ -1322,16 +1322,51 @@
 .recipeOverview {
   margin-top: 0;
 }
+.recipeIdentity {
+  flex: 1;
+  min-width: 0;
+  max-width: 100%;
+}
+.recipeHeading {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+}
 .recipeTitle {
+  min-width: 0;
   margin: 0;
   font: 700 clamp(22px, 3vw, 32px) / 1.4 var(--font-heading);
+  overflow-wrap: anywhere;
+}
+.recipeHardwareSummary {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin: 8px 0 12px;
+  color: var(--color-text-primary);
+  font: 600 clamp(18px, 2vw, 22px) / 1.4 var(--font-heading);
+}
+.recipeHardwareSummary > svg {
+  flex: none;
+  width: 1em;
+  height: 1em;
+  margin-top: 0.2em;
+  color: var(--color-text-muted);
+}
+.recipeHardwareSummary > strong {
+  min-width: 0;
+  font: inherit;
+  overflow-wrap: anywhere;
+}
+.recipeMetadata {
   overflow-wrap: anywhere;
 }
 .recipeBadges {
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
-  margin: 8px 0;
+  margin: 0;
 }
 .recipeBadges > span {
   font-size: 12px;

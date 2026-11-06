@@ -92,6 +92,19 @@ async function withArticle(
   });
 }
 describe('blog publication boundary', () => {
+  it('publishes the Ascend support article in the formal release', async () => {
+    const result = await readBlog(process.cwd(), {
+      ...release,
+      blogSource: 'content',
+    });
+    expect(result.articles.map((article) => article.meta)).toContainEqual(
+      expect.objectContaining({
+        id: 'blog-20261104-ascend-support',
+        kind: 'internal',
+        slug: 'ascend-support',
+      }),
+    );
+  });
   it('publishes the selected example blog in an explicitly enabled release', async () => {
     const mode = resolveBuildMode({
       SITE_ORIGIN: 'https://example.test',

@@ -13,7 +13,7 @@ import {
   topologyLabel,
   type Recipe,
 } from './data';
-import { SourceLinks } from './components';
+import { Icon, SourceLinks } from './components';
 import styles from './styles.module.css';
 import GainMeter from './GainMeter';
 
@@ -40,6 +40,7 @@ export default function RecipeOverview({
     i18n: { currentLocale },
   } = useDocusaurusContext();
   const { model, variant } = recipe;
+  const modelName = model.displayName?.trim() || model.name;
   const badge = role(recipe);
   const image = variant.image;
   const imageText = image
@@ -101,28 +102,42 @@ export default function RecipeOverview({
       aria-label={translate({ id: 'site.9770f40287d5', message: '配方概览' })}
     >
       <div className={styles.detailTop}>
-        <div>
-          <h1 className={styles.recipeTitle}>{variant.id}</h1>
-          <div className={styles.recipeBadges}>
-            {isDefault(recipe) && (
-              <span className={styles.badge}>
-                {translate({ id: 'site.bb88a59baf57', message: '默认配方' })}
+        <div className={styles.recipeIdentity}>
+          <div className={styles.recipeHeading}>
+            <h1 className={styles.recipeTitle}>{modelName}</h1>
+            <div className={styles.recipeBadges}>
+              {isDefault(recipe) && (
+                <span className={styles.badge}>
+                  {translate({ id: 'site.bb88a59baf57', message: '默认配方' })}
+                </span>
+              )}
+              <span
+                className={
+                  badge === 'optimized' ? styles.optimized : styles.badge
+                }
+              >
+                {badge === 'optimized'
+                  ? translate({ id: 'site.c805b06152c6', message: '已调优' })
+                  : badge === 'baseline'
+                    ? translate({ id: 'site.a7ac587ab52d', message: '基线' })
+                    : translate({
+                        id: 'site.8be3a0d72f4d',
+                        message: '部署配方',
+                      })}
               </span>
-            )}
-            <span
-              className={
-                badge === 'optimized' ? styles.optimized : styles.badge
-              }
-            >
-              {badge === 'optimized'
-                ? translate({ id: 'site.c805b06152c6', message: '已调优' })
-                : badge === 'baseline'
-                  ? translate({ id: 'site.a7ac587ab52d', message: '基线' })
-                  : translate({ id: 'site.8be3a0d72f4d', message: '部署配方' })}
-            </span>
+            </div>
           </div>
-          <p>
-            {model.displayName ?? model.name}{' '}
+          <div
+            className={styles.recipeHardwareSummary}
+            role="group"
+            aria-label={translate({ id: 'site.a0e5308a1627', message: '硬件' })}
+          >
+            <Icon name="chip" />
+            <strong>{translateCopy(hardwareText(variant))}</strong>
+          </div>
+          <p className={styles.recipeMetadata}>
+            {translate({ id: 'catalog.recipeName', message: '配方' })}{' '}
+            {variant.id}
             {translate({
               id: 'site.c40529702643',
               message: ' · 当前配方版本 ',
