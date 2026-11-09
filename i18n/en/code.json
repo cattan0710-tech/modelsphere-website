@@ -1147,6 +1147,10 @@
     "message": "Released {v0}",
     "description": "发布于 {v0}"
   },
+  "catalog.currentVersionReleasedAt": {
+    "message": "Current version released on {v0}",
+    "description": "当前版本发布于 {v0}"
+  },
   "site.a2d8188544aa": {
     "message": "Release date not provided",
     "description": "发布日期未提供"

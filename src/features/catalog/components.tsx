@@ -419,6 +419,21 @@ export function RecipeCard({
         )}
       </div>
       <div className={styles.cardFooter}>
+        <p className={styles.releaseDate} data-recipe-release-date="">
+          {r.variant.releaseDate ? (
+            <time dateTime={r.variant.releaseDate}>
+              {translate(
+                {
+                  id: 'catalog.currentVersionReleasedAt',
+                  message: '当前版本发布于 {v0}',
+                },
+                { v0: r.variant.releaseDate },
+              )}
+            </time>
+          ) : (
+            translate({ id: 'site.020ef0cc6f35', message: '日期未提供' })
+          )}
+        </p>
         <dl>
           <div>
             <dt>Engine</dt>
