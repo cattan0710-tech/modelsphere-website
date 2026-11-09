@@ -581,6 +581,12 @@
   padding: 0 15px 13px;
   margin-top: 14px;
 }
+.releaseDate {
+  margin: 0 0 8px;
+  color: var(--color-text-muted);
+  font-size: 12px;
+  line-height: 1.6;
+}
 .cardFooter dl {
   border-top: 1px solid var(--color-border-default);
   padding: 9px 0;
