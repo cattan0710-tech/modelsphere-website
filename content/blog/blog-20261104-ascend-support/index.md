@@ -41,7 +41,7 @@ ModelSphere 将这些信息组织成可浏览的模型部署方案。每个方�
 
 GLM-5.3-Flash 的部署案例展示了 ModelSphere 如何沉淀面向具体硬件的优化实践。
 
-本次测试使用 **8 张昇腾最新型号芯片 950DT**，基于 vLLM-Ascend 部署量化后的模型。基线方案采用 TP8、DP1；优化方案调整为 TP2、DP4，并结合专家并行运行模型。在并行配置调整之外，我们还启用了 FlashComm1 序列并行，以及昇腾 NPU 图和 kernel 编译相关优化。这些调整旨在结合硬件特点，改善模型推理过程中的计算与通信效率。如下图所示，在最终的测试结果中，**对于在满足 SLO 的条件下，调优后的 GLM-5.3-Flash 在昇腾 950 上最高可以达成 53.5% 的吞吐提升**（[查看详细报告](https://modelsphere.tech/models/recipe?modelId=glm-5.3-flash&recipeId=vllm-dp4-tp2-950dt-optimized&dataVersion=af9f66581925046f9478acb5ddf8c5be8241ef04&returnTo=%2Fmodels%3Fhardware%3DAscend-950DT&tab=performance)）。
+本次测试使用 **8 张昇腾最新型号芯片 950DT**，基于 vLLM-Ascend 部署量化后的模型。基线方案采用 TP8、DP1；优化方案调整为 TP2、DP4，并结合专家并行运行模型。在并行配置调整之外，我们还启用了 FlashComm1 序列并行，以及昇腾 NPU 图和 kernel 编译相关优化。这些调整旨在结合硬件特点，改善模型推理过程中的计算与通信效率。如下图所示，在最终的测试结果中，**对于在满足 SLO 的条件下，调优后的 GLM-5.3-Flash 在昇腾 950 上最高可以达成 53.5% 的吞吐提升**（[查看详细报告](https://modelsphere.tech/en/models/recipe?modelId=glm-5.3-flash&recipeId=vllm-dp4-tp2-950dt-optimized&dataVersion=9666e210408d123249852e2d9744bd6f16620cef&returnTo=%2Fmodels%3Fvendor%3Dascend%26hardware%3DAscend-910B4%26hardware%3DAscend-950DT&tab=performance)）。
 
 ![image-20261106173417092](glm53.png)
 
