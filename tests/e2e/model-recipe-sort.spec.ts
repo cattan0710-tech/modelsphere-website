@@ -14,17 +14,37 @@ for (const width of [390, 1440]) {
       { ...template, id: 'bravo', releaseDate: '2026-10-01' },
       { ...template, id: 'charlie', releaseDate: undefined },
       { ...template, id: 'delta', releaseDate: '2026-11-01' },
-    ];
+    ].map((variant) => ({
+      ...variant,
+      path: `models/${model.name}/${variant.id}.yaml`,
+      history: `models/${model.name}/${variant.id}.history.json`,
+    }));
     model.tuning = [
-      { optimized: 'alpha', uplift: 10, workloads: [], baseline: '' },
-      { optimized: 'bravo', uplift: 50, workloads: [], baseline: '' },
-      { optimized: 'delta', uplift: 50, workloads: [], baseline: '' },
+      {
+        optimized: `alpha@${template.version}`,
+        uplift: 10,
+        workloads: [],
+        baseline: '',
+      },
+      {
+        optimized: `bravo@${template.version}`,
+        uplift: 50,
+        workloads: [],
+        baseline: '',
+      },
+      {
+        optimized: `delta@${template.version}`,
+        uplift: 50,
+        workloads: [],
+        baseline: '',
+      },
     ];
+    const catalog = parseCatalog(source);
     await page.route(
       'https://modelsphere.github.io/model-catalog/**',
       (route) =>
         route.request().url().endsWith('index-v2.json')
-          ? route.fulfill({ json: source })
+          ? route.fulfill({ json: catalog })
           : route.abort(),
     );
     await page.setViewportSize({ width, height: 1000 });
