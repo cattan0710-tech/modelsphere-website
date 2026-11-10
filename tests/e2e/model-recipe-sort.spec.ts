@@ -56,7 +56,7 @@ for (const width of [390, 1440]) {
     await expectOrder(['alpha', 'bravo', 'charlie', 'delta']);
     await choose('按配方名称 Z–A');
     await expectOrder(['delta', 'charlie', 'bravo', 'alpha']);
-    await choose('按配方发布日期');
+    await choose('按配方发布日期（由新到旧）');
     await expectOrder(['alpha', 'delta', 'bravo', 'charlie']);
     await expect(page).toHaveURL(
       (url) =>
@@ -65,13 +65,13 @@ for (const width of [390, 1440]) {
         url.searchParams.get('dataVersion') === source.commit,
     );
     await page.reload();
-    await expect(sort).toHaveText('按配方发布日期');
+    await expect(sort).toHaveText('按配方发布日期（由新到旧）');
     await expectOrder(['alpha', 'delta', 'bravo', 'charlie']);
     await page.goBack();
     await expect(sort).toHaveText('按配方名称 Z–A');
     await expectOrder(['delta', 'charlie', 'bravo', 'alpha']);
     await page.goForward();
-    await expect(sort).toHaveText('按配方发布日期');
+    await expect(sort).toHaveText('按配方发布日期（由新到旧）');
     await choose('按吞吐量提升排序');
     await expectOrder(['bravo', 'delta', 'alpha', 'charlie']);
     await expect(page).toHaveURL((url) => !url.searchParams.has('sort'));

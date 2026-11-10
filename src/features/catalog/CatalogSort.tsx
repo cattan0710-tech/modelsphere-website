@@ -60,7 +60,7 @@ export default function CatalogSort({
           value: 'updated-desc',
           label: translate({
             id: 'site.6592019eaa05',
-            message: '按配方发布日期',
+            message: '按配方发布日期（由新到旧）',
           }),
         },
       ]}
