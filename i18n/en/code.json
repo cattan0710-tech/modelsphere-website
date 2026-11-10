@@ -1,4 +1,10 @@
 {
+  "catalog.recipeNameAsc": {
+    "message": "Recipe name A–Z"
+  },
+  "catalog.recipeNameDesc": {
+    "message": "Recipe name Z–A"
+  },
   "catalog.loadingDetails": {
     "message": "Loading details…",
     "description": "正在加载详情…"
@@ -1676,8 +1682,8 @@
     "description": "按模型名称 Z–A"
   },
   "site.6592019eaa05": {
-    "message": "Recipe release date",
-    "description": "按配方发布日期"
+    "message": "Newest first",
+    "description": "按最新发布排序"
   },
   "site.7904ff565aaa": {
     "message": "Card view",

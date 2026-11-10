@@ -1202,11 +1202,13 @@ test('original report retries a failed request without requiring structured JSON
   page,
 }) => {
   let attempts = 0;
+  let available = false;
+  // Keep the report unavailable until Retry, including any redirect remounts.
   await page.route('**/mimo-v2.5-h100-report.html', (route) => {
     attempts++;
-    return attempts === 1
-      ? route.fulfill({ status: 503, body: 'Unavailable' })
-      : route.fulfill({ body: report, contentType: 'text/html' });
+    return available
+      ? route.fulfill({ body: report, contentType: 'text/html' })
+      : route.fulfill({ status: 503, body: 'Unavailable' });
   });
   await page.goto(
     `/models/recipe?modelId=mimo-v2.5&recipeId=${variant.id}&tab=performance`,
@@ -1218,12 +1220,14 @@ test('original report retries a failed request without requiring structured JSON
   await expect(
     page.getByRole('button', { name: '全屏观看', exact: true }),
   ).toBeDisabled();
+  const attemptsBeforeRetry = attempts;
+  available = true;
   await page.getByRole('button', { name: '重试', exact: true }).click();
   await expect(reportBody(page)).toContainText('119.9%');
   await expect(
     page.getByRole('button', { name: '全屏观看', exact: true }),
   ).toBeEnabled();
-  expect(attempts).toBe(2);
+  expect(attempts).toBe(attemptsBeforeRetry + 1);
 });
 
 test('history opens the exact configuration and keeps reports bound to their measured version', async ({

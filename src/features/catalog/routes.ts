@@ -1,8 +1,9 @@
 import type { Recipe } from './data';
 
-export function modelRoute(modelId: string, dataVersion = '') {
+export function modelRoute(modelId: string, dataVersion = '', sort = '') {
   const params = new URLSearchParams({ id: modelId });
   if (dataVersion) params.set('dataVersion', dataVersion);
+  if (sort) params.set('sort', sort);
   return '/model?' + params.toString();
 }
 
