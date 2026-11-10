@@ -1,6 +1,7 @@
 import { test, expect, type Page } from '@playwright/test';
 import { readFileSync } from 'node:fs';
 import baseline from '../../content/catalog/baseline.json';
+import { parseCatalog, type Catalog } from '../../src/features/catalog/data';
 
 const bilingual = readFileSync(
   'tests/fixtures/catalog/bilingual-report.html',
@@ -8,14 +9,20 @@ const bilingual = readFileSync(
 );
 const yaml = readFileSync('tests/fixtures/catalog/mimo.yaml', 'utf8');
 const query = `?modelId=mimo-v2.5&recipeId=sglang-tp8-h100-optimized&dataVersion=${baseline.commit}&returnTo=%2Fmodels%3Ffamily%3Dmimo&tab=performance`;
+const shortHref =
+  '/recipe?model=mimo-v2.5&id=sglang-tp8-h100-optimized&tab=performance';
 const fallback =
   'This report is unavailable in the selected language. Showing the original report.';
 const frame = (page: Page) => page.frameLocator('#benchmark-report');
 
-async function mockSources(page: Page, html: string) {
+async function mockSources(
+  page: Page,
+  html: string,
+  catalog: Catalog = parseCatalog(baseline),
+) {
   await page.route('https://modelsphere.github.io/model-catalog/**', (route) =>
     route.request().url().endsWith('index-v2.json')
-      ? route.fulfill({ json: baseline })
+      ? route.fulfill({ json: catalog })
       : route.fulfill({ json: { revisions: [] } }),
   );
   await page.route(
@@ -65,10 +72,13 @@ test('embedded performance report follows both portal language switches and reta
     frame(page).getByRole('heading', { name: '中文性能报告' }),
   ).toBeVisible();
   await expect(
-    page.getByRole('link', { name: '查看完整报告 ↗', exact: true }),
-  ).toHaveAttribute('href', /#zh$/);
+    page.getByRole('button', { name: '查看完整报告', exact: true }),
+  ).toHaveCount(0);
+  await expect(
+    page.getByRole('button', { name: '全屏观看', exact: true }),
+  ).toBeEnabled();
   await chooseLanguage(page, 'English');
-  await expect(page).toHaveURL('/en/models/recipe' + query);
+  await expect(page).toHaveURL('/en' + shortHref);
   await expect(frame(page).locator('html')).toHaveAttribute('lang', 'en');
   await expect(
     frame(page).getByRole('heading', { name: 'English performance report' }),
@@ -76,8 +86,8 @@ test('embedded performance report follows both portal language switches and reta
   await expect(frame(page).locator('#gain')).toHaveText('119.9%');
   await expect(page.getByText(fallback, { exact: true })).toHaveCount(0);
   await expect(
-    page.getByRole('link', { name: 'View full report ↗', exact: true }),
-  ).toHaveAttribute('href', /#en$/);
+    page.getByRole('button', { name: 'View full report', exact: true }),
+  ).toHaveCount(0);
   await expect(page.locator('#benchmark-report')).toHaveAttribute(
     'sandbox',
     'allow-scripts',
@@ -96,7 +106,7 @@ test('embedded performance report follows both portal language switches and reta
     frame(page).getByRole('heading', { name: '中文性能报告' }),
   ).toBeVisible();
   await chooseLanguage(page, '简体中文');
-  await expect(page).toHaveURL('/models/recipe' + query);
+  await expect(page).toHaveURL(shortHref);
   await expect(frame(page).locator('html')).toHaveAttribute('lang', 'zh-CN');
 });
 
@@ -126,8 +136,8 @@ for (const [name, html] of [
     ).toBeVisible();
     await expect(page.getByText(fallback, { exact: true })).toBeVisible();
     await expect(
-      page.getByRole('link', { name: 'View full report ↗', exact: true }),
-    ).toHaveAttribute('href', /#zh$/);
+      page.getByRole('button', { name: 'Fullscreen', exact: true }),
+    ).toBeEnabled();
   });
 }
 
@@ -148,9 +158,93 @@ test('English-only report stays readable when the portal switches to Chinese', a
     page.getByText('该报告暂无当前语言版本，已显示原始报告。'),
   ).toBeVisible();
   await expect(
-    page.getByRole('link', { name: '查看完整报告 ↗', exact: true }),
-  ).toHaveAttribute('href', /#en$/);
+    page.getByRole('button', { name: '全屏观看', exact: true }),
+  ).toBeEnabled();
 });
+
+test('each comparison opens its matching report in the website and remains selected after reload', async ({
+  page,
+}) => {
+  const catalog = parseCatalog(structuredClone(baseline));
+  const model = catalog.models.find((item) => item.name === 'mimo-v2.5')!;
+  const original = model.tuning.find((item) =>
+    item.optimized.startsWith('sglang-tp8-h100-optimized@'),
+  )!;
+  const secondReport = 'second-comparison-report.html';
+  model.reports.push(secondReport);
+  model.tuning.push({
+    ...original,
+    baseline: 'sglang-tp8-h100-baseline@0.9.0',
+    report: secondReport,
+    workloads: [],
+    uplift: 1,
+  });
+  await mockSources(page, bilingual, catalog);
+  await page.route('**/second-comparison-report.html', (route) =>
+    route.fulfill({
+      body: '<!doctype html><html lang="zh-CN"><body><h1>第二份性能报告</h1></body></html>',
+      contentType: 'text/html',
+    }),
+  );
+  await page.goto('/models/recipe' + query.replace('&tab=performance', ''));
+  const reportLink = page.locator(
+    'a[href*="report=second-comparison-report.html"]',
+  );
+  await expect(reportLink).toBeVisible();
+  await expect(reportLink).not.toHaveAttribute('target', '_blank');
+  await reportLink.click();
+  await expect(
+    frame(page).getByRole('heading', { name: '第二份性能报告' }),
+  ).toBeVisible();
+  await expect(page.getByLabel('性能报告', { exact: true })).toHaveValue(
+    secondReport,
+  );
+  const selectedUrl = page.url();
+  await page.reload();
+  await expect(
+    frame(page).getByRole('heading', { name: '第二份性能报告' }),
+  ).toBeVisible();
+  expect(page.url()).toBe(selectedUrl);
+  await page
+    .getByLabel('性能报告', { exact: true })
+    .selectOption(original.report!);
+  await expect(
+    frame(page).getByRole('heading', { name: '中文性能报告' }),
+  ).toBeVisible();
+  expect(new URL(page.url()).searchParams.get('report')).toBe(original.report);
+  expect(new URL(page.url()).searchParams.has('dataVersion')).toBe(false);
+  expect(
+    await page.evaluate(() => window.history.state?.state?.catalogDataVersion),
+  ).toBe(baseline.commit);
+});
+
+for (const width of [390, 1440]) {
+  test(`report stays readable at ${width}px when native fullscreen is unavailable`, async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width, height: 900 });
+    await page.addInitScript(() => {
+      HTMLElement.prototype.requestFullscreen = () =>
+        Promise.reject(new Error('Unavailable'));
+    });
+    await mockSources(page, bilingual);
+    await page.goto('/models/recipe' + query);
+    await expect(
+      frame(page).getByRole('heading', { name: '中文性能报告' }),
+    ).toBeVisible();
+    await page.getByRole('button', { name: '全屏观看', exact: true }).click();
+    await expect(
+      page.getByRole('status').filter({ hasText: '暂时无法全屏观看' }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole('button', { name: '查看完整报告', exact: true }),
+    ).toHaveCount(0);
+    await expect(page.getByRole('dialog')).toHaveCount(0);
+    await expect(
+      frame(page).getByRole('heading', { name: '中文性能报告' }),
+    ).toBeVisible();
+  });
+}
 
 test('language metadata retains assets and cannot inject HTML when reserialized', async ({
   page,

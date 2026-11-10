@@ -2,7 +2,7 @@ import { translateCopy } from '@site/src/lib/translate-copy';
 import { translate } from '@docusaurus/Translate';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import React, { useId, useState } from 'react';
-import Link from '@docusaurus/Link';
+import CatalogLink from './CatalogLink';
 import {
   baselineInfo,
   config,
@@ -157,7 +157,13 @@ export function SourceState({
     </div>
   );
 }
-export function Stats({ catalog }: { catalog: Catalog }) {
+export function Stats({
+  catalog,
+  returnTo,
+}: {
+  catalog: Catalog;
+  returnTo?: string;
+}) {
   const s = stats(catalog);
   const percent = (value: number | null) =>
     value == null
@@ -198,9 +204,13 @@ export function Stats({ catalog }: { catalog: Catalog }) {
       'BEST IMPROVEMENT',
       percent(s.bestImprovement),
       s.bestRecipe ? (
-        <Link to={reportHref(s.bestRecipe, catalog.commit)}>
+        <CatalogLink
+          to={reportHref(s.bestRecipe, catalog.commit, returnTo)}
+          version={catalog.commit}
+          returnTo={returnTo}
+        >
           {s.bestRecipe.model.name} · {s.bestRecipe.variant.id}
-        </Link>
+        </CatalogLink>
       ) : (
         translate({ id: 'site.de0b7338c7f3', message: '暂无有效提升记录' })
       ),
@@ -312,12 +322,14 @@ export function RecipeCard({
               <span>· {translate({ message: topologyLabel(r.variant) })}</span>
             </p>
             <Heading>
-              <Link
+              <CatalogLink
                 to={
                   context === 'catalog'
                     ? modelHref(r.model, version, returnTo)
                     : detailHref(r, version, undefined, returnTo)
                 }
+                version={version}
+                returnTo={returnTo}
                 title={
                   context === 'catalog'
                     ? r.model.displayName || r.model.name
@@ -327,7 +339,7 @@ export function RecipeCard({
                 {context === 'catalog'
                   ? r.model.displayName || r.model.name
                   : r.variant.id}
-              </Link>
+              </CatalogLink>
             </Heading>
           </div>
           <span
@@ -350,17 +362,19 @@ export function RecipeCard({
                 : translate({ id: 'site.c98e118e0a43', message: '模型' })}
             </dt>
             <dd>
-              <Link
+              <CatalogLink
                 to={
                   context === 'catalog'
                     ? detailHref(r, version, undefined, returnTo)
                     : modelHref(r.model, version, returnTo)
                 }
+                version={version}
+                returnTo={returnTo}
               >
                 {context === 'catalog'
                   ? r.variant.id
                   : r.model.displayName || r.model.name}
-              </Link>
+              </CatalogLink>
             </dd>
           </div>
         </dl>
@@ -373,6 +387,8 @@ export function RecipeCard({
         <div className={styles.gain}>
           <GainMeter
             value={r.quotedGain}
+            version={version}
+            returnTo={returnTo}
             label={translate({
               id: 'site.6a575618a188',
               message: '吞吐量提升',
@@ -457,18 +473,20 @@ export function RecipeCard({
           </div>
         </dl>
         <div className={styles.cardActions}>
-          <Link
+          <CatalogLink
             className={styles.secondary}
             to={
               badge === 'optimized'
                 ? reportHref(r, version, returnTo)
                 : detailHref(r, version, undefined, returnTo)
             }
+            version={version}
+            returnTo={returnTo}
           >
             {badge === 'optimized'
               ? translate({ id: 'site.19166317a928', message: '查看对照报告' })
               : translate({ id: 'site.9c3b6f1004ad', message: '查看部署配置' })}
-          </Link>
+          </CatalogLink>
           <CopyButton
             getText={copy}
             label={translate({
@@ -484,9 +502,13 @@ export function RecipeCard({
 export function SourceLinks({
   r,
   includeReport = true,
+  version = '',
+  returnTo,
 }: {
   r: Recipe;
   includeReport?: boolean;
+  version?: string;
+  returnTo?: string;
 }) {
   const {
     i18n: { currentLocale },
@@ -497,13 +519,13 @@ export function SourceLinks({
         {translate({ id: 'site.61e67a99c6ff', message: '查看配方文件 ↗' })}
       </a>
       {includeReport && reportUrl(r) && (
-        <a
-          href={reportUrl(r, undefined, currentLocale === 'en' ? 'en' : 'zh')!}
-          target="_blank"
-          rel="noreferrer"
+        <CatalogLink
+          to={reportHref(r, version, returnTo)}
+          version={version}
+          returnTo={returnTo}
         >
-          {translate({ id: 'site.7c91d0100fd4', message: '查看性能报告 ↗' })}
-        </a>
+          {currentLocale === 'en' ? 'View performance report' : '查看性能报告'}
+        </CatalogLink>
       )}
       <a href={config.repository} target="_blank" rel="noreferrer">
         {translate({ id: 'site.be5038492a9d', message: '贡献配方 ↗' })}

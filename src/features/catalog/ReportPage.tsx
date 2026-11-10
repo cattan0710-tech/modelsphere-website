@@ -18,8 +18,8 @@ export default function ReportPage() {
   const history = useHistory();
   const target = recipeTabHref(browser ? location.search : '', 'performance');
   useEffect(() => {
-    if (browser) history.replace(siteHref(target));
-  }, [browser, history, target, siteHref]);
+    if (browser) history.replace(siteHref(target), location.state);
+  }, [browser, history, target, siteHref, location.state]);
   return (
     <Layout
       title={translate({ id: 'site.4fd2e35fdb77', message: '配方详情' })}

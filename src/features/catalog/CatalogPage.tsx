@@ -4,6 +4,7 @@ import { useSitePath } from '@site/src/lib/use-site-path';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import Layout from '@theme/Layout';
 import Link from '@docusaurus/Link';
+import CatalogLink from './CatalogLink';
 import useIsBrowser from '@docusaurus/useIsBrowser';
 import useIsomorphicLayoutEffect from '@docusaurus/useIsomorphicLayoutEffect';
 import { useHistory, useLocation } from '@docusaurus/router';
@@ -29,7 +30,11 @@ import {
 import { Icon, RecipeCard, SourceState, Stats } from './components';
 import { useCatalog } from './useCatalog';
 import { variantVendors, vendorLabel } from './hardware';
-import { legacyCatalogReportHref, reportHref } from './routes';
+import {
+  legacyCatalogReportHref,
+  modelNavigationState,
+  reportHref,
+} from './routes';
 import CatalogSelect from './CatalogSelect';
 import ModelCard, { ModelRecipeList, ModelTuning } from './ModelCard';
 import styles from './styles.module.css';
@@ -65,8 +70,12 @@ export default function CatalogPage() {
     ? legacyCatalogReportHref(location.search)
     : null;
   useEffect(() => {
-    if (legacyReport) history.replace(siteHref(legacyReport));
-  }, [history, legacyReport, siteHref]);
+    if (legacyReport)
+      history.replace(
+        siteHref(legacyReport),
+        modelNavigationState(version, returnTo),
+      );
+  }, [history, legacyReport, siteHref, version, returnTo]);
   const [draft, setDraft] = useState(''),
     search = useRef<HTMLInputElement>(null),
     filters = useRef<HTMLFormElement>(null),
@@ -204,7 +213,7 @@ export default function CatalogPage() {
               })}
             </p>
           </header>
-          <Stats catalog={c} />
+          <Stats catalog={c} returnTo={returnTo} />
           {state.unavailable ? (
             <p className={styles.notice} role="alert">
               {state.status === 'loading'
@@ -668,11 +677,13 @@ export default function CatalogPage() {
                           data-model-id={summary.model.name}
                         >
                           <th>
-                            <Link
+                            <CatalogLink
                               to={modelHref(summary.model, c.commit, returnTo)}
+                              version={c.commit}
+                              returnTo={returnTo}
                             >
                               {summary.model.displayName || summary.model.name}
-                            </Link>
+                            </CatalogLink>
                             <p>
                               {summary.model.description ||
                                 translate({
@@ -747,24 +758,32 @@ export default function CatalogPage() {
                       {items.map((r) => (
                         <tr key={r.key}>
                           <th>
-                            <Link to={modelHref(r.model, c.commit, returnTo)}>
+                            <CatalogLink
+                              to={modelHref(r.model, c.commit, returnTo)}
+                              version={c.commit}
+                              returnTo={returnTo}
+                            >
                               {r.model.displayName ?? r.model.name}
-                            </Link>
+                            </CatalogLink>
                           </th>
                           <td>
-                            <Link
+                            <CatalogLink
                               to={detailHref(r, c.commit, undefined, returnTo)}
+                              version={c.commit}
+                              returnTo={returnTo}
                             >
                               {r.variant.id}
-                            </Link>
+                            </CatalogLink>
                             <br />
                             {r.variant.engine}
                           </td>
                           <td>{translateCopy(hardwareText(r.variant))}</td>
                           <td>
                             {r.quotedGain != null && reportUrl(r) ? (
-                              <Link
+                              <CatalogLink
                                 to={reportHref(r, c.commit, returnTo)}
+                                version={c.commit}
+                                returnTo={returnTo}
                                 aria-label={translate(
                                   {
                                     id: 'site.50123e2643ec',
@@ -774,7 +793,7 @@ export default function CatalogPage() {
                                 )}
                               >
                                 {`${r.quotedGain >= 0 ? '+' : ''}${r.quotedGain.toFixed(1)}%`}
-                              </Link>
+                              </CatalogLink>
                             ) : r.quotedGain == null ? (
                               translate({
                                 id: 'site.756762e293f2',
@@ -786,14 +805,16 @@ export default function CatalogPage() {
                             <small>{r.workload}</small>
                           </td>
                           <td>
-                            <Link
+                            <CatalogLink
                               to={detailHref(r, c.commit, undefined, returnTo)}
+                              version={c.commit}
+                              returnTo={returnTo}
                             >
                               {translate({
                                 id: 'site.ad28b6a65be6',
                                 message: '查看配方详情',
                               })}
-                            </Link>
+                            </CatalogLink>
                           </td>
                         </tr>
                       ))}

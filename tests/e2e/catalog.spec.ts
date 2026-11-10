@@ -149,7 +149,7 @@ test('source-backed list, dynamic filters, shareable queries, model/table views 
   );
   await expect(best.getByRole('link')).toHaveAttribute(
     'href',
-    /recipe\?.*modelId=glm5.3.*tab=performance/,
+    /recipe\?.*model=glm5.3.*tab=performance/,
   );
   await page
     .locator('label')
@@ -230,7 +230,7 @@ for (const width of [320, 390, 768, 1280, 1440])
       const recipe = page.locator(`[data-recipe-id="${m.name}/${variant.id}"]`);
       const title = recipe.getByRole('heading', { level: 2 }).getByRole('link');
       await expect(title).toHaveText(m.displayName!);
-      await expect(title).toHaveAttribute('href', /\/models\/detail\?/);
+      await expect(title).toHaveAttribute('href', /\/model\?id=/);
       const recipeLink = recipe
         .locator('dl')
         .filter({ has: page.getByText('配方', { exact: true }) })
@@ -262,9 +262,9 @@ for (const width of [320, 390, 768, 1280, 1440])
         (await recipeLink.getAttribute('href'))!,
         'http://localhost',
       );
-      expect(recipeUrl.pathname).toBe('/models/recipe');
-      expect(recipeUrl.searchParams.get('recipeId')).toBe(variant.id);
-      expect(recipeUrl.searchParams.get('dataVersion')).toBe(baseline.commit);
+      expect(recipeUrl.pathname).toBe('/recipe');
+      expect(recipeUrl.searchParams.get('id')).toBe(variant.id);
+      expect(recipeUrl.searchParams.has('dataVersion')).toBe(false);
       expect(recipeUrl.searchParams.has('tab')).toBe(false);
       await recipeLink.click();
       await expect(
@@ -272,7 +272,7 @@ for (const width of [320, 390, 768, 1280, 1440])
       ).toBeVisible();
       await page.goBack();
       await title.click();
-      await expect(page).toHaveURL(/\/models\/detail\?/);
+      await expect(page).toHaveURL(/\/model\?id=/);
       await expect(page.getByRole('heading', { level: 1 })).toHaveText(
         m.displayName!,
       );
@@ -280,7 +280,7 @@ for (const width of [320, 390, 768, 1280, 1440])
         page
           .getByRole('heading', { level: 3 })
           .getByRole('link', { name: variant.id, exact: true }),
-      ).toHaveAttribute('href', /\/models\/recipe\?/);
+      ).toHaveAttribute('href', /\/recipe\?/);
 
       const catalog = '/models?q=glm-5.3-flash&view=models';
       await page.goto(catalog);
@@ -450,11 +450,11 @@ for (const width of [320, 390, 768, 1280, 1440])
           (await link.getAttribute('href'))!,
           'http://localhost',
         );
-        expect(url.pathname).toBe('/models/recipe');
-        expect(url.searchParams.get('recipeId')).toBe(v.id);
-        expect(url.searchParams.get('modelId')).toBe(model.name);
-        expect(url.searchParams.get('dataVersion')).toBe(baseline.commit);
-        expect(url.searchParams.get('returnTo')).toBe(catalog);
+        expect(url.pathname).toBe('/recipe');
+        expect(url.searchParams.get('id')).toBe(v.id);
+        expect(url.searchParams.get('model')).toBe(model.name);
+        expect(url.searchParams.has('dataVersion')).toBe(false);
+        expect(url.searchParams.has('returnTo')).toBe(false);
       }
       await page.goBack();
       await expect(page).toHaveURL(catalog);
@@ -484,7 +484,7 @@ test('model cards default missing fields and include models without recipes', as
   await expect(card.getByRole('list')).toHaveCount(0);
   await expect(card.getByText('未提供', { exact: true })).toHaveCount(3);
   await expect(card).not.toContainText('0.0%');
-  await expect(card.locator('a[href*="/models/recipe?"]')).toHaveCount(0);
+  await expect(card.locator('a[href*="/recipe?"]')).toHaveCount(0);
 });
 
 test('model cards preserve measured zero without a report or baseline reference', async ({
@@ -841,10 +841,13 @@ for (const layout of ['cards', 'table'])
         exact: true,
       })
       .click();
-    await expect(page).toHaveURL(/\/models\/recipe\?/);
-    expect(new URL(page.url()).searchParams.get('dataVersion')).toBe(
-      baseline.commit,
-    );
+    await expect(page).toHaveURL(/\/recipe\?/);
+    expect(new URL(page.url()).searchParams.has('dataVersion')).toBe(false);
+    expect(
+      await page.evaluate(
+        () => window.history.state?.state?.catalogDataVersion,
+      ),
+    ).toBe(baseline.commit);
     await expect(page.getByRole('heading', { level: 1 })).toHaveText(
       m.displayName?.trim() || m.name,
     );
@@ -887,7 +890,7 @@ for (const layout of ['cards', 'table'])
       page.getByLabel('搜索模型与调优', { exact: true }),
     ).toHaveValue('mimo-v2.5');
     await page.goBack();
-    await expect(page).toHaveURL(/\/models\/recipe\?.*tab=performance/);
+    await expect(page).toHaveURL(/\/recipe\?.*tab=performance/);
   });
 
 test('model recipe entries and performance gains lead into the same recipe details', async ({
@@ -900,11 +903,11 @@ test('model recipe entries and performance gains lead into the same recipe detai
     .getByRole('link', { name: 'MiMo-V2.5', exact: true })
     .first()
     .click();
-  await expect(page).toHaveURL(/\/models\/detail\?/);
+  await expect(page).toHaveURL(/\/model\?id=/);
   await page
     .getByRole('link', { name: `查看 ${variant.id} 性能对照`, exact: true })
     .click();
-  await expect(page).toHaveURL(/\/models\/recipe\?.*tab=performance/);
+  await expect(page).toHaveURL(/\/recipe\?.*tab=performance/);
   await expect(reportBody(page)).toContainText('119.9%');
   await page.getByRole('tab', { name: '部署配置' }).click();
   await expect(
@@ -931,7 +934,7 @@ test('returning from a report restores pagination and hardware filters', async (
     .getByRole('link', { name: /性能对照$/ })
     .first()
     .click();
-  await expect(page).toHaveURL(/\/models\/recipe\?.*tab=performance/);
+  await expect(page).toHaveURL(/\/recipe\?.*tab=performance/);
   await page.getByRole('link', { name: '返回模型与调优', exact: true }).click();
   expect(new URL(page.url()).pathname + new URL(page.url()).search).toBe(
     catalog,
@@ -951,7 +954,7 @@ for (const legacy of [
   }) => {
     await page.goto('/community');
     await page.goto(legacy);
-    await expect(page).toHaveURL(/\/models\/recipe\?.*tab=performance/);
+    await expect(page).toHaveURL(/\/recipe\?.*tab=performance/);
     await expect(reportBody(page)).toContainText('119.9%');
     await page.goBack();
     await expect(page).toHaveURL(/\/community$/);
@@ -1033,9 +1036,12 @@ for (const width of [320, 1440])
     await deployment.click();
     await performance.click();
     expect(counts).toEqual({ ...afterReload, report: afterReload.report + 1 });
-    expect(new URL(page.url()).searchParams.get('dataVersion')).toBe(
-      baseline.commit,
-    );
+    expect(new URL(page.url()).searchParams.has('dataVersion')).toBe(false);
+    expect(
+      await page.evaluate(
+        () => window.history.state?.state?.catalogDataVersion,
+      ),
+    ).toBe(baseline.commit);
   });
 
 for (const width of [320, 1440])
@@ -1168,7 +1174,7 @@ for (const width of [320, 1440])
       expect(requests).toBe(1);
     });
 
-test('fullscreen failure keeps the original report and standalone link available', async ({
+test('fullscreen failure keeps the original report readable in place', async ({
   page,
 }) => {
   await page.addInitScript(() => {
@@ -1182,10 +1188,10 @@ test('fullscreen failure keeps the original report and standalone link available
   await page.getByRole('button', { name: '全屏观看', exact: true }).click();
   await expect(
     page.getByRole('status').filter({ hasText: '暂时无法全屏观看' }),
-  ).toContainText('暂时无法全屏观看，请使用“查看完整报告”。');
+  ).toContainText('暂时无法全屏观看，请在下方阅读报告。');
   await expect(
-    page.getByRole('link', { name: '查看完整报告 ↗' }),
-  ).toBeVisible();
+    page.getByRole('button', { name: '查看完整报告', exact: true }),
+  ).toHaveCount(0);
   await expect(reportBody(page)).toContainText('119.9%');
   await expect(
     page.getByRole('button', { name: '全屏观看', exact: true }),
@@ -1210,10 +1216,13 @@ test('original report retries a failed request without requiring structured JSON
     page.getByRole('button', { name: '全屏观看', exact: true }),
   ).toBeDisabled();
   await expect(
-    page.getByRole('link', { name: '查看完整报告 ↗' }),
-  ).toBeVisible();
+    page.getByRole('button', { name: '全屏观看', exact: true }),
+  ).toBeDisabled();
   await page.getByRole('button', { name: '重试', exact: true }).click();
   await expect(reportBody(page)).toContainText('119.9%');
+  await expect(
+    page.getByRole('button', { name: '全屏观看', exact: true }),
+  ).toBeEnabled();
   expect(attempts).toBe(2);
 });
 
@@ -1376,7 +1385,7 @@ test('report routes distinguish incomplete, missing, unassociated and unavailabl
   );
   await expect(page.locator('#benchmark')).toHaveCount(0);
   await page.goto('/models?benchmark=missing');
-  await expect(page).toHaveURL(/\/models\/recipe\?.*tab=performance/);
+  await expect(page).toHaveURL(/\/recipe\?.*tab=performance/);
   await expect(page.getByRole('heading', { level: 1 })).toHaveText(
     '详情参数不完整',
   );
@@ -1542,8 +1551,8 @@ for (const width of [390, 1440])
           (await link.getAttribute('href'))!,
           'http://localhost',
         );
-        expect(url.searchParams.get('dataVersion')).toBe(baseline.commit);
-        expect(url.searchParams.get('returnTo')).toBe(returnTo);
+        expect(url.searchParams.has('dataVersion')).toBe(false);
+        expect(url.searchParams.has('returnTo')).toBe(false);
       }
       expect(
         await page.evaluate(
@@ -1661,7 +1670,7 @@ test('a newly published model appears in fixed routes without rebuilding the web
   await page
     .getByRole('link', { name: 'New public model', exact: true })
     .click();
-  await expect(page).toHaveURL(/\/models\/detail\?/);
+  await expect(page).toHaveURL(/\/model\?id=/);
   await expect(page.getByRole('heading', { level: 1 })).toHaveText(
     'New public model',
   );
@@ -1721,6 +1730,9 @@ test('inconsistent configuration bytes and unreadable reports do not become veri
   await page.goto(`/models/report?modelId=mimo-v2.5&recipeId=${variant.id}`);
   await expect(page.locator('#benchmark')).toContainText('报告数据加载失败');
   await expect(
-    page.getByRole('link', { name: '查看完整报告 ↗' }),
-  ).toHaveAttribute('href', /mimo-v2.5-h100-report.html/);
+    page.getByRole('button', { name: '全屏观看', exact: true }),
+  ).toBeDisabled();
+  await expect(page.locator('#benchmark a[href*="model-catalog"]')).toHaveCount(
+    0,
+  );
 });

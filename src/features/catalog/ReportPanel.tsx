@@ -1,13 +1,17 @@
 import { translate } from '@docusaurus/Translate';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
+import { useHistory, useLocation } from '@docusaurus/router';
 import React, { useEffect, useRef, useState } from 'react';
-import { reportUrl, type Recipe } from './data';
+import { type Recipe } from './data';
 import {
+  availableReportTunings,
   loadReportDocument,
   localizeReportDocument,
+  selectReportTuning,
   type ReportDocument,
 } from './report';
 import styles from './styles.module.css';
+import reportStyles from './ReportPanel.module.css';
 export default function ReportPanel({
   r,
   commit,
@@ -20,12 +24,29 @@ export default function ReportPanel({
   const {
     i18n: { currentLocale },
   } = useDocusaurusContext();
+  const location = useLocation();
+  const history = useHistory();
+  const requestedReport = new URLSearchParams(location.search).get('report');
+  const tuning = selectReportTuning(r, requestedReport);
+  const tunings = availableReportTunings(r);
+  const english = currentLocale === 'en';
   const [data, setData] = useState<ReportDocument | null>(null),
     [error, setError] = useState(''),
     [retry, setRetry] = useState(0),
     [fullscreen, setFullscreen] = useState(false),
     [fullscreenError, setFullscreenError] = useState('');
+  const reportSection = useRef<HTMLElement>(null);
+  const reportTitle = useRef<HTMLHeadingElement>(null);
   const reportFrame = useRef<HTMLIFrameElement>(null);
+  useEffect(() => {
+    if (!active || location.hash !== '#benchmark-title') return;
+    // Wait until the performance tab is visible before moving focus and scroll.
+    const frame = requestAnimationFrame(() => {
+      reportTitle.current?.focus({ preventScroll: true });
+      reportSection.current?.scrollIntoView({ block: 'start' });
+    });
+    return () => cancelAnimationFrame(frame);
+  }, [active, location.key, location.hash]);
   const fullscreenButton = useRef<HTMLButtonElement>(null);
   useEffect(() => {
     let wasFullscreen = false;
@@ -65,8 +86,10 @@ export default function ReportPanel({
     } catch {
       setFullscreenError(
         translate({
-          id: 'site.77afbff41aa8',
-          message: '暂时无法全屏观看，请使用“查看完整报告”。',
+          id: 'catalog.report.fullscreenUnavailable',
+          message: english
+            ? 'Full screen is unavailable. Please read the report below.'
+            : '暂时无法全屏观看，请在下方阅读报告。',
         }),
       );
     }
@@ -76,7 +99,7 @@ export default function ReportPanel({
     const c = new AbortController();
     setData(null);
     setError('');
-    loadReportDocument(r, commit, c.signal)
+    loadReportDocument(r, commit, c.signal, requestedReport)
       .then((x) => {
         if (!c.signal.aborted)
           setData(localizeReportDocument(x, currentLocale));
@@ -85,15 +108,18 @@ export default function ReportPanel({
         if (!c.signal.aborted)
           setError(
             translate({
-              id: 'site.06c78240c62a',
-              message: '报告数据加载失败，请重试或查看完整报告。',
+              id: 'catalog.report.loadFailed',
+              message: english
+                ? 'The report could not be loaded. Please retry.'
+                : '报告数据加载失败，请重试。',
             }),
           );
       });
     return () => c.abort();
-  }, [r.key, commit, retry, currentLocale]);
+  }, [r.key, commit, retry, currentLocale, requestedReport]);
   return (
     <section
+      ref={reportSection}
       id="benchmark"
       className={styles.report}
       aria-labelledby="benchmark-title"
@@ -101,12 +127,42 @@ export default function ReportPanel({
       <div className={styles.reportHeader}>
         <div>
           <span className={styles.kicker}>PERFORMANCE REPORT</span>
-          <h2 id="benchmark-title">
+          <h2 ref={reportTitle} id="benchmark-title" tabIndex={-1}>
             {translate({ id: 'site.97a3583c6b16', message: '基线与调优对照' })}
           </h2>
           <p>
-            {r.tuning[0]?.baseline} → {r.tuning[0]?.optimized}
+            {tuning?.baseline} → {tuning?.optimized}
           </p>
+          {tunings.length > 1 && (
+            <label className={reportStyles.reportPicker}>
+              {translate({
+                id: 'catalog.report.chooseComparison',
+                message: english ? 'Performance report' : '性能报告',
+              })}
+              <select
+                value={tuning?.report ?? ''}
+                onChange={(event) => {
+                  const params = new URLSearchParams(location.search);
+                  params.set('report', event.currentTarget.value);
+                  history.replace({
+                    ...location,
+                    search: '?' + params.toString(),
+                  });
+                }}
+              >
+                {!tuning && (
+                  <option value="" disabled>
+                    {english ? 'Select a report' : '请选择报告'}
+                  </option>
+                )}
+                {tunings.map((item) => (
+                  <option key={item.report} value={item.report}>
+                    {item.baseline} → {item.optimized}
+                  </option>
+                ))}
+              </select>
+            </label>
+          )}
         </div>
         <div className={styles.reportActions}>
           <button
@@ -139,20 +195,6 @@ export default function ReportPanel({
               ? translate({ id: 'site.0f1505b6ad3f', message: '退出全屏' })
               : translate({ id: 'site.90cd137f160c', message: '全屏观看' })}
           </button>
-          <a
-            className={styles.primary}
-            href={
-              reportUrl(
-                r,
-                undefined,
-                data?.language ?? (currentLocale === 'en' ? 'en' : 'zh'),
-              )!
-            }
-            target="_blank"
-            rel="noreferrer"
-          >
-            {translate({ id: 'site.c9a9e8905c6b', message: '查看完整报告 ↗' })}
-          </a>
         </div>
       </div>
       {fullscreenError && <p role="status">{fullscreenError}</p>}

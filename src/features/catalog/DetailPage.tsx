@@ -4,6 +4,7 @@ import { useSitePath } from '@site/src/lib/use-site-path';
 import React, { useEffect, useMemo, useState } from 'react';
 import Layout from '@theme/Layout';
 import Head from '@docusaurus/Head';
+import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import Link from '@docusaurus/Link';
 import useIsBrowser from '@docusaurus/useIsBrowser';
 import { useHistory, useLocation } from '@docusaurus/router';
@@ -14,7 +15,6 @@ import {
   loadYaml,
   modelHref,
   recipesOf,
-  reportUrl,
   type History,
 } from './data';
 import { CopyButton, RecipeCard, SourceState } from './components';
@@ -22,13 +22,18 @@ import { ModelOverviewCard } from './ModelOverviewCard';
 import { useCatalog } from './useCatalog';
 import {
   catalogReturnTo,
-  legacyRecipeReportHref,
   recipeTab,
   recipeTabHref,
   recipeTabs,
+  modelNavigationState,
+  modelRoute,
+  recipeRoute,
+  readModelNavigationState,
   type RecipeTab,
 } from './routes';
 import ReportPanel from './ReportPanel';
+import { availableReportTunings } from './report';
+import CatalogLink from './CatalogLink';
 import CatalogSelect from './CatalogSelect';
 import RecipeOverview from './RecipeOverview';
 import styles from './styles.module.css';
@@ -36,37 +41,86 @@ import styles from './styles.module.css';
 export default function DetailPage({ kind }: { kind: 'model' | 'recipe' }) {
   const location = useLocation();
   const params = new URLSearchParams(location.search);
-  const identity = ['modelId', 'recipeId', 'dataVersion', 'version'].map(
-    (key) => params.get(key),
-  );
+  const identity = [
+    'id',
+    'model',
+    'modelId',
+    'recipeId',
+    'dataVersion',
+    'version',
+  ].map((key) => params.get(key));
+  const navigation = readModelNavigationState(location.state);
   return (
-    <DetailContent key={JSON.stringify([kind, ...identity])} kind={kind} />
+    <DetailContent
+      key={JSON.stringify([kind, ...identity, navigation.catalogDataVersion])}
+      kind={kind}
+    />
   );
 }
 function DetailContent({ kind }: { kind: 'model' | 'recipe' }) {
-  const { siteHref } = useSitePath();
+  const { siteHref, localHref } = useSitePath();
+  const { siteConfig } = useDocusaurusContext();
   const browser = useIsBrowser(),
     location = useLocation(),
     history = useHistory();
+  const navigation = readModelNavigationState(location.state);
   const params = new URLSearchParams(browser ? location.search : ''),
-    modelId = params.get('modelId') ?? '',
-    recipeId = params.get('recipeId') ?? '',
+    modelId =
+      (kind === 'model' ? params.get('id') : params.get('model')) ??
+      params.get('modelId') ??
+      '',
+    recipeId = params.get('id') ?? params.get('recipeId') ?? '',
     requestedVersion = params.get('version') ?? '',
     activeTab = recipeTab(params.get('tab')),
-    returnTo = catalogReturnTo(params.get('returnTo'));
+    returnTo = catalogReturnTo(
+      params.get('returnTo') ?? navigation.catalogReturnTo,
+    );
+  const dataVersion =
+    params.get('dataVersion') ?? navigation.catalogDataVersion;
+  const state = useCatalog(dataVersion),
+    c = state.catalog;
+  const recipeParams = new URLSearchParams(location.search);
+  recipeParams.delete('returnTo');
+  if (recipeParams.get('dataVersion') === state.currentCommit)
+    recipeParams.delete('dataVersion');
+  if (location.hash === '#benchmark') recipeParams.set('tab', 'performance');
+  const shortRoute =
+    !browser || !modelId
+      ? null
+      : kind === 'model'
+        ? modelRoute(modelId, params.get('dataVersion') ?? '')
+        : recipeId
+          ? recipeRoute(modelId, recipeId, recipeParams.toString())
+          : null;
+  const hash =
+    kind === 'recipe' && location.hash === '#benchmark' ? '' : location.hash;
+  useEffect(() => {
+    if (
+      !shortRoute ||
+      localHref(location.pathname) + location.search + location.hash ===
+        shortRoute + hash
+    )
+      return;
+    history.replace(
+      siteHref(shortRoute) + hash,
+      modelNavigationState(dataVersion, returnTo),
+    );
+  }, [
+    shortRoute,
+    hash,
+    localHref,
+    location.pathname,
+    location.search,
+    location.hash,
+    history,
+    siteHref,
+    dataVersion,
+    returnTo,
+  ]);
   const [openedPerformance, setOpenedPerformance] = useState(false);
   useEffect(() => {
     if (activeTab === 'performance') setOpenedPerformance(true);
   }, [activeTab]);
-  const legacyReport =
-    browser && kind === 'recipe'
-      ? legacyRecipeReportHref(location.search, location.hash)
-      : null;
-  useEffect(() => {
-    if (legacyReport) history.replace(siteHref(legacyReport));
-  }, [history, legacyReport, siteHref]);
-  const state = useCatalog(params.get('dataVersion') ?? ''),
-    c = state.catalog;
   const model = c.models.find((m) => m.name === modelId),
     recipes = useMemo(
       () => recipesOf(c).filter((r) => r.model.name === modelId),
@@ -169,11 +223,17 @@ function DetailContent({ kind }: { kind: 'model' | 'recipe' }) {
     const p = new URLSearchParams(location.search);
     if (v) p.set('version', v);
     else p.delete('version');
-    history.push(location.pathname + '?' + p.toString());
+    history.push(
+      location.pathname + '?' + p.toString(),
+      modelNavigationState(dataVersion, returnTo),
+    );
   }
   function chooseTab(tab: RecipeTab) {
     if (tab !== activeTab)
-      history.push(siteHref(recipeTabHref(location.search, tab)));
+      history.push(
+        siteHref(recipeTabHref(location.search, tab)),
+        modelNavigationState(dataVersion, returnTo),
+      );
   }
   function moveTabFocus(event: React.KeyboardEvent<HTMLButtonElement>) {
     const index = recipeTabs.findIndex(
@@ -217,6 +277,21 @@ function DetailContent({ kind }: { kind: 'model' | 'recipe' }) {
     >
       <Head>
         <meta name="robots" content="noindex,follow" />
+        {modelId && (kind === 'model' || recipeId) && (
+          <link
+            rel="canonical"
+            href={
+              new URL(
+                siteHref(
+                  kind === 'model'
+                    ? modelRoute(modelId)
+                    : recipeRoute(modelId, recipeId),
+                ),
+                siteConfig.url,
+              ).href
+            }
+          />
+        )}
       </Head>
       <main
         id="main-content"
@@ -237,9 +312,13 @@ function DetailContent({ kind }: { kind: 'model' | 'recipe' }) {
               <span>/</span>
               {kind === 'recipe' && model && !state.unavailable && (
                 <>
-                  <Link to={modelHref(model, c.commit, returnTo)}>
+                  <CatalogLink
+                    to={modelHref(model, c.commit, returnTo)}
+                    version={c.commit}
+                    returnTo={returnTo}
+                  >
                     {model.displayName ?? model.name}
-                  </Link>
+                  </CatalogLink>
                   <span>/</span>
                 </>
               )}
@@ -582,7 +661,7 @@ function DetailContent({ kind }: { kind: 'model' | 'recipe' }) {
                         hidden={activeTab !== 'performance'}
                         className={styles.tabPanel}
                       >
-                        {reportUrl(recipe) ? (
+                        {availableReportTunings(recipe).length > 0 ? (
                           <>
                             {requestedVersion && (
                               <p className={styles.notice}>

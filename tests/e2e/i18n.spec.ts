@@ -422,9 +422,7 @@ test('English recipe details translate the two remaining tabs', async ({
     }),
   ).toHaveAttribute(
     'href',
-    new RegExp(
-      `${site('en/models/recipe')}\\?.*recipeId=sglang-tp8-h100-baseline`,
-    ),
+    new RegExp(`${site('en/recipe')}\\?.*id=sglang-tp8-h100-baseline`),
   );
   await expect(
     page.getByRole('tab', { name: 'Deployment configuration', exact: true }),

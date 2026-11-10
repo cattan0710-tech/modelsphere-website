@@ -1,6 +1,6 @@
 import { translate } from '@docusaurus/Translate';
 import React from 'react';
-import Link from '@docusaurus/Link';
+import CatalogLink from './CatalogLink';
 import {
   detailHref,
   modelHref,
@@ -30,13 +30,15 @@ export function ModelTuning({ summary, version, returnTo }: Props) {
       <div className={styles.gain}>
         <GainMeter
           value={best?.gain ?? null}
+          version={version}
+          returnTo={returnTo}
           label={translate({
             id: 'site.9d6b32790955',
             message: '调优配方最佳提升',
           })}
           valueHref={
             best && reportUrl(best.recipe)
-              ? reportHref(best.recipe, version, returnTo)
+              ? reportHref(best.recipe, version, returnTo, best.tuning.report)
               : undefined
           }
           valueLabel={
@@ -67,16 +69,18 @@ export function ModelTuning({ summary, version, returnTo }: Props) {
           <dt>{translate({ id: 'site.23727d36d91b', message: '调优配方' })}</dt>
           <dd>
             {best ? (
-              <Link
+              <CatalogLink
                 to={detailHref(
                   best.recipe,
                   version,
                   best.tuning.optimized.split('@')[1],
                   returnTo,
                 )}
+                version={version}
+                returnTo={returnTo}
               >
                 {best.tuning.optimized}
-              </Link>
+              </CatalogLink>
             ) : (
               translate({ id: 'site.756762e293f2', message: '未提供' })
             )}
@@ -86,17 +90,19 @@ export function ModelTuning({ summary, version, returnTo }: Props) {
           <dt>Baseline</dt>
           <dd>
             {baseline && best ? (
-              <Link
+              <CatalogLink
                 to={detailHref(
                   baseline,
                   version,
                   best.tuning.baseline.split('@')[1],
                   returnTo,
                 )}
+                version={version}
+                returnTo={returnTo}
               >
                 {best.tuning.baseline ||
                   translate({ id: 'site.756762e293f2', message: '未提供' })}
-              </Link>
+              </CatalogLink>
             ) : (
               best?.tuning.baseline ||
               translate({ id: 'site.756762e293f2', message: '未提供' })
@@ -113,9 +119,13 @@ export function ModelRecipeList({ summary, version, returnTo }: Props) {
     <ul className={styles.modelRecipeList}>
       {summary.recipes.map((r) => (
         <li key={r.key}>
-          <Link to={detailHref(r, version, undefined, returnTo)}>
+          <CatalogLink
+            to={detailHref(r, version, undefined, returnTo)}
+            version={version}
+            returnTo={returnTo}
+          >
             {r.variant.id}
-          </Link>
+          </CatalogLink>
           <span>
             {role(r) === 'optimized'
               ? translate({ id: 'site.c805b06152c6', message: '已调优' })
@@ -149,12 +159,14 @@ export default function ModelCard(props: Props) {
                 translate({ id: 'site.c98e118e0a43', message: '模型' })}
             </p>
             <h2>
-              <Link
+              <CatalogLink
                 to={modelHref(model, version, returnTo)}
+                version={version}
+                returnTo={returnTo}
                 title={model.displayName || model.name}
               >
                 {model.displayName || model.name}
-              </Link>
+              </CatalogLink>
             </h2>
           </div>
           <span className={styles.recipeCount}>
@@ -171,12 +183,14 @@ export default function ModelCard(props: Props) {
         <ModelTuning {...props} />
       </div>
       <div className={styles.cardFooter}>
-        <Link
+        <CatalogLink
           className={styles.secondary}
           to={modelHref(model, version, returnTo)}
+          version={version}
+          returnTo={returnTo}
         >
           {translate({ id: 'site.53d096fa52c4', message: '查看模型详情' })}
-        </Link>
+        </CatalogLink>
       </div>
     </article>
   );
