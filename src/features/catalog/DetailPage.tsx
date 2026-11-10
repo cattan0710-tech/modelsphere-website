@@ -35,6 +35,8 @@ import ReportPanel from './ReportPanel';
 import { availableReportTunings } from './report';
 import CatalogLink from './CatalogLink';
 import CatalogSelect from './CatalogSelect';
+import CatalogSort from './CatalogSort';
+import { compare, initialQuery, parseSort } from './query';
 import RecipeOverview from './RecipeOverview';
 import styles from './styles.module.css';
 
@@ -81,6 +83,7 @@ function DetailContent({ kind }: { kind: 'model' | 'recipe' }) {
     params.get('dataVersion') ?? navigation.catalogDataVersion;
   const state = useCatalog(dataVersion),
     c = state.catalog;
+  const sort = parseSort(params.get('sort'));
   const recipeParams = new URLSearchParams(location.search);
   recipeParams.delete('returnTo');
   if (recipeParams.get('dataVersion') === state.currentCommit)
@@ -90,7 +93,11 @@ function DetailContent({ kind }: { kind: 'model' | 'recipe' }) {
     !browser || !modelId
       ? null
       : kind === 'model'
-        ? modelRoute(modelId, params.get('dataVersion') ?? '')
+        ? modelRoute(
+            modelId,
+            params.get('dataVersion') ?? '',
+            sort === initialQuery.sort ? '' : sort,
+          )
         : recipeId
           ? recipeRoute(modelId, recipeId, recipeParams.toString())
           : null;
@@ -129,6 +136,10 @@ function DetailContent({ kind }: { kind: 'model' | 'recipe' }) {
       [c, modelId],
     );
   const recipe = recipes.find((r) => r.variant.id === recipeId);
+  const sortedRecipes = useMemo(
+    () => [...recipes].sort((a, b) => compare(a, b, sort)),
+    [recipes, sort],
+  );
   const [revisions, setRevisions] = useState<History | null>(null),
     [historyError, setHistoryError] = useState(''),
     [text, setText] = useState(''),
@@ -227,6 +238,19 @@ function DetailContent({ kind }: { kind: 'model' | 'recipe' }) {
     else p.delete('version');
     history.push(
       location.pathname + '?' + p.toString(),
+      modelNavigationState(dataVersion, returnTo),
+    );
+  }
+  function chooseSort(value: string) {
+    if (value === sort) return;
+    history.push(
+      siteHref(
+        modelRoute(
+          modelId,
+          params.get('dataVersion') ?? '',
+          value === initialQuery.sort ? '' : value,
+        ),
+      ) + location.hash,
       modelNavigationState(dataVersion, returnTo),
     );
   }
@@ -487,9 +511,16 @@ function DetailContent({ kind }: { kind: 'model' | 'recipe' }) {
                             {recipes.length}
                           </span>
                         </h2>
+                        <span className={styles.select}>
+                          <CatalogSort
+                            value={sort}
+                            onValueChange={chooseSort}
+                            context="model-recipes"
+                          />
+                        </span>
                       </div>
                       <div className={styles.grid}>
-                        {recipes.map((r) => (
+                        {sortedRecipes.map((r) => (
                           <RecipeCard
                             key={r.key}
                             r={r}

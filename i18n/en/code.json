@@ -1,4 +1,10 @@
 {
+  "catalog.recipeNameAsc": {
+    "message": "Recipe name A–Z"
+  },
+  "catalog.recipeNameDesc": {
+    "message": "Recipe name Z–A"
+  },
   "catalog.loadingDetails": {
     "message": "Loading details…",
     "description": "正在加载详情…"

@@ -24,6 +24,15 @@ export interface Query {
   dataVersion: string;
 }
 export const PAGE_SIZE = 12;
+const sortOptions = [
+  'improvement-desc',
+  'name-asc',
+  'name-desc',
+  'updated-desc',
+];
+export function parseSort(value: string | null) {
+  return value && sortOptions.includes(value) ? value : 'improvement-desc';
+}
 export const initialQuery: Query = {
   q: '',
   family: '',
@@ -98,11 +107,7 @@ export function parseQuery(search: string, c: Catalog): Query {
     topology: allowed('topology', ['single-node', 'lws', 'pd']),
     view: allowed('view', ['models', 'recipes'], 'recipes'),
     layout: allowed('layout', ['cards', 'table'], 'cards'),
-    sort: allowed(
-      'sort',
-      ['improvement-desc', 'name-asc', 'name-desc', 'updated-desc'],
-      'improvement-desc',
-    ),
+    sort: parseSort(p.get('sort')),
     page:
       /^[1-9]\d*$/.test(rawPage) && Number.isSafeInteger(+rawPage)
         ? +rawPage
@@ -258,5 +263,5 @@ export function compare(a: Recipe, b: Recipe, sort: string) {
     if (d) return d;
   }
   const name = a.model.name.localeCompare(b.model.name);
-  return (sort === 'name-desc' ? -name : name) || a.key.localeCompare(b.key);
+  return (sort === 'name-desc' ? -1 : 1) * (name || a.key.localeCompare(b.key));
 }
