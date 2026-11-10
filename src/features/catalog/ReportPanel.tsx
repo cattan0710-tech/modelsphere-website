@@ -134,12 +134,15 @@ export default function ReportPanel({
             {tuning?.baseline} → {tuning?.optimized}
           </p>
           {tunings.length > 1 && (
-            <label className={reportStyles.reportPicker}>
-              {translate({
-                id: 'catalog.report.chooseComparison',
-                message: english ? 'Performance report' : '性能报告',
-              })}
+            <div className={reportStyles.reportPicker}>
+              <label htmlFor="benchmark-report-select">
+                {translate({
+                  id: 'catalog.report.chooseComparison',
+                  message: english ? 'Performance report' : '性能报告',
+                })}
+              </label>
               <select
+                id="benchmark-report-select"
                 value={tuning?.report ?? ''}
                 onChange={(event) => {
                   const params = new URLSearchParams(location.search);
@@ -161,7 +164,7 @@ export default function ReportPanel({
                   </option>
                 ))}
               </select>
-            </label>
+            </div>
           )}
         </div>
         <div className={styles.reportActions}>
@@ -207,14 +210,14 @@ export default function ReportPanel({
         </p>
       )}
       {error ? (
-        <p role="status">
+        <p className={reportStyles.reportPlaceholder} role="status">
           {error}{' '}
           <button onClick={() => setRetry((n) => n + 1)}>
             {translate({ id: 'site.b8784c8dd563', message: '重试' })}
           </button>
         </p>
       ) : !data ? (
-        <p role="status">
+        <p className={reportStyles.reportPlaceholder} role="status">
           {translate({ id: 'site.ab325d7067a1', message: '正在读取报告数据…' })}
         </p>
       ) : (

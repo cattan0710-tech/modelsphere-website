@@ -15,3 +15,8 @@
   background: var(--color-background-surface);
   color: var(--color-text-primary);
 }
+
+.reportPlaceholder {
+  min-height: max(80vh, 640px);
+  margin: 0;
+}

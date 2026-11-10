@@ -63,7 +63,9 @@ function DetailContent({ kind }: { kind: 'model' | 'recipe' }) {
   const browser = useIsBrowser(),
     location = useLocation(),
     history = useHistory();
-  const navigation = readModelNavigationState(location.state);
+  const navigation = readModelNavigationState(
+    browser ? location.state : undefined,
+  );
   const params = new URLSearchParams(browser ? location.search : ''),
     modelId =
       (kind === 'model' ? params.get('id') : params.get('model')) ??
