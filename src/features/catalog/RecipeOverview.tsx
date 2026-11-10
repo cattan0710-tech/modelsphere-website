@@ -2,7 +2,6 @@ import { translateCopy } from '@site/src/lib/translate-copy';
 import Translate, { translate } from '@docusaurus/Translate';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import React from 'react';
-import Link from '@docusaurus/Link';
 import {
   detailHref,
   hardwareText,
@@ -16,6 +15,8 @@ import {
 import { Icon, SourceLinks } from './components';
 import styles from './styles.module.css';
 import GainMeter from './GainMeter';
+import { reportHref } from './routes';
+import CatalogLink from './CatalogLink';
 
 const workloadNames: Record<string, string> = {
   '50k + 1.5k': translate({
@@ -145,9 +146,13 @@ export default function RecipeOverview({
             {variant.version}
           </p>
         </div>
-        <Link to={modelHref(model, version, returnTo)}>
+        <CatalogLink
+          to={modelHref(model, version, returnTo)}
+          version={version}
+          returnTo={returnTo}
+        >
           {translate({ id: 'site.8df99bc0b742', message: '全部模型配方 →' })}
-        </Link>
+        </CatalogLink>
       </div>
       {variant.description && <p>{variant.description}</p>}
       <dl className={styles.recipeFacts}>
@@ -162,11 +167,9 @@ export default function RecipeOverview({
         const baseline = recipes.find(
           (r) => r.variant.id === tuning.baseline.split('@')[0],
         );
-        const report = reportUrl(
-          recipe,
-          tuning,
-          currentLocale === 'en' ? 'en' : 'zh',
-        );
+        const report = reportUrl(recipe, tuning)
+          ? reportHref(recipe, version, returnTo, tuning.report)
+          : null;
         const rows = tuning.workloads.length
           ? tuning.workloads
           : tuning.uplift == null
@@ -195,16 +198,18 @@ export default function RecipeOverview({
                   id="catalog.gainRelativeToBaseline"
                   values={{
                     baseline: baseline ? (
-                      <Link
+                      <CatalogLink
                         to={detailHref(
                           baseline,
                           version,
                           tuning.baseline.split('@')[1],
                           returnTo,
                         )}
+                        version={version}
+                        returnTo={returnTo}
                       >
                         {tuning.baseline}
-                      </Link>
+                      </CatalogLink>
                     ) : (
                       tuning.baseline ||
                       translate({
@@ -218,12 +223,19 @@ export default function RecipeOverview({
                 </Translate>
               </h2>
               {report && (
-                <a href={report} target="_blank" rel="noreferrer">
+                <CatalogLink
+                  to={report + '#benchmark-title'}
+                  version={version}
+                  returnTo={returnTo}
+                >
                   {translate({
-                    id: 'site.44af1f54feba',
-                    message: '完整对照报告 ↗',
+                    id: 'catalog.report.openEmbedded',
+                    message:
+                      currentLocale === 'en'
+                        ? 'Full comparison report'
+                        : '完整对照报告',
                   })}
-                </a>
+                </CatalogLink>
               )}
             </div>
             <p className={styles.measurement}>

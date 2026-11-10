@@ -523,12 +523,12 @@ describe('unified recipe navigation', () => {
       reportHref(recipe, baseline.commit, returnTo),
       'https://site.test',
     );
-    expect(url.pathname).toBe('/models/recipe');
+    expect(url.pathname).toBe('/recipe');
     expect(url.searchParams.get('tab')).toBe('performance');
-    expect(url.searchParams.get('modelId')).toBe(recipe.model.name);
-    expect(url.searchParams.get('recipeId')).toBe(recipe.variant.id);
-    expect(url.searchParams.get('dataVersion')).toBe(baseline.commit);
-    expect(url.searchParams.get('returnTo')).toBe(returnTo);
+    expect(url.searchParams.get('model')).toBe(recipe.model.name);
+    expect(url.searchParams.get('id')).toBe(recipe.variant.id);
+    expect(url.searchParams.has('dataVersion')).toBe(false);
+    expect(url.searchParams.has('returnTo')).toBe(false);
     expect(url.searchParams.has('benchmark')).toBe(false);
   });
   it('only restores catalog queries and removes legacy report selection', () => {
@@ -555,9 +555,9 @@ describe('unified recipe navigation', () => {
       )!,
       'https://site.test',
     );
-    expect(url.pathname).toBe('/models/recipe');
+    expect(url.pathname).toBe('/recipe');
     expect(url.searchParams.get('tab')).toBe('performance');
-    expect(url.searchParams.get('recipeId')).toBe(recipe.variant.id);
+    expect(url.searchParams.get('id')).toBe(recipe.variant.id);
     expect(url.searchParams.get('returnTo')).toBe(
       '/models?q=mimo&page=2&dataVersion=' + baseline.commit,
     );
@@ -566,8 +566,8 @@ describe('unified recipe navigation', () => {
       legacyCatalogReportHref('?benchmark=unknown')!,
       'https://site.test',
     );
-    expect(missing.searchParams.get('modelId')).toBe('unknown');
-    expect(missing.searchParams.get('recipeId')).toBe('');
+    expect(missing.searchParams.get('model')).toBe('unknown');
+    expect(missing.searchParams.get('id')).toBe('');
   });
   it('redirects legacy recipe report anchors while retaining the selected configuration version', () => {
     const search =
@@ -577,7 +577,7 @@ describe('unified recipe navigation', () => {
       legacyRecipeReportHref(search, '#benchmark')!,
       'https://site.test',
     );
-    expect(url.pathname).toBe('/models/recipe');
+    expect(url.pathname).toBe('/recipe');
     expect(url.searchParams.get('tab')).toBe('performance');
     expect(url.searchParams.get('dataVersion')).toBe(baseline.commit);
     expect(url.searchParams.get('version')).toBe('1.0.0');
@@ -597,8 +597,12 @@ describe('unified recipe navigation', () => {
         'https://site.test',
       );
       expect(recipeTab(url.searchParams.get('tab'))).toBe(tab);
-      for (const [key, value] of params)
-        expect(url.searchParams.get(key)).toBe(value);
+      expect(url.searchParams.get('model')).toBe(recipe.model.name);
+      expect(url.searchParams.get('id')).toBe(recipe.variant.id);
+      expect(url.searchParams.has('modelId')).toBe(false);
+      expect(url.searchParams.has('recipeId')).toBe(false);
+      for (const key of ['version', 'dataVersion', 'returnTo'])
+        expect(url.searchParams.get(key)).toBe(params.get(key));
     }
     expect(recipeTab('unknown')).toBe('deployment');
     expect(recipeTab('history')).toBe('deployment');

@@ -3,9 +3,12 @@ import {
   baseline,
   recipesOf,
   reportUrl,
+  type Recipe,
 } from '../../src/features/catalog/data';
 import {
+  availableReportTunings,
   loadReportDocument,
+  selectReportTuning,
   selectReportLanguage,
 } from '../../src/features/catalog/report';
 
@@ -67,6 +70,77 @@ describe('report language selection', () => {
 });
 
 describe('original report loading', () => {
+  const secondReport = 'second-comparison-report.html';
+  const multiple: Recipe = {
+    ...recipe,
+    model: {
+      ...recipe.model,
+      reports: [...recipe.model.reports, secondReport],
+    },
+    tuning: [
+      ...recipe.tuning,
+      {
+        ...recipe.tuning[0],
+        baseline: 'another-baseline@1',
+        report: secondReport,
+      },
+    ],
+  };
+
+  it('selects each available comparison and skips missing or duplicate report entries', () => {
+    const withMissing: Recipe = {
+      ...multiple,
+      tuning: [
+        { ...multiple.tuning[0], report: undefined },
+        ...multiple.tuning,
+        multiple.tuning[0],
+        { ...multiple.tuning[0], report: 'not-in-model.html' },
+      ],
+    };
+    expect(availableReportTunings(withMissing)).toHaveLength(2);
+    expect(selectReportTuning(withMissing)?.report).toBe(
+      recipe.tuning[0].report,
+    );
+    expect(selectReportTuning(withMissing, secondReport)?.baseline).toBe(
+      'another-baseline@1',
+    );
+    expect(
+      selectReportTuning(withMissing, 'not-in-model.html'),
+    ).toBeUndefined();
+  });
+
+  it('loads the requested comparison from the same immutable snapshot', async () => {
+    const fetch = vi
+      .fn()
+      .mockResolvedValue(
+        new Response('<html><body>Second report</body></html>'),
+      );
+    vi.stubGlobal('fetch', fetch);
+    await loadReportDocument(
+      multiple,
+      baseline.commit,
+      undefined,
+      secondReport,
+    );
+    expect(fetch.mock.calls[0][0]).toContain(
+      `/${baseline.commit}/models/mimo-v2.5/${secondReport}`,
+    );
+  });
+
+  it('rejects report names outside this recipe before issuing a request', async () => {
+    const fetch = vi.fn();
+    vi.stubGlobal('fetch', fetch);
+    await expect(
+      loadReportDocument(
+        multiple,
+        baseline.commit,
+        undefined,
+        'other-report.html',
+      ),
+    ).rejects.toThrow('未关联性能报告');
+    expect(fetch).not.toHaveBeenCalled();
+  });
+
   it('retains the immutable catalog snapshot', async () => {
     const html = '<html><body>Original report</body></html>';
     const fetch = vi.fn().mockResolvedValue(new Response(html));

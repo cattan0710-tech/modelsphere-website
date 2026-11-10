@@ -133,7 +133,7 @@ test('catalog filters, recipe tabs, legacy redirects and return links preserve t
   ).toContainText('119.9%');
   await page.getByRole('tab', { name: '部署配置' }).click();
   await expect(page).toHaveURL(
-    (url) => url.pathname === `${prefix}models/recipe` && url.search.length > 0,
+    (url) => url.pathname === `${prefix}recipe` && url.search.length > 0,
   );
   await expect(
     page.getByRole('tab', { name: '部署配置', selected: true }),
@@ -159,7 +159,7 @@ test('catalog filters, recipe tabs, legacy redirects and return links preserve t
   await page.goto(`models/report?${params}`);
   await expect(page).toHaveURL(
     (url) =>
-      url.pathname === `${prefix}models/recipe` &&
+      url.pathname === `${prefix}recipe` &&
       url.searchParams.get('tab') === 'performance',
   );
   await expect(
@@ -178,6 +178,8 @@ test('direct documents, blog routes, 404 responses and version metadata work und
   for (const route of [
     'docs',
     'blog',
+    'model?id=mimo-v2.5',
+    'en/model?id=mimo-v2.5',
     'models/detail?modelId=mimo-v2.5',
     'models/evidence',
     'community',

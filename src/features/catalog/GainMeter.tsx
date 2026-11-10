@@ -1,6 +1,6 @@
 import { translate } from '@docusaurus/Translate';
 import React from 'react';
-import Link from '@docusaurus/Link';
+import CatalogLink from './CatalogLink';
 import styles from './GainMeter.module.css';
 
 export default function GainMeter({
@@ -8,6 +8,8 @@ export default function GainMeter({
   label,
   valueHref,
   valueLabel,
+  version = '',
+  returnTo,
   layout = 'stacked',
   max = 100,
 }: {
@@ -15,6 +17,8 @@ export default function GainMeter({
   label?: React.ReactNode;
   valueHref?: string;
   valueLabel?: string;
+  version?: string;
+  returnTo?: string;
   layout?: 'stacked' | 'inline';
   max?: number;
 }) {
@@ -37,9 +41,15 @@ export default function GainMeter({
     >
       {label && <span className={styles.label}>{label}</span>}
       {value != null && valueHref ? (
-        <Link className={styles.value} to={valueHref} aria-label={valueLabel}>
+        <CatalogLink
+          className={styles.value}
+          to={valueHref}
+          version={version}
+          returnTo={returnTo}
+          aria-label={valueLabel}
+        >
           <strong>{text}</strong>
-        </Link>
+        </CatalogLink>
       ) : (
         <strong
           className={`${styles.value}${value == null ? ` ${styles.missing}` : ''}`}

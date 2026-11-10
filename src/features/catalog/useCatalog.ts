@@ -5,7 +5,8 @@ export function useCatalog(version = '') {
     catalog: Catalog;
     status: 'baseline' | 'loading' | 'live' | 'cached' | 'error';
     error: string;
-  }>({ catalog: baseline, status: 'baseline', error: '' });
+    currentCommit: string;
+  }>({ catalog: baseline, status: 'baseline', error: '', currentCommit: '' });
   const [retry, setRetry] = useState(0);
   useEffect(() => {
     const controller = new AbortController();
@@ -18,6 +19,7 @@ export function useCatalog(version = '') {
           setState((s) => ({
             ...s,
             status: 'error',
+            currentCommit: current.commit,
             error:
               '指定目录版本不可用。公开来源没有完整快照接口，请返回当前目录。',
           }));
@@ -26,6 +28,7 @@ export function useCatalog(version = '') {
         setState({
           catalog: selected,
           status: selected.commit === current.commit ? 'live' : 'cached',
+          currentCommit: current.commit,
           error: '',
         });
       })

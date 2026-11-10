@@ -1,5 +1,46 @@
 import type { Recipe } from './data';
 
+export function modelRoute(modelId: string, dataVersion = '') {
+  const params = new URLSearchParams({ id: modelId });
+  if (dataVersion) params.set('dataVersion', dataVersion);
+  return '/model?' + params.toString();
+}
+
+export function recipeRoute(modelId: string, recipeId: string, search = '') {
+  const source = new URLSearchParams(search);
+  const params = new URLSearchParams({ model: modelId, id: recipeId });
+  for (const key of ['dataVersion', 'version', 'tab', 'report']) {
+    const value = source.get(key);
+    if (value) params.set(key, value);
+  }
+  // Legacy redirects keep this until DetailPage moves it into history state.
+  if (source.has('returnTo'))
+    params.set('returnTo', catalogReturnTo(source.get('returnTo')));
+  return '/recipe?' + params.toString();
+}
+
+export function modelNavigationState(version = '', returnTo?: string) {
+  return {
+    catalogDataVersion: /^[a-f0-9]{40}$/.test(version) ? version : '',
+    catalogReturnTo: catalogReturnTo(returnTo),
+  };
+}
+
+export function readModelNavigationState(value: unknown) {
+  const state =
+    value && typeof value === 'object'
+      ? (value as Record<string, unknown>)
+      : {};
+  return modelNavigationState(
+    typeof state.catalogDataVersion === 'string'
+      ? state.catalogDataVersion
+      : '',
+    typeof state.catalogReturnTo === 'string'
+      ? state.catalogReturnTo
+      : undefined,
+  );
+}
+
 export const recipeTabs = [
   { id: 'deployment', label: '部署配置' },
   { id: 'performance', label: '性能对照' },
@@ -14,9 +55,11 @@ export function recipeTabHref(search: string, tab: RecipeTab) {
   const params = new URLSearchParams(search);
   if (tab === 'deployment') params.delete('tab');
   else params.set('tab', tab);
-  if (params.has('returnTo'))
-    params.set('returnTo', catalogReturnTo(params.get('returnTo')));
-  return '/models/recipe?' + params.toString();
+  return recipeRoute(
+    params.get('model') ?? params.get('modelId') ?? '',
+    params.get('id') ?? params.get('recipeId') ?? '',
+    params.toString(),
+  );
 }
 
 export function catalogReturnTo(value: string | null | undefined): string {
@@ -34,8 +77,13 @@ export function catalogReturnTo(value: string | null | undefined): string {
   return url.pathname + url.search;
 }
 
-export function reportHref(r: Recipe, commit: string, returnTo?: string) {
-  return reportRoute(r.model.name, r.variant.id, commit, returnTo);
+export function reportHref(
+  r: Recipe,
+  _commit: string,
+  _returnTo?: string,
+  reportName?: string,
+) {
+  return reportRoute(r.model.name, r.variant.id, '', undefined, reportName);
 }
 
 function reportRoute(
@@ -43,10 +91,12 @@ function reportRoute(
   recipeId: string,
   dataVersion: string,
   returnTo?: string,
+  reportName?: string,
 ) {
   const params = new URLSearchParams({ modelId, recipeId });
   if (dataVersion) params.set('dataVersion', dataVersion);
   if (returnTo) params.set('returnTo', catalogReturnTo(returnTo));
+  if (reportName) params.set('report', reportName);
   return recipeTabHref(params.toString(), 'performance');
 }
 

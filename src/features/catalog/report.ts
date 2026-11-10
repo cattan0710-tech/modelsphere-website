@@ -12,6 +12,25 @@ export interface ReportDocument {
   matchesLocale: boolean;
 }
 
+export function availableReportTunings(r: Recipe) {
+  const reports = new Set<string>();
+  return r.tuning.filter((t) => {
+    if (
+      !t.report ||
+      !r.model.reports.includes(t.report) ||
+      reports.has(t.report)
+    )
+      return false;
+    reports.add(t.report);
+    return true;
+  });
+}
+
+export function selectReportTuning(r: Recipe, report?: string | null) {
+  const tunings = availableReportTunings(r);
+  return report == null ? tunings[0] : tunings.find((t) => t.report === report);
+}
+
 export function selectReportLanguage(value: unknown, locale: string) {
   const parsed = languageData.safeParse(value);
   if (!parsed.success) return null;
@@ -65,10 +84,10 @@ export async function loadReportDocument(
   r: Recipe,
   commit: string,
   signal?: AbortSignal,
+  report?: string | null,
 ): Promise<string> {
-  const t = r.tuning[0];
-  if (!t?.report || !r.model.reports.includes(t.report))
-    throw new Error('该配方未关联性能报告');
+  const t = selectReportTuning(r, report);
+  if (!t?.report) throw new Error('该配方未关联性能报告');
   const html = await requestText(
     rawUrl(commit, `models/${r.model.name}/${t.report}`),
     signal,

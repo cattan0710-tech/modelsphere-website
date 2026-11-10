@@ -23,8 +23,8 @@ export default function SkipToContent() {
     previousLocation.current = location;
     // Catalog filters and recipe tabs update the URL in place.
     const sameRecipe =
-      pathname === '/models/recipe' &&
-      ['modelId', 'recipeId', 'dataVersion'].every(
+      ['/models/recipe', '/recipe'].includes(pathname) &&
+      ['model', 'id', 'modelId', 'recipeId', 'dataVersion'].every(
         (key) =>
           new URLSearchParams(location.search).get(key) ===
           new URLSearchParams(previous.search).get(key),

@@ -96,7 +96,9 @@ export default function Navbar() {
           (
             item.href === '/'
               ? pathname === '/'
-              : pathname.startsWith(item.href)
+              : pathname.startsWith(item.href) ||
+                (item.href === '/models' &&
+                  ['/model', '/recipe'].includes(pathname))
           )
             ? 'page'
             : undefined

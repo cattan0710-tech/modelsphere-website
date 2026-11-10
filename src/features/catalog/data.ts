@@ -3,7 +3,7 @@ import { parse as parseYaml } from 'yaml';
 import baselineInput from '../../../content/catalog/baseline.json';
 import baselineSource from '../../../content/catalog/baseline-source.json';
 import source from '../../../content/catalog/source.json';
-import { catalogReturnTo } from './routes';
+import { modelRoute, recipeRoute } from './routes';
 
 const id = z.string().regex(/^[a-z0-9][a-z0-9._-]*$/);
 const sha = z.string().regex(/^[a-f0-9]{40}$/);
@@ -146,7 +146,13 @@ export const sourceUrl = (v: Variant) =>
   v.commit
     ? `${config.repository}/blob/${v.commit}/${encodedPath(v.path)}`
     : fileUrl(v.path);
-export const reportUrl = (r: Recipe, t = r.tuning[0], language = 'en') =>
+export const reportUrl = (
+  r: Recipe,
+  t = r.tuning.find(
+    (item) => item.report && r.model.reports.includes(item.report),
+  ),
+  language = 'en',
+) =>
   t?.report && r.model.reports.includes(t.report)
     ? fileUrl(`models/${r.model.name}/${t.report}`) +
       `#${encodeURIComponent(language)}`
@@ -264,30 +270,20 @@ export function isDefault(r: Recipe) {
 }
 export function detailHref(
   r: Recipe,
-  version: string,
+  _version: string,
   recipeVersion?: string,
-  returnTo?: string,
+  _returnTo?: string,
 ) {
-  return (
-    '/models/recipe?' +
-    new URLSearchParams({
-      modelId: r.model.name,
-      recipeId: r.variant.id,
-      dataVersion: version,
-      ...(recipeVersion ? { version: recipeVersion } : {}),
-      ...(returnTo ? { returnTo: catalogReturnTo(returnTo) } : {}),
-    })
+  return recipeRoute(
+    r.model.name,
+    r.variant.id,
+    new URLSearchParams(
+      recipeVersion ? { version: recipeVersion } : {},
+    ).toString(),
   );
 }
-export function modelHref(m: Model, version: string, returnTo?: string) {
-  return (
-    '/models/detail?' +
-    new URLSearchParams({
-      modelId: m.name,
-      dataVersion: version,
-      ...(returnTo ? { returnTo: catalogReturnTo(returnTo) } : {}),
-    })
-  );
+export function modelHref(m: Model, _version?: string, _returnTo?: string) {
+  return modelRoute(m.name);
 }
 export function stats(c: Catalog) {
   const rs = recipesOf(c);

@@ -162,14 +162,25 @@ for (const width of [320, 1440])
         (await baselineLink.getAttribute('href'))!,
         'http://localhost',
       );
-      expect(target.searchParams.get('recipeId')).toBe(
-        'sglang-tp8-b300-baseline',
-      );
+      expect(target.searchParams.get('id')).toBe('sglang-tp8-b300-baseline');
       expect(target.searchParams.get('version')).toBe('1.0.4');
-      expect(target.searchParams.get('dataVersion')).toBe(baseline.commit);
-      await expect(
-        comparison.getByRole('link', { name: '完整对照报告 ↗' }),
-      ).toHaveAttribute('href', /glm5\.3-1\.0\.3-b300-report\.html#zh$/);
+      expect(target.searchParams.has('dataVersion')).toBe(false);
+      const fullReportLink = comparison.getByRole('link', {
+        name: '完整对照报告',
+        exact: true,
+      });
+      const fullReportTarget = new URL(
+        (await fullReportLink.getAttribute('href'))!,
+        'http://localhost',
+      );
+      expect(fullReportTarget.pathname).toBe('/recipe');
+      expect(fullReportTarget.searchParams.get('report')).toBe(
+        'glm5.3-1.0.3-b300-report.html',
+      );
+      expect(fullReportTarget.searchParams.has('dataVersion')).toBe(false);
+      expect(fullReportTarget.searchParams.get('tab')).toBe('performance');
+      expect(fullReportTarget.hash).toBe('#benchmark-title');
+      await expect(fullReportLink).not.toHaveAttribute('target', '_blank');
       expect(reportRequests).toBe(0);
       const meterAppearance = async (meter: ReturnType<Page['locator']>) =>
         meter.evaluate((element) => ({
@@ -198,6 +209,25 @@ for (const width of [320, 1440])
       await overview(page).screenshot({
         path: info.outputPath(`recipe-overview-${width}-${theme}.png`),
       });
+      await fullReportLink.click();
+      const reportTitle = page.getByRole('heading', {
+        name: '基线与调优对照',
+        exact: true,
+      });
+      await expect(reportTitle).toBeFocused();
+      await expect(
+        page.getByRole('tab', { name: '性能对照', selected: true }),
+      ).toBeVisible();
+      await expect
+        .poll(async () => (await reportTitle.boundingBox())!.y)
+        .toBeGreaterThanOrEqual(0);
+      await expect
+        .poll(async () => (await reportTitle.boundingBox())!.y)
+        .toBeLessThan(300);
+      // Clicking the same report again should return focus to it as well.
+      await fullReportLink.click();
+      await expect(reportTitle).toBeFocused();
+      await page.getByRole('tab', { name: '部署配置', exact: true }).click();
       await baselineLink.click();
       await expect(page.getByRole('heading', { level: 1 })).toHaveText(
         'GLM 5.3 (NVFP4)',
