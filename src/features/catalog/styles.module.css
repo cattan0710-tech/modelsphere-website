@@ -420,7 +420,7 @@
   .recipeActionLabel
   svg {
   opacity: 1;
-  transform: translateX(3px);
+  transform: translateX(6px);
 }
 .cardHeading .recipeTitle {
   display: flex;
