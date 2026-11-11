@@ -65,7 +65,13 @@ for (const view of ['models', 'recipes'])
       await openCatalog(page, `q=${model.name}&view=${view}&layout=${layout}`);
       const title = page
         .locator('main')
-        .getByRole('link', { name: modelTitle, exact: true })
+        .getByRole('link', {
+          name:
+            view === 'recipes' && layout === 'cards'
+              ? '查看该模型所有配方'
+              : modelTitle,
+          exact: true,
+        })
         .first();
       await expect(title).toHaveAttribute('href', shortHref);
       await title.click();
@@ -142,7 +148,7 @@ test('a fresh short link uses the current catalog while an existing entry retain
   await openCatalog(page, `q=${model.name}`);
   await page
     .locator('main')
-    .getByRole('link', { name: modelTitle, exact: true })
+    .getByRole('link', { name: '查看该模型所有配方', exact: true })
     .first()
     .click();
   await expect(page).toHaveURL(shortHref);
@@ -203,7 +209,7 @@ test('English model links and canonical URLs retain the locale and omit navigati
   await expect(page.locator('[data-catalog-enhanced="true"]')).toBeVisible();
   const title = page
     .locator('main')
-    .getByRole('link', { name: modelTitle, exact: true })
+    .getByRole('link', { name: 'View all recipes for this model', exact: true })
     .first();
   await expect(title).toHaveAttribute('href', '/en' + shortHref);
   await title.click();

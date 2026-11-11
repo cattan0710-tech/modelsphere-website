@@ -124,7 +124,9 @@ test('catalog filters, recipe tabs, legacy redirects and return links preserve t
     (url) => url.pathname === `${prefix}models` && url.search.length > 0,
   );
   const card = page.locator(`[data-recipe-id="${model.name}/${recipe.id}"]`);
-  await card.getByRole('link', { name: '查看对照报告', exact: true }).click();
+  await card
+    .getByRole('link', { name: `查看 ${recipe.id} 性能对照`, exact: true })
+    .click();
   await expect(
     page.getByRole('tab', { name: '性能对照', selected: true }),
   ).toBeVisible();
