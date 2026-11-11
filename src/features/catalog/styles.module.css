@@ -368,10 +368,11 @@
   z-index: 3;
   border-color: color-mix(
     in srgb,
-    var(--color-brand-primary) 50%,
+    var(--color-brand-primary) 60%,
     var(--color-border-default)
   );
-  box-shadow: 0 4px 14px rgb(0 0 0/0.04);
+  box-shadow: 0 4px 14px
+    color-mix(in srgb, var(--color-brand-primary) 12%, transparent);
 }
 /* Stretch the recipe action over the card, keeping independent controls above it.
    A native link preserves keyboard, context-menu and new-tab navigation. */
@@ -2180,11 +2181,12 @@
 .catalog .recipeCard:focus-within {
   border-color: color-mix(
     in srgb,
-    var(--color-brand-primary) 45%,
+    var(--color-brand-primary) 60%,
     var(--color-border-default)
   );
   box-shadow:
-    0 4px 20px color-mix(in srgb, var(--color-brand-primary) 8%, transparent),
+    0 0 0 1px color-mix(in srgb, var(--color-brand-primary) 10%, transparent),
+    0 5px 18px color-mix(in srgb, var(--color-brand-primary) 12%, transparent),
     0 1px 3px rgb(15 23 42 / 4%);
 }
 .catalog .selected,
