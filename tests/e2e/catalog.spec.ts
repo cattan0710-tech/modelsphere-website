@@ -964,7 +964,7 @@ test('model recipe entries and performance gains lead into the same recipe detai
   await page.goto(catalog);
   await expect(page.locator('[data-recipe-id]')).toHaveCount(2);
   await page
-    .getByRole('link', { name: 'MiMo-V2.5', exact: true })
+    .getByRole('link', { name: '查看该模型所有配方', exact: true })
     .first()
     .click();
   await expect(page).toHaveURL(/\/model\?id=/);
@@ -1739,7 +1739,7 @@ test('a newly published model appears in fixed routes without rebuilding the web
     '覆盖 76% 模型',
   );
   await page
-    .getByRole('link', { name: 'New public model', exact: true })
+    .getByRole('link', { name: '查看该模型所有配方', exact: true })
     .click();
   await expect(page).toHaveURL(/\/model\?id=/);
   await expect(page.getByRole('heading', { level: 1 })).toHaveText(
