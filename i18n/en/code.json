@@ -3223,5 +3223,13 @@
   "home.qos.operationsPill": {
     "message": "No manual labeling",
     "description": "零人工打标"
+  },
+  "catalog.viewRecipe": {
+    "message": "View recipe",
+    "description": "查看配方"
+  },
+  "catalog.viewModelRecipes": {
+    "message": "View all recipes for this model",
+    "description": "查看该模型所有配方"
   }
 }

@@ -350,6 +350,7 @@
   gap: 16px;
 }
 .recipeCard {
+  isolation: isolate;
   background: var(--color-background-surface);
   border: 1px solid var(--color-border-default);
   border-radius: 6px;
@@ -362,13 +363,133 @@
     border-color 160ms,
     box-shadow 160ms;
 }
-.recipeCard:hover {
+.recipeCard:hover,
+.recipeCard:focus-within {
+  z-index: 3;
   border-color: color-mix(
     in srgb,
     var(--color-brand-primary) 50%,
     var(--color-border-default)
   );
   box-shadow: 0 4px 14px rgb(0 0 0/0.04);
+}
+/* Stretch the recipe action over the card, keeping independent controls above it.
+   A native link preserves keyboard, context-menu and new-tab navigation. */
+.recipeCard a,
+.recipeCard .copyWrap {
+  position: relative;
+  z-index: 2;
+}
+.recipeCard .recipeCardLink {
+  position: static;
+  z-index: auto;
+}
+.recipeCardLink::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border-radius: inherit;
+}
+.recipeCardLink:focus-visible::after {
+  outline: 2px solid var(--color-brand-primary);
+  outline-offset: 3px;
+}
+.recipeCard:is(:hover, :focus-within):not(
+    :has(.modelLinkWrap:is(:hover, :focus-within))
+  )
+  .recipeCardLink {
+  color: var(--color-brand-primary);
+  border-color: var(--color-brand-primary);
+}
+.recipeActionLabel {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.recipeActionLabel svg {
+  opacity: 0.55;
+  transition:
+    transform 240ms ease-out,
+    opacity 240ms ease-out;
+}
+.recipeCard:is(:hover, :focus-within):not(
+    :has(.modelLinkWrap:is(:hover, :focus-within))
+  )
+  .recipeActionLabel
+  svg {
+  opacity: 1;
+  transform: translateX(3px);
+}
+.cardHeading .recipeTitle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.cardHeading .recipeTitle > a {
+  min-width: 0;
+}
+.cardTitleLink {
+  position: relative;
+  z-index: 2;
+  flex: 0 1 auto;
+  min-width: 0;
+}
+.cardTitleText {
+  display: block;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.cardTitleLink .cardTitleTooltip {
+  left: 0;
+  right: auto;
+  width: max-content;
+  max-width: min(420px, calc(100vw - 64px));
+  white-space: normal;
+  overflow-wrap: anywhere;
+  letter-spacing: normal;
+}
+.cardTitleLink:hover .cardTitleTooltip,
+.cardTitleLink:focus-within .cardTitleTooltip {
+  visibility: visible;
+}
+.modelLinkWrap {
+  position: relative;
+  z-index: 2;
+  display: inline-flex;
+  flex-shrink: 0;
+  align-self: center;
+}
+.modelReference {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.recipeCard :is(.recipeTitle, .modelReference) .modelLink {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 4px;
+  color: var(--color-text-muted);
+}
+.recipeCard .modelLink:hover,
+.recipeCard .modelLink:focus-visible {
+  color: var(--color-brand-primary);
+  background: var(--color-background-subtle);
+}
+.modelLink svg {
+  width: 15px;
+  height: 15px;
+}
+.modelLinkWrap .copyTooltip {
+  right: 0;
+}
+.modelLinkWrap:hover .copyTooltip,
+.modelLinkWrap:focus-within .copyTooltip {
+  visibility: visible;
 }
 .selected {
   border: 2px solid var(--color-brand-accent);
@@ -499,22 +620,29 @@
   overflow-wrap: anywhere;
 }
 .recipeHardware {
-  display: flex;
+  display: inline-flex;
   align-items: flex-start;
-  gap: 8px;
-  margin: 0 0 12px;
-  color: var(--color-text-muted);
-  font: 400 12px/1.7 var(--font-body);
+  gap: 4px;
+  max-width: 100%;
+  margin: 0 0 6px;
+  padding: 2px 6px;
+  border: 1px solid
+    color-mix(in srgb, var(--color-feedback-info-foreground) 20%, transparent);
+  border-radius: 4px;
+  background: var(--color-feedback-info-background);
+  color: var(--color-feedback-info-foreground);
+  font: 400 11px/1.5 var(--font-body);
   overflow-wrap: anywhere;
 }
 .recipeHardware svg {
-  flex: 0 0 14px;
-  width: 14px;
-  height: 14px;
-  margin-top: 3px;
+  flex: 0 0 12px;
+  width: 12px;
+  height: 12px;
+  margin-top: 2px;
 }
-.recipeHardware span {
+.recipeHardware strong {
   min-width: 0;
+  font-weight: 700;
 }
 .recipeName {
   margin-bottom: 6px;
@@ -2127,6 +2255,12 @@
   display: block;
   overflow-wrap: anywhere;
 }
+.catalog .recipeCard[data-recipe-id] .cardHeading {
+  row-gap: 4px;
+}
+.catalog .recipeCard[data-recipe-id] .cardHeading h2 {
+  margin-bottom: 6px;
+}
 .catalog .optimized {
   color: var(--catalog-success);
   border-color: color-mix(in srgb, var(--catalog-success) 25%, transparent);
@@ -2230,6 +2364,24 @@
 .catalog .cardActions .secondary:hover {
   background: var(--color-brand-primary);
   color: var(--color-brand-on-primary);
+}
+.catalog .cardActions .recipeCardLink {
+  transition:
+    color 240ms ease-out,
+    background-color 240ms ease-out,
+    border-color 240ms ease-out,
+    box-shadow 240ms ease-out;
+}
+.catalog
+  .recipeCard:is(:hover, :focus-within):not(
+    :has(.modelLinkWrap:is(:hover, :focus-within))
+  )
+  .recipeCardLink {
+  color: var(--color-brand-on-primary);
+  background-color: var(--color-brand-primary);
+  border-color: var(--color-brand-primary);
+  box-shadow: 0 3px 10px
+    color-mix(in srgb, var(--color-brand-primary) 20%, transparent);
 }
 .catalog .copy {
   min-height: 34px;
@@ -2410,6 +2562,10 @@
   }
 }
 @media (prefers-reduced-motion: reduce) {
+  .recipeActionLabel svg {
+    transition: none;
+    transform: none !important;
+  }
   .catalog *,
   .catalog *::before {
     transition: none !important;

@@ -1,7 +1,7 @@
 import { translateCopy } from '@site/src/lib/translate-copy';
 import { translate } from '@docusaurus/Translate';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
-import React, { useId, useState } from 'react';
+import React, { useEffect, useId, useRef, useState } from 'react';
 import CatalogLink from './CatalogLink';
 import {
   baselineInfo,
@@ -32,6 +32,7 @@ export function Icon({
     | 'table'
     | 'tune'
     | 'arrow'
+    | 'external'
     | 'box'
     | 'code'
     | 'compare'
@@ -71,6 +72,9 @@ export function Icon({
     table: <path d="M3 3h18v5H3zM3 11h18v4H3zM3 18h18v3H3z" />,
     tune: <path d="M3 6h18M3 12h18M3 18h18M8 3v6M16 9v6M8 15v6" />,
     arrow: <path d="M4 12h16m-6-6 6 6-6 6" />,
+    external: (
+      <path d="M14 3h7v7m0-7L10 14M10 3H4a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1v-6" />
+    ),
     box: (
       <>
         <path d="m12 3 9 5v9l-9 5-9-5V8zM3 8l9 5 9-5M12 13v9" />
@@ -293,6 +297,111 @@ export function CopyButton({
     </span>
   );
 }
+function RecipeTitleLink({
+  label,
+  to,
+  version,
+  returnTo,
+}: {
+  label: string;
+  to: string;
+  version: string;
+  returnTo?: string;
+}) {
+  const textRef = useRef<HTMLSpanElement>(null);
+  const tooltipId = useId();
+  const [truncated, setTruncated] = useState(false);
+  const [dismissed, setDismissed] = useState(false);
+
+  useEffect(() => {
+    const text = textRef.current;
+    if (!text) return;
+    const measure = () => setTruncated(text.scrollWidth > text.clientWidth);
+    measure();
+    const observer = new ResizeObserver(measure);
+    observer.observe(text);
+    return () => observer.disconnect();
+  }, [label]);
+
+  return (
+    <span
+      className={styles.cardTitleLink}
+      onMouseEnter={() => setDismissed(false)}
+    >
+      <CatalogLink
+        to={to}
+        version={version}
+        returnTo={returnTo}
+        aria-describedby={truncated && !dismissed ? tooltipId : undefined}
+        onFocus={() => setDismissed(false)}
+        onKeyDown={(event) => {
+          if (event.key === 'Escape') setDismissed(true);
+        }}
+      >
+        <span ref={textRef} className={styles.cardTitleText}>
+          {label}
+        </span>
+      </CatalogLink>
+      {truncated && (
+        <span
+          id={tooltipId}
+          role="tooltip"
+          className={`${styles.copyTooltip} ${styles.cardTitleTooltip}`}
+          hidden={dismissed}
+        >
+          {label}
+        </span>
+      )}
+    </span>
+  );
+}
+
+function ModelRecipesLink({
+  r,
+  version,
+  returnTo,
+}: {
+  r: Recipe;
+  version: string;
+  returnTo?: string;
+}) {
+  const tooltipId = useId();
+  const [dismissed, setDismissed] = useState(false);
+  const label = translate({
+    id: 'catalog.viewModelRecipes',
+    message: '查看该模型所有配方',
+  });
+  return (
+    <span
+      className={styles.modelLinkWrap}
+      onMouseEnter={() => setDismissed(false)}
+    >
+      <CatalogLink
+        className={styles.modelLink}
+        to={modelHref(r.model, version, returnTo)}
+        version={version}
+        returnTo={returnTo}
+        aria-label={label}
+        aria-describedby={dismissed ? undefined : tooltipId}
+        onFocus={() => setDismissed(false)}
+        onKeyDown={(event) => {
+          if (event.key === 'Escape') setDismissed(true);
+        }}
+      >
+        <Icon name="external" />
+      </CatalogLink>
+      <span
+        id={tooltipId}
+        role="tooltip"
+        className={styles.copyTooltip}
+        hidden={dismissed}
+      >
+        {label}
+      </span>
+    </span>
+  );
+}
+
 export function RecipeCard({
   r,
   version,
@@ -321,25 +430,27 @@ export function RecipeCard({
                 translate({ id: 'site.c98e118e0a43', message: '模型' })}{' '}
               <span>· {translate({ message: topologyLabel(r.variant) })}</span>
             </p>
-            <Heading>
-              <CatalogLink
-                to={
-                  context === 'catalog'
-                    ? modelHref(r.model, version, returnTo)
-                    : detailHref(r, version, undefined, returnTo)
-                }
-                version={version}
-                returnTo={returnTo}
-                title={
-                  context === 'catalog'
-                    ? r.model.displayName || r.model.name
-                    : r.variant.id
-                }
-              >
-                {context === 'catalog'
-                  ? r.model.displayName || r.model.name
-                  : r.variant.id}
-              </CatalogLink>
+            <Heading className={styles.recipeTitle}>
+              {context === 'catalog' ? (
+                <RecipeTitleLink
+                  label={r.model.displayName || r.model.name}
+                  to={detailHref(r, version, undefined, returnTo)}
+                  version={version}
+                  returnTo={returnTo}
+                />
+              ) : (
+                <CatalogLink
+                  to={detailHref(r, version, undefined, returnTo)}
+                  version={version}
+                  returnTo={returnTo}
+                  title={r.variant.id}
+                >
+                  {r.variant.id}
+                </CatalogLink>
+              )}
+              {context === 'catalog' && (
+                <ModelRecipesLink r={r} version={version} returnTo={returnTo} />
+              )}
             </Heading>
           </div>
           <span
@@ -352,6 +463,12 @@ export function RecipeCard({
                 : translate({ id: 'site.8be3a0d72f4d', message: '部署配方' })}
           </span>
         </div>
+        {context === 'catalog' && (
+          <p className={styles.recipeHardware} data-recipe-hardware="">
+            <Icon name="chip" />
+            <strong>{translateCopy(hardwareText(r.variant))}</strong>
+          </p>
+        )}
         <dl
           className={`${styles.recipeModel}${context === 'catalog' ? ` ${styles.recipeName}` : ''}`}
         >
@@ -362,28 +479,27 @@ export function RecipeCard({
                 : translate({ id: 'site.c98e118e0a43', message: '模型' })}
             </dt>
             <dd>
-              <CatalogLink
-                to={
-                  context === 'catalog'
-                    ? detailHref(r, version, undefined, returnTo)
-                    : modelHref(r.model, version, returnTo)
-                }
-                version={version}
-                returnTo={returnTo}
-              >
-                {context === 'catalog'
-                  ? r.variant.id
-                  : r.model.displayName || r.model.name}
-              </CatalogLink>
+              {context === 'catalog' ? (
+                <CatalogLink
+                  to={detailHref(r, version, undefined, returnTo)}
+                  version={version}
+                  returnTo={returnTo}
+                >
+                  {r.variant.id}
+                </CatalogLink>
+              ) : (
+                <span className={styles.modelReference}>
+                  {r.model.displayName || r.model.name}
+                  <ModelRecipesLink
+                    r={r}
+                    version={version}
+                    returnTo={returnTo}
+                  />
+                </span>
+              )}
             </dd>
           </div>
         </dl>
-        {context === 'catalog' && (
-          <p className={styles.recipeHardware} data-recipe-hardware="">
-            <Icon name="chip" />
-            <span>{translateCopy(hardwareText(r.variant))}</span>
-          </p>
-        )}
         <div className={styles.gain}>
           <GainMeter
             value={r.quotedGain}
@@ -474,18 +590,15 @@ export function RecipeCard({
         </dl>
         <div className={styles.cardActions}>
           <CatalogLink
-            className={styles.secondary}
-            to={
-              badge === 'optimized'
-                ? reportHref(r, version, returnTo)
-                : detailHref(r, version, undefined, returnTo)
-            }
+            className={`${styles.secondary} ${styles.recipeCardLink}`}
+            to={detailHref(r, version, undefined, returnTo)}
             version={version}
             returnTo={returnTo}
           >
-            {badge === 'optimized'
-              ? translate({ id: 'site.19166317a928', message: '查看对照报告' })
-              : translate({ id: 'site.9c3b6f1004ad', message: '查看部署配置' })}
+            <span className={styles.recipeActionLabel}>
+              {translate({ id: 'catalog.viewRecipe', message: '查看配方' })}
+              <Icon name="arrow" />
+            </span>
           </CatalogLink>
           <CopyButton
             getText={copy}
