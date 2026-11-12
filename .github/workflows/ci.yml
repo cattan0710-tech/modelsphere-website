@@ -223,13 +223,20 @@ jobs:
           platforms: linux/amd64,linux/arm64
           build-args: |
             SITE_BASE_URL=/
-          push: true
+          # ACR Personal Edition rejects BuildKit's OCI attestations.
+          provenance: false
+          sbom: false
+          outputs: type=image,push=true,oci-mediatypes=false
           tags: |
             ${{ env.ACR_REGISTRY }}/${{ env.ACR_REPOSITORY }}:develop
             ${{ env.ACR_REGISTRY }}/${{ env.ACR_REPOSITORY }}:sha-${{ github.sha }}
           labels: |
             org.opencontainers.image.source=https://github.com/${{ github.repository }}
             org.opencontainers.image.revision=${{ github.sha }}
+      - name: Verify published image manifests
+        run: |
+          docker buildx imagetools inspect "$ACR_REGISTRY/$ACR_REPOSITORY:develop"
+          docker buildx imagetools inspect "$ACR_REGISTRY/$ACR_REPOSITORY:sha-$GITHUB_SHA"
   deploy-pages:
     name: Deploy GitHub Pages
     if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
